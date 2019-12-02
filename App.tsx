@@ -7,86 +7,52 @@
  *
  * @format
  */
-
 import React from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Button,
   Text,
   Image,
   StatusBar,
-  Alert,
+  SafeAreaView,
+  ScrollView
 } from 'react-native';
+import { Icon } from 'native-base';
+import { createAppContainer } from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+// import { createStackNavigator } from 'react-navigation-stack';
+import HomeScreen from './components/HomeScreen';
+import CategoriesScreen from './components/CategoriesScreen';
+import ProfilesScreen from './components/ProfilesScreen';
 
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen';
+// const MainNavigator = createStackNavigator({
+//   Home: { screen: HomeScreen },
+//   Categories: { screen: CategoriesScreen },
+//   ProfilesScreen: { screen: ProfilesScreen },
+// });
+// const App = createAppContainer(MainNavigator);
 
-const App = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center' }}>
-        <Image source={require('./assets/shaghelohm.png')} style={{ flex: 5, width: 90 + "%", height: 200 }} />
-        <Text style={{ flex: 1, color: "#91cde0", fontFamily: 'Cochin', fontSize: 36, fontWeight: 'bold' }}>Handy</Text>
-        <View style={{ flex: 2 }}>
-          <Button
-            title="Discover"
-            color="#63b8d4"
-            onPress={() => Alert.alert('Discover pressed')}
-          /></View>
-      </View>
-    </>
-  );
-};
+const Drawer = createDrawerNavigator({
+  Home: {
+    screen: HomeScreen,
+    navigationOptions: {
+      title: 'Homepage',
 
-const styles = StyleSheet.create({
-  baseText: {
-    fontFamily: 'Cochin',
+    }
   },
-  titleText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  Categories: {
+    screen: CategoriesScreen,
+    navigationOptions: {
+      title: 'Categories'
+    }
   },
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+  ProfilesScreen: {
+    screen: ProfilesScreen,
+    navigationOptions: {
+      title: 'Profiles'
+    }
+  }
 });
+const App = createAppContainer(Drawer);
 
 export default App;
