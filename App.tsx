@@ -24,6 +24,8 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import HomeScreen from './components/HomeScreen';
 import CategoriesScreen from './components/CategoriesScreen';
 import ProfilesScreen from './components/ProfilesScreen';
+import AddProfileScreen from './components/AddProfileScreen';
+
 
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
@@ -50,6 +52,12 @@ const Drawer = createDrawerNavigator({
     screen: ProfilesScreen,
     navigationOptions: {
       title: 'Profiles'
+    }
+  },
+  AddProfileScreen: {
+    screen: AddProfileScreen,
+    navigationOptions: {
+      title: 'Add Profile'
     }
   }
 });

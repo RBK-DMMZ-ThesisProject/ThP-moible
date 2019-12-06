@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "527742803375",
+    "firebase_url": "https://handy-b7e99.firebaseio.com",
+    "project_id": "handy-b7e99",
+    "storage_bucket": "handy-b7e99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527742803375:android:c9e0625d69fb595b4ba35a",
+        "android_client_info": {
+          "package_name": "com.shaghelhom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527742803375-gphse2gadshoabobb6n59u7l982ga3h2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6qghercCOmzh06jJu9Fu8W8F4GxykANs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527742803375-gphse2gadshoabobb6n59u7l982ga3h2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
