@@ -49,7 +49,9 @@ class AddProfileScreen extends React.Component<Props, object> {
         serverDesription: '',
         // for sample work
         showSampleWorkImg: false,
-        sampleWorkImg: null
+        sampleWorkImg: null,
+        sampleWorkImgFileName: null,
+        sampleWorkImgfbUrl: null,
 
     }
 
@@ -62,12 +64,12 @@ class AddProfileScreen extends React.Component<Props, object> {
         });
     }
     // store images in firebase
-    async uploadPicture(picturePathUri: string, fileName: string): Promise<void> {
+    async uploadPicture(picturePathUri: string, fileName: string, imgfolder: string): Promise<void> {
         console.log(`PATH: ${picturePathUri}`);
         try {
             var ref = firebase
                 .storage()
-                .ref('avatars/');
+                .ref(imgfolder);
             await ref
                 .child(fileName).putFile(
                     picturePathUri,
@@ -129,7 +131,7 @@ class AddProfileScreen extends React.Component<Props, object> {
     showSampleImagePicker = () => {
         // initial settings 
         const options: object = {
-            title: 'Select Avatar',
+            title: 'Select Sample Work',
             customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
             storageOptions: {
                 skipBackup: true,
@@ -138,7 +140,6 @@ class AddProfileScreen extends React.Component<Props, object> {
         };
 
         ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
 
             if (response.didCancel) {
                 console.log('User cancelled image picker');
@@ -152,7 +153,9 @@ class AddProfileScreen extends React.Component<Props, object> {
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
                 this.setState({
                     showSampleWorkImg: true,
-                    sampleWorkImg: source
+                    sampleWorkImg: source,
+                    sampleWorkImgfbUrl: response.uri,
+                    sampleWorkImgFileName: response.fileName
                 });
             }
         });
@@ -162,7 +165,9 @@ class AddProfileScreen extends React.Component<Props, object> {
     // 
     async saveProfile() {
         // console.log(this.state)
-        await this.uploadPicture(this.state.avatarUri, this.state.avatarFileName);
+        await this.uploadPicture(this.state.avatarUri, this.state.avatarFileName, 'avatars/');
+        await this.uploadPicture(this.state.sampleWorkImgfbUrl, this.state.sampleWorkImgFileName, 'workSamples/');
+
         fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
             method: 'POST',
             headers: {
@@ -178,7 +183,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                 avatarSource: this.state.avartfbUrl,//that.state.avatarSource,
                 category: this.state.category,
                 serverDesription: this.state.serverDesription,
-                sampleWorkImg: 'sw' //that.state.sampleWorkImg
+                sampleWorkImg: this.state.sampleWorkImgfbUrl //that.state.sampleWorkImg
             }),
 
         }).then(res => res.json())
