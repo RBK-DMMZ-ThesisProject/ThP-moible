@@ -180,10 +180,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                 phoneNum: this.state.phoneNum,
                 email: this.state.email,
                 birthdate: this.state.birthdate,
-                avatarSource: this.state.avartfbUrl,//that.state.avatarSource,
+                avatarSource: this.state.avartfbUrl,
                 category: this.state.category,
                 serverDesription: this.state.serverDesription,
-                sampleWorkImg: this.state.sampleWorkImgfbUrl //that.state.sampleWorkImg
+                sampleWorkImg: this.state.sampleWorkImgfbUrl
             }),
 
         }).then(res => res.json())
