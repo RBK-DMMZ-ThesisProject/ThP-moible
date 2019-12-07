@@ -41,17 +41,18 @@ class AddProfileScreen extends React.Component<Props, object> {
         // for avatar
         avatarSource: null,
         showAvatar: false,
-        avatarUri: null,
-        avatarFileName: null,
-        avartfbUrl: null,
+        avatarUri: "",
+        avatarFileName: "",
+        avartfbUrl: "",
         // service info
         category: 'Carpenter',
         serverDesription: '',
         // for sample work
         showSampleWorkImg: false,
         sampleWorkImg: null,
-        sampleWorkImgFileName: null,
-        sampleWorkImgfbUrl: null,
+        sampleWorkImgFileName: "",
+        sampleWorkImgfbUrl: "",
+        saveLoading: false
 
     }
 
@@ -165,8 +166,13 @@ class AddProfileScreen extends React.Component<Props, object> {
     // 
     async saveProfile() {
         // console.log(this.state)
-        await this.uploadPicture(this.state.avatarUri, this.state.avatarFileName, 'avatars/');
-        await this.uploadPicture(this.state.sampleWorkImgfbUrl, this.state.sampleWorkImgFileName, 'workSamples/');
+        const { avatarUri, sampleWorkImgfbUrl, avatarFileName, sampleWorkImgFileName } = this.state;
+
+        this.setState({
+            saveLoading: true
+        })
+        await this.uploadPicture(avatarUri, avatarFileName, 'avatars/');
+        await this.uploadPicture(sampleWorkImgfbUrl, sampleWorkImgFileName, 'workSamples/');
 
         fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
             method: 'POST',
@@ -187,14 +193,22 @@ class AddProfileScreen extends React.Component<Props, object> {
             }),
 
         }).then(res => res.json())
-            .then(resJson => console.log('response: ', resJson))
+            .then(resJson => {
+                console.log('response: ', resJson);
+                this.setState({
+                    saveLoading: false
+                });
+            })
             .catch((error) => {
                 console.error(error);
+                this.setState({
+                    saveLoading: false
+                });
             });
     }
     render() {
         const { navigation } = this.props;
-        const { firstName, familyName, phoneNum, email, birthdate, showDate, showAvatar, showSampleWorkImg } = this.state;
+        const { firstName, familyName, phoneNum, email, birthdate, showDate, showAvatar, showSampleWorkImg, saveLoading } = this.state;
         return (
             <>
                 <StatusBar barStyle="dark-content" />
@@ -335,7 +349,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                                 titleStyle={{
                                     color: '#dff0f6'
                                 }}
-                                title="Save Profile" onPress={() => this.saveProfile()} ></Button>
+                                title="Save Profile" onPress={() => this.saveProfile()} loading={saveLoading}></Button>
                         </View>
                     </ScrollView>
                 </SafeAreaView>
