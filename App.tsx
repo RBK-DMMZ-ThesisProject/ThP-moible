@@ -25,6 +25,7 @@ import HomeScreen from './components/HomeScreen';
 import CategoriesScreen from './components/CategoriesScreen';
 import ProfilesScreen from './components/ProfilesScreen';
 import AddProfileScreen from './components/AddProfileScreen';
+import ViewProfileScreen from './components/ViewProfileScreen';
 
 
 // const MainNavigator = createStackNavigator({
@@ -58,6 +59,12 @@ const Drawer = createDrawerNavigator({
     screen: AddProfileScreen,
     navigationOptions: {
       title: 'Add Profile'
+    }
+  },
+  ViewProfile: {
+    screen: ViewProfileScreen,
+    navigationOptions: {
+      title: 'Profile'
     }
   }
 });
