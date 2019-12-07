@@ -24,11 +24,13 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import ImagePicker from 'react-native-image-picker';
 import storage, { firebase } from '@react-native-firebase/storage';
 import { any } from 'prop-types';
+import categories from './categories';
 
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 class AddProfileScreen extends React.Component<Props, object> {
+
     state = {
         // personal info
         firstName: '',
@@ -41,17 +43,23 @@ class AddProfileScreen extends React.Component<Props, object> {
         // for avatar
         avatarSource: null,
         showAvatar: false,
-        avatarUri: null,
-        avatarFileName: null,
-        avartfbUrl: null,
+        avatarUri: "",
+        avatarFileName: "",
+        avartfbUrl: "",
         // service info
         category: 'Carpenter',
         serverDesription: '',
         // for sample work
         showSampleWorkImg: false,
         sampleWorkImg: null,
-        sampleWorkImgFileName: null,
-        sampleWorkImgfbUrl: null,
+        sampleWorkImgUri: "",
+        sampleWorkImgFileName: "",
+        sampleWorkImgfbUrl: "",
+        // activity indicator
+        saveLoading: false,
+        // form validation 
+        isSbumitted: false
+
 
     }
 
@@ -64,7 +72,7 @@ class AddProfileScreen extends React.Component<Props, object> {
         });
     }
     // store images in firebase
-    async uploadPicture(picturePathUri: string, fileName: string, imgfolder: string): Promise<void> {
+    async uploadPicture(picturePathUri: string, fileName: string, imgfolder: string, type: number): Promise<void> {
         console.log(`PATH: ${picturePathUri}`);
         try {
             var ref = firebase
@@ -76,9 +84,16 @@ class AddProfileScreen extends React.Component<Props, object> {
                 );
             var fburl = await ref.child(fileName).getDownloadURL();
             console.log(fburl);
-            this.setState({
-                avartfbUrl: await ref.child(fileName).getDownloadURL()
-            })
+            switch (type) {
+                case 1: this.setState({
+                    avartfbUrl: fburl
+                }); break;
+                case 2: this.setState({
+                    sampleWorkImgfbUrl: fburl
+                }); break;
+
+            }
+
         } catch (error) {
             console.log(error, JSON.stringify(error, null, 2));
         }
@@ -154,7 +169,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                 this.setState({
                     showSampleWorkImg: true,
                     sampleWorkImg: source,
-                    sampleWorkImgfbUrl: response.uri,
+                    sampleWorkImgUri: response.uri,
                     sampleWorkImgFileName: response.fileName
                 });
             }
@@ -165,36 +180,51 @@ class AddProfileScreen extends React.Component<Props, object> {
     // 
     async saveProfile() {
         // console.log(this.state)
-        await this.uploadPicture(this.state.avatarUri, this.state.avatarFileName, 'avatars/');
-        await this.uploadPicture(this.state.sampleWorkImgfbUrl, this.state.sampleWorkImgFileName, 'workSamples/');
-
+        const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
+        const { navigation } = this.props;
+        this.setState({
+            saveLoading: true,
+            isSbumitted: true,
+        })
+        await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
+        await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
+        var profileData = {
+            firstName: this.state.firstName,
+            familyName: this.state.familyName,
+            phoneNum: this.state.phoneNum,
+            email: this.state.email,
+            birthdate: this.state.birthdate,
+            avatarSource: this.state.avartfbUrl,
+            category: this.state.category,
+            serverDesription: this.state.serverDesription,
+            sampleWorkImg: this.state.sampleWorkImgfbUrl
+        };
         fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                firstName: this.state.firstName,
-                familyName: this.state.familyName,
-                phoneNum: this.state.phoneNum,
-                email: this.state.email,
-                birthdate: this.state.birthdate,
-                avatarSource: this.state.avartfbUrl,
-                category: this.state.category,
-                serverDesription: this.state.serverDesription,
-                sampleWorkImg: this.state.sampleWorkImgfbUrl
-            }),
+            body: JSON.stringify(profileData),
 
         }).then(res => res.json())
-            .then(resJson => console.log('response: ', resJson))
+            .then(resJson => {
+                console.log('response: ', resJson);
+                this.setState({
+                    saveLoading: false
+                });
+                navigation.navigate('ViewProfile', { 'profile': profileData }); // refactor to spesifc profile ??
+            })
             .catch((error) => {
                 console.error(error);
+                this.setState({
+                    saveLoading: false
+                });
             });
     }
     render() {
         const { navigation } = this.props;
-        const { firstName, familyName, phoneNum, email, birthdate, showDate, showAvatar, showSampleWorkImg } = this.state;
+        const { firstName, familyName, phoneNum, email, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading } = this.state;
         return (
             <>
                 <StatusBar barStyle="dark-content" />
@@ -208,8 +238,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                             onChangeText={(firstName) => this.setState({ firstName })}
                             placeholder={'Enter your first name...'}
                             placeholderTextColor="#91cde0"
-                        // errorMessage='Enter your first name'
+                        // errorMessage={(firstName !== "") ? 'Please enter your first name' : ''}
                         >{firstName}</Input>
+                        {/* {this.validator.message('firstName', firstName, 'required')} */}
+
                         <Input
                             inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
                             label='Family Name:'
@@ -286,8 +318,13 @@ class AddProfileScreen extends React.Component<Props, object> {
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.setState({ category: itemValue })
                                 }>
-                                <Picker.Item label="Carpenter" value="Carpenter" />
-                                <Picker.Item label="Builder" value="Builder" />
+                                {
+                                    categories.map(category => {
+
+                                        return <Picker.Item label={category.name} value={category.name} key={category.id} />
+                                    })}
+
+
                             </Picker>
                         </View>
 
@@ -335,7 +372,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                                 titleStyle={{
                                     color: '#dff0f6'
                                 }}
-                                title="Save Profile" onPress={() => this.saveProfile()} ></Button>
+                                title="Save Profile" onPress={() => this.saveProfile()} loading={saveLoading}></Button>
                         </View>
                     </ScrollView>
                 </SafeAreaView>
