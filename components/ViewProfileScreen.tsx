@@ -30,6 +30,7 @@ class ViewProfileScreen extends React.Component<Props, object> {
     render() {
         const { navigation } = this.props;
         const profile = this.props.navigation.getParam('profile');
+
         console.log(profile);
         return (
             <>
