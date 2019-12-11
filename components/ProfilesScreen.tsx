@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  Image,
-  StatusBar,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import {View, TouchableOpacity, Alert} from 'react-native';
 import {Card, ListItem, Button, Icon, Rating} from 'react-native-elements';
 import {
   NavigationParams,
@@ -17,13 +7,14 @@ import {
   NavigationState,
 } from 'react-navigation';
 import HandyHeader from './HandyHeader';
-import serviceProviderProfile from './serviceProviderProfile';
+
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 class ProfilesScreen extends React.Component<Props, object> {
   state = {
     profiles: [],
+    rating: 1,
   };
 
   componentDidMount() {
@@ -36,7 +27,7 @@ class ProfilesScreen extends React.Component<Props, object> {
         'Content-Type': 'application/json',
       },
 
-      body: JSON.stringify({categoryName: categoryName}),
+      body: JSON.stringify({ServiceCategory: categoryName}),
     })
       .then(res => res.json())
       .then(resJson => {
@@ -48,12 +39,30 @@ class ProfilesScreen extends React.Component<Props, object> {
       .catch(error => {
         console.error(error);
       });
+    fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getRate', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        console.log('response: ', resJson);
+        this.setState({
+          rating: resJson,
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
+
   render() {
     const {profiles} = this.state;
     const {navigation} = this.props;
-    const {rating} = this.props;
-
+    // const {rating} = this.props;
+    const {rating} = this.state;
     const categoryName = this.props.navigation.getParam('categoryName');
     return (
       <>
@@ -63,7 +72,11 @@ class ProfilesScreen extends React.Component<Props, object> {
             return (
               <View key={i}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('ProviderProfile')}>
+                  onPress={() =>
+                    navigation.navigate('ProviderProfile', {
+                      userId: user['_id'],
+                    })
+                  }>
                   <ListItem
                     leftAvatar={{
                       title: user['userName'][0],
