@@ -19,8 +19,40 @@ import HandyHeader from './HandyHeader';
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
+import stripe from 'tipsi-stripe';
+import axios from 'axios';
+stripe.setOptions({
+    publishableKey: 'pk_test_u7t7CW4JRlx90adyZxR5lgTv000buXI4XF',
+});
+
 
 class HomeScreen extends React.Component<Props, object> {
+    requestPayment = () => {
+        return stripe
+            .paymentRequestWithCardForm()
+            .then((stripeTokenInfo: any) => {
+                console.warn('Token created', { stripeTokenInfo });
+                const body = {
+                    amount: 100,
+                    tokenId: stripeTokenInfo.tokenId,
+                };
+                const headers = {
+                    'Content-Type': 'application/json',
+                };
+                axios
+                    .post('http://localhost:5000/api/doPayment', body, { headers })
+                    .then(({ data }) => {
+                        return data;
+                    })
+                    .catch(error => {
+                        return Promise.reject('Error in making payment', error);
+                    });
+            })
+            .catch((error: any) => {
+                console.warn('Payment failed', { error });
+            });
+    };
+
     handleAddUserProfileBtn = () => {
         var that = this;
         var SharedPreferences = require('react-native-shared-preferences');
@@ -65,7 +97,7 @@ class HomeScreen extends React.Component<Props, object> {
                             <Button
                                 title="Pay"
                                 color="#63b8d4"
-                                onPress={this.handlePayBtn}
+                                onPress={this.requestPayment}
                             />
                         </View>
                     </View>
