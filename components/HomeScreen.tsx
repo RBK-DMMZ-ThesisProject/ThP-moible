@@ -16,30 +16,23 @@ import {
 
 } from 'react-navigation';
 import HandyHeader from './HandyHeader';
-import RNSharedPreferences from 'react-native-android-shared-preferences';
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
 class HomeScreen extends React.Component<Props, object> {
-    handleAddUserProfileBtn = async () => {
-        try {
-            var sharedPreferences = RNSharedPreferences.getSharedPreferences("userInfo");
-
-            sharedPreferences.getString("handyUserToken", (result: any) => {
-                // Should return Karthik here ...
-                console.log("Get result :: " + result);
-                if (result === '') {
-                    this.props.navigation.navigate('SignIn')
-                } else {
-                    this.props.navigation.navigate('AddProfileScreen')
-                }
-            });
-
-
-        } catch{
-
-        }
+    handleAddUserProfileBtn = () => {
+        var that = this;
+        var SharedPreferences = require('react-native-shared-preferences');
+        SharedPreferences.setName("handyInfo");
+        SharedPreferences.getItem("handyToken", function (value: any) {
+            console.log('our tocken ', value);
+            if (value === null) {
+                that.props.navigation.navigate('SignIn')
+            } else {
+                that.props.navigation.navigate('AddProfileScreen')
+            }
+        });
 
     }
 
@@ -66,6 +59,13 @@ class HomeScreen extends React.Component<Props, object> {
                                 title="Add User Profile"
                                 color="#63b8d4"
                                 onPress={this.handleAddUserProfileBtn}
+                            />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <Button
+                                title="Pay"
+                                color="#63b8d4"
+                                onPress={this.handlePayBtn}
                             />
                         </View>
                     </View>

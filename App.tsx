@@ -23,10 +23,11 @@ import AddProfileScreen from './components/AddProfileScreen';
 import ViewProfileScreen from './components/ViewProfileScreen';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
-import RNSharedPreferences from 'react-native-android-shared-preferences';
-import { DrawerNavigatorItems } from 'react-navigation-drawer'
-import SafeAreaView from 'react-native-safe-area-view'
-
+import { DrawerNavigatorItems } from 'react-navigation-drawer';
+import SafeAreaView from 'react-native-safe-area-view';
+import { Provider } from 'react-redux';
+import store from './state/store';
+import CustomHamburgerMenuDrawer from './components/HamburgerMenuDrawer';
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -81,22 +82,21 @@ const Drawer = createDrawerNavigator({
 
 },
   {
-    contentComponent: (props) => (
-      <View style={{ flex: 1 }}>
-        <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-          <DrawerNavigatorItems {...props} />
-          <Button title="Logout" onPress={() => logout()} />
-        </SafeAreaView>
-      </View>
-    ),
-    drawerOpenRoute: 'DrawerOpen',
-    drawerCloseRoute: 'DrawerClose',
-    drawerToggleRoute: 'DrawerToggle'
+    contentComponent: () => <CustomHamburgerMenuDrawer />,
+
   });
 const logout = () => {
-  var sharedPreferences = RNSharedPreferences.getSharedPreferences("userInfo");
-  sharedPreferences.clear()
-}
-const App = createAppContainer(Drawer);
+  var SharedPreferences = require('react-native-shared-preferences');
+  SharedPreferences.setName("handyInfo");
+  SharedPreferences.removeItem("handyToken");
+  // navigation.navigate('Home')
 
-export default App;
+}
+const AppContainer = createAppContainer(Drawer);
+export default class App extends React.Component {
+  render() {
+    return (<Provider store={store}>
+      <AppContainer />
+    </Provider>);
+  }
+}

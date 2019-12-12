@@ -17,7 +17,6 @@ import {
     NavigationState,
 } from 'react-navigation';
 import { Input, Button, Image } from 'react-native-elements'
-import RNSharedPreferences from 'react-native-android-shared-preferences';
 import HandyHeader from './HandyHeader';
 import { any } from 'prop-types';
 
@@ -60,16 +59,12 @@ class SignUp extends React.Component<Props, object> {
             body: JSON.stringify(userData),
 
         }).then(res => res.json())
-            .then(async (resJson) => {
+            .then((resJson) => {
                 console.log('response: ', resJson);
                 if (resJson.token !== undefined) {
-                    var sharedPreferences = RNSharedPreferences.getSharedPreferences("userInfo");
-                    sharedPreferences.putString("handyUserToken", resJson.token, (result: any) => {
-                        // Should return true here, if PUT is successful.
-                        console.log("PUT result :: " + result);
-                        navigation.navigate('AddProfileScreen');
-
-                    });
+                    var SharedPreferences = require('react-native-shared-preferences');
+                    SharedPreferences.setName("handyInfo");
+                    SharedPreferences.setItem("handyToken", resJson.token);
                 }
                 this.setState({
                     signUpLoading: false
