@@ -19,6 +19,7 @@ class ProfilesScreen extends React.Component<Props, object> {
 
   componentDidMount() {
     const categoryName = this.props.navigation.getParam('categoryName');
+    const {profiles} = this.state;
     console.log('categoryNameeeeeeeeeee', categoryName);
     fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getProfiles', {
       method: 'POST',
@@ -39,23 +40,25 @@ class ProfilesScreen extends React.Component<Props, object> {
       .catch(error => {
         console.error(error);
       });
-    fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getRate', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        console.log('response: ', resJson);
-        this.setState({
-          rating: resJson,
-        });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    // fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getRate', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({serviceproviderid: profiles.}),
+
+    // })
+    //   .then(res => res.json())
+    //   .then(resJson => {
+    //     console.log('response: ', resJson);
+    //     this.setState({
+    //       rating: resJson,
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
   }
 
   render() {

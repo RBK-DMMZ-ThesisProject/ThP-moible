@@ -55,7 +55,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       .then(resJson => {
         console.log('response: ', resJson);
         this.setState({
-          profile: resJson,
+          profile: resJson[0],
         });
       })
       .catch(error => {
@@ -64,6 +64,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
   }
   render() {
     const {navigation} = this.props;
+    const {profile} = this.state;
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -75,15 +76,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 size="xlarge"
                 rounded
                 source={{
-                  uri:
-                    'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+                  uri: profile.userImg,
                 }}
                 title="MD"
               />
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', color: '#63b8d4'}}>
                 {/* {profile.firstName + ' ' + profile.familyName} */}
-                Iyad Qunaibi
+                {profile.userName}
               </Text>
             </View>
             <View
@@ -107,23 +107,30 @@ class serviceProviderProfile extends React.Component<Props, object> {
             <Card>
               <ListItem
                 title="Phone"
-                subtitle="0599367498"
+                subtitle={profile.userMobileNum}
                 leftIcon={{
                   name: 'phone',
                 }}
               />
               <ListItem
                 title="Email"
-                subtitle="maysqunaibi2000@gmail.com"
+                subtitle={profile.email}
                 leftIcon={{
                   name: 'email',
                 }}
               />
               <ListItem
                 title="Birth Date"
-                subtitle="16/12/1970"
+                subtitle={profile.dateOfBirth}
                 leftIcon={{
                   name: 'book',
+                }}
+              />
+              <ListItem
+                title="Service Category"
+                subtitle={profile.ServiceCategory}
+                leftIcon={{
+                  name: 'flag',
                 }}
               />
             </Card>
@@ -131,8 +138,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
               title="Service Description"
               image={require('./../assets/shaghelohm.png')}>
               <Text style={{marginBottom: 20, marginTop: 20}}>
-                The idea with React Native Elements is more about component
-                structure than actual design.
+                {profile.ServiceDescription}
               </Text>
               <Button
                 icon={<Icon name="check" color="#ffffff" />}
