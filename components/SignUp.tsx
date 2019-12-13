@@ -19,9 +19,15 @@ import {
 import { Input, Button, Image } from 'react-native-elements'
 import HandyHeader from './HandyHeader';
 import { any } from 'prop-types';
+import { connect } from 'react-redux';
+import * as types from '../state/types';
+import { Dispatch } from 'react-redux';
+import { changeStateItem, changeStateSignedIn } from '../state/actions';
 
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+    changeState: any,
+    changeSignedInState: any
 }
 class SignUp extends React.Component<Props, object> {
 
@@ -69,12 +75,25 @@ class SignUp extends React.Component<Props, object> {
                 this.setState({
                     signUpLoading: false
                 });
+                console.log('change state of add profile');
+                this.props.changeSignedInState();
+
+                this.props.changeState(3); //remove
+                this.props.changeState(4);// remove
+                this.props.changeState(7);
+                this.props.changeState(8);
+                this.props.changeState(9);
+                this.props.changeState(10);
+                this.props.changeState(11);
+                this.props.changeState(30);
+
+                navigation.navigate(navigation.getParam('nextPage'));
 
             })
             .catch((error) => {
                 console.error(error);
                 this.setState({
-                    saveLoading: false
+                    signUpLoading: false
                 });
                 // process erro messages
             });
@@ -144,5 +163,19 @@ class SignUp extends React.Component<Props, object> {
     }
 }
 
+const mapDipatchToProps = (dispatch: Dispatch) => ({
+    changeState: (id: number) => {
+        console.log('item to hange : ' + id);
+        dispatch(changeStateItem(id));
+    },
+    changeSignedInState: () => {
+        dispatch(changeStateSignedIn());
+    }
+    // other callbacks go here...
+});
+const mapStateToProps = (state: types.MenuItemsListState, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => ({
+    items: state,
+    navigation: navigation
+});
 
-export default SignUp;
+export default connect(null, mapDipatchToProps)(SignUp);

@@ -60,7 +60,7 @@ class HomeScreen extends React.Component<Props, object> {
         SharedPreferences.getItem("handyToken", function (value: any) {
             console.log('our tocken ', value);
             if (value === null) {
-                that.props.navigation.navigate('SignIn')
+                that.props.navigation.navigate('SignIn', { nextPage: 'AddProfileScreen' })
             } else {
                 that.props.navigation.navigate('AddProfileScreen')
             }
@@ -93,13 +93,13 @@ class HomeScreen extends React.Component<Props, object> {
                                 onPress={this.handleAddUserProfileBtn}
                             />
                         </View>
-                        <View style={{ flex: 1 }}>
+                        {/* <View style={{ flex: 1 }}>
                             <Button
                                 title="Pay"
                                 color="#63b8d4"
                                 onPress={this.requestPayment}
                             />
-                        </View>
+                        </View> */}
                     </View>
                 </SafeAreaView>
             </>

@@ -2,32 +2,38 @@
 export type MenuItem = {
     id: number,
     itemtxt: string,
-    toPage: string
+    toPage: string,
+    show: number
+
 }
 // menu item list types
 export type MenuItemsListState = MenuItem[];
 // menu action types
 export enum MENU_LIST_ACTION_TYPES {
-    ADD_ITEM = 'ADD_ITEM',
-    REMOVE_ITEM = 'REMOVE_ITEM',
+    CHANGE_STATE = "CHANGE_STATE"
 }
 // each action inputs type
-export type AddItemAction = {
-    type: string;
-    itemData: MenuItem;
-}
-export type RemoveItemAction = {
+export type ChangeStateAction = {
     type: string;
     id: number;
 }
+export type ChangeStateSignedIn = {
+    type: string;
+}
+
 // union type to be used in reducers.
-export type MenuItemsListAction = AddItemAction | RemoveItemAction;
+export type MenuItemsListAction = ChangeStateAction;
 
 // whole application state
+export type LoginState = number;
+export const LOGIN_STATE = "LOGIN_STATE";
 export type AppState = {
     menuList: MenuItemsListState,
+    login: LoginState
     // add future state slices here
 }
+export type GeneralAction = ChangeStateSignedIn;
+
 // export enum NAVIGATE_ACTIONS {
 //     NAVIGATE_TO = "NAVIGATE_TO"
 // };

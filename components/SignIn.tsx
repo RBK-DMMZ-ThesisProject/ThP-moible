@@ -20,10 +20,18 @@ import { Input, Button, Image } from 'react-native-elements'
 
 import HandyHeader from './HandyHeader';
 import { any } from 'prop-types';
+import { connect } from 'react-redux';
+import { menuList } from '../state/reducer';
+import * as types from '../state/types';
+import { Dispatch } from 'react-redux';
+import { changeStateItem, changeStateSignedIn } from '../state/actions';
 
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+    changeState: any,
+    changeSignedInState: any
 }
+
 class SignIn extends React.Component<Props, object> {
 
     state = {
@@ -37,7 +45,7 @@ class SignIn extends React.Component<Props, object> {
     // @description:sign in to our application
     // 
     async signIn() {
-        // console.log(this.state)
+        console.log(this.state)
         const { navigation } = this.props;
         this.setState({
             signInLoading: true,
@@ -47,7 +55,7 @@ class SignIn extends React.Component<Props, object> {
             email: this.state.email,
             password: this.state.password,
         };
-        fetch('https://salty-garden-58258.herokuapp.com/mobileApi/signIn', {
+        fetch('https://salty-garden-58258.herokuapp.com/auth/adminLogin', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -61,7 +69,17 @@ class SignIn extends React.Component<Props, object> {
                 this.setState({
                     signInLoading: false
                 });
-                navigation.navigate('AddProfileScreen');
+                // check if a user is a service provider to add also 20
+                // this.props.changeSignedInState();
+                this.props.changeState(3);
+                this.props.changeState(4);
+                this.props.changeState(7);
+                this.props.changeState(8);
+                this.props.changeState(9);
+                this.props.changeState(10);
+                this.props.changeState(11);
+                this.props.changeState(30);
+                navigation.navigate(navigation.getParam('nextPage'));
             })
             .catch((error) => {
                 console.error(error);
@@ -122,7 +140,7 @@ class SignIn extends React.Component<Props, object> {
                                     color: '#dff0f6'
                                 }}
 
-                                title="Sign up" onPress={() => navigation.navigate('SignUp')} ></Button>
+                                title="Sign up" onPress={() => navigation.navigate('SignUp', { nextPage: 'AddProfileScreen' })} ></Button>
                         </View>
                     </ScrollView>
                 </SafeAreaView>
@@ -130,6 +148,19 @@ class SignIn extends React.Component<Props, object> {
         );
     }
 }
+const mapDipatchToProps = (dispatch: Dispatch) => ({
+    changeState: (id: number) => {
+        dispatch(changeStateItem(id));
+    },
+    changeSignedInState: () => {
+        dispatch(changeStateSignedIn());
 
+    }
+    // other callbacks go here...
+});
+const mapStateToProps = (state: types.MenuItemsListState, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => ({
+    items: state,
+    navigation: navigation
+});
 
-export default SignIn;
+export default connect(null, mapDipatchToProps)(SignIn);

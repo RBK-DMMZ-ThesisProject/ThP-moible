@@ -104,13 +104,7 @@ const Drawer = createDrawerNavigator({
     },
 
   });
-const logout = () => {
-  var SharedPreferences = require('react-native-shared-preferences');
-  SharedPreferences.setName("handyInfo");
-  SharedPreferences.removeItem("handyToken");
-  // navigation.navigate('Home')
 
-}
 const AppContainer = createAppContainer(Drawer);
 export default class App extends React.Component<Props> {
   render() {
