@@ -93,7 +93,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 justifyContent: 'space-around',
               }}>
               <Icon raised name="phone" color="#00aced" />
-              <Icon raised name="message" color="#00aced" />
+
+              <Icon
+                raised
+                name="message"
+                color="#00aced"
+                onPress={() => navigation.navigate('chattScreen')}
+              />
               <Icon raised name="star" color="#00aced" />
             </View>
 

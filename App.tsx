@@ -27,7 +27,7 @@ import ProfilesScreen from './components/ProfilesScreen';
 import AddProfileScreen from './components/AddProfileScreen';
 import ViewProfileScreen from './components/ViewProfileScreen';
 import serviceProviderProfile from './components/serviceProviderProfile';
-
+import chatt from './components/chattingApp/chatt';
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -70,6 +70,12 @@ const Drawer = createDrawerNavigator({
     screen: serviceProviderProfile,
     navigationOptions: {
       title: 'ProviderProfile',
+    },
+  },
+  chattScreen: {
+    screen: chatt,
+    navigationOptions: {
+      title: 'chattScreen',
     },
   },
 });
