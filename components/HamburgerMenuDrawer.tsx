@@ -5,41 +5,55 @@ import { NavigationActions } from 'react-navigation';
 import { MenuItemsListState } from '../state/types';
 import { connect } from 'react-redux';
 import { menuList } from '../state/reducer';
-import * as types from '../state/types'
+import * as types from '../state/types';
+import NavigationService from './NavigationService.js';
+
+import {
+    NavigationParams,
+    NavigationScreenProp,
+    NavigationState
+
+} from 'react-navigation';
 
 export interface Props {
-    items: []
+    items: [],
+    navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
 class CustomHamburgerMenuDrawer extends Component<Props> {
 
+    navigateToScreen(page: string) {
+        const { navigation } = this.props;
+        console.log('naviatione ')
+        NavigationService.navigate(page);
+    }
     render() {
         console.log(this.props.items);
         return (
             <View style={{ flex: 1, paddingTop: 30 }}>
                 <View style={{ height: 80, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-                    <Text >{this.props.items.menuList[0]["itemtxt"]}</Text>
-                    <Text>cc</Text>
+                    <Text >Handy</Text>
                 </View>
                 <ScrollView>
                     <View>
-                        {/* {this.state.data.map(x => (
+                        {this.props.items.menuList.map((item: any) => (
                             <Text
-                                key={x.id}
+                                key={item.id}
                                 style={{ fontSize: 16, lineHeight: 30, textAlign: 'center' }}
-                                onPress={this.navigateToScreen('page2')}
+                                onPress={() => this.navigateToScreen(item.toPage)}
                             >
-                                {x.name}
+                                {item.itemtxt}
                             </Text>
-                        ))} */}
+                        ))}
                     </View>
                 </ScrollView>
             </View>
         );
     }
 }
-const mapStateToProps = (state: types.MenuItemsListState) => ({
-    items: state
+const mapStateToProps = (state: types.MenuItemsListState, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => ({
+    items: state,
+    navigation: navigation
 });
 // const mapDipatchToProps = () => {
 //     console.log('IN mapDispatchToProps')

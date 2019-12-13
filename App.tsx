@@ -28,13 +28,23 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { Provider } from 'react-redux';
 import store from './state/store';
 import CustomHamburgerMenuDrawer from './components/HamburgerMenuDrawer';
+import NavigationService from './components/NavigationService';
+
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
 //   ProfilesScreen: { screen: ProfilesScreen },
 // });
 // const App = createAppContainer(MainNavigator);
+import {
+  NavigationParams,
+  NavigationScreenProp,
+  NavigationState
 
+} from 'react-navigation';
+export interface Props {
+  navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+}
 const Drawer = createDrawerNavigator({
   Home: {
     screen: HomeScreen,
@@ -79,10 +89,19 @@ const Drawer = createDrawerNavigator({
       title: 'Sign up'
     }
   },
-
+  CustomHamburgerMenuDrawer: {
+    screen: CustomHamburgerMenuDrawer,
+    navigationOptions: {
+      title: 'Custom menu'
+    }
+  }
 },
+
   {
-    contentComponent: () => <CustomHamburgerMenuDrawer />,
+    contentComponent: () => {
+
+      return <CustomHamburgerMenuDrawer />
+    },
 
   });
 const logout = () => {
@@ -93,10 +112,12 @@ const logout = () => {
 
 }
 const AppContainer = createAppContainer(Drawer);
-export default class App extends React.Component {
+export default class App extends React.Component<Props> {
   render() {
     return (<Provider store={store}>
-      <AppContainer />
+      <AppContainer ref={(navigatorRef: any) => {
+        NavigationService.setTopLevelNavigator(navigatorRef);
+      }} />
     </Provider>);
   }
 }
