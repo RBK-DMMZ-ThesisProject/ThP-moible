@@ -1,17 +1,5 @@
-import React, {SyntheticEvent, Profiler} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  StatusBar,
-  TouchableOpacity,
-  Alert,
-  Platform,
-  Keyboard,
-  Picker,
-  ActivityIndicator,
-} from 'react-native';
+import React from 'react';
+import {SafeAreaView, ScrollView, View, StatusBar} from 'react-native';
 import {
   NavigationParams,
   NavigationScreenProp,

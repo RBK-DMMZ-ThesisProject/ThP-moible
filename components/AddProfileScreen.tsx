@@ -213,7 +213,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                 this.setState({
                     saveLoading: false
                 });
-                navigation.navigate('ViewProfile', { 'profile': profileData }); // refactor to spesifc profile ??
+                navigation.navigate('ViewProfile', { 'profile': profileData });
             })
             .catch((error) => {
                 console.error(error);
@@ -256,6 +256,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                             inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
                             label='Phone No.:'
                             labelStyle={{ fontSize: 20, color: "#91cde0" }}
+                            keyboardType="number-pad"
                             onChangeText={(phoneNum) => this.setState({ phoneNum })}
                             placeholder={'Enter your phone number...'}
                             placeholderTextColor="#91cde0"

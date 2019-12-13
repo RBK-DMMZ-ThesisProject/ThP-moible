@@ -14,12 +14,25 @@ import {
   NavigationState,
 } from 'react-navigation';
 import HandyHeader from './HandyHeader';
-
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
 class HomeScreen extends React.Component<Props, object> {
+  handleAddUserProfileBtn = () => {
+    var that = this;
+    var SharedPreferences = require('react-native-shared-preferences');
+    SharedPreferences.setName('handyInfo');
+    SharedPreferences.getItem('handyToken', function(value: any) {
+      console.log('our tocken ', value);
+      if (value === null) {
+        that.props.navigation.navigate('SignIn');
+      } else {
+        that.props.navigation.navigate('AddProfileScreen');
+      }
+    });
+  };
+
   render() {
     const {navigation} = this.props;
     return (
@@ -36,7 +49,7 @@ class HomeScreen extends React.Component<Props, object> {
             }}>
             <Image
               source={require('./../assets/shaghelohm.png')}
-              style={{flex: 5, width: 90 + '%', height: 200}}
+              style={{flex: 7, width: 90 + '%', height: 200}}
             />
             <Text
               style={{
@@ -48,12 +61,22 @@ class HomeScreen extends React.Component<Props, object> {
               }}>
               Handy
             </Text>
-            <View style={{flex: 2}}>
+            <View style={{flex: 1}}>
               <Button
                 title="Discover"
                 color="#63b8d4"
                 onPress={() => navigation.navigate('Categories')}
               />
+            </View>
+            <View style={{flex: 1}}>
+              <Button
+                title="Add User Profile"
+                color="#63b8d4"
+                onPress={this.handleAddUserProfileBtn}
+              />
+            </View>
+            <View style={{flex: 1}}>
+              <Button title="Pay" color="#63b8d4" onPress={this.handlePayBtn} />
             </View>
           </View>
         </SafeAreaView>

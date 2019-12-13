@@ -71,6 +71,7 @@ class ProfilesScreen extends React.Component<Props, object> {
       <>
         <HandyHeader navigation={navigation} title={categoryName} />
         <Card containerStyle={{padding: 5}}>
+          {console.log(profiles)}
           {profiles.map((user, i) => {
             return (
               <View key={i}>

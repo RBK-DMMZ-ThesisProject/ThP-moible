@@ -8,15 +8,7 @@
  * @format
  */
 import React from 'react';
-import {
-  View,
-  Button,
-  Text,
-  Image,
-  StatusBar,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+
 import {Icon} from 'native-base';
 import {createAppContainer} from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer';
@@ -28,6 +20,13 @@ import AddProfileScreen from './components/AddProfileScreen';
 import ViewProfileScreen from './components/ViewProfileScreen';
 import serviceProviderProfile from './components/serviceProviderProfile';
 import chatt from './components/chattingApp/chatt';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
+import {DrawerNavigatorItems} from 'react-navigation-drawer';
+import SafeAreaView from 'react-native-safe-area-view';
+import {Provider} from 'react-redux';
+import store from './state/store';
+import CustomHamburgerMenuDrawer from './components/HamburgerMenuDrawer';
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -78,7 +77,34 @@ const Drawer = createDrawerNavigator({
       title: 'chattScreen',
     },
   },
+  SignIn: {
+    screen: SignIn,
+    navigationOptions: {
+      title: 'Sign in',
+    },
+  },
+  SignUp: {
+    screen: SignUp,
+    navigationOptions: {
+      title: 'Sign up',
+    },
+  },
 });
-const App = createAppContainer(Drawer);
 
-export default App;
+const logout = () => {
+  var SharedPreferences = require('react-native-shared-preferences');
+  SharedPreferences.setName('handyInfo');
+  SharedPreferences.removeItem('handyToken');
+  // navigation.navigate('Home')
+};
+
+const AppContainer = createAppContainer(Drawer);
+export default class App extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
+    );
+  }
+}

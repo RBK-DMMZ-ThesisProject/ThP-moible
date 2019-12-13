@@ -33,7 +33,7 @@ export default categories = [
 
   {
     id: 6,
-    name: 'Painers',
+    name: 'Painters',
     img: require('./../assets/shaghelohm.png'),
   },
   {
@@ -90,6 +90,11 @@ export default categories = [
   {
     id: 18,
     name: 'General Services',
+    img: require('./../assets/shaghelohm.png'),
+  },
+  {
+    id: 19,
+    name: 'Photographer',
     img: require('./../assets/shaghelohm.png'),
   },
 ];
