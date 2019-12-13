@@ -1,172 +1,112 @@
 import React from 'react';
+import {View, TouchableOpacity, Alert} from 'react-native';
+import {Card, ListItem, Button, Icon, Rating} from 'react-native-elements';
 import {
-    SafeAreaView,
-    StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    Image,
-    StatusBar,
-    Alert,
-} from 'react-native';
-import { Card, ListItem, Button, Icon } from 'react-native-elements';
-import {
-    NavigationParams,
-    NavigationScreenProp,
-    NavigationState,
+  NavigationParams,
+  NavigationScreenProp,
+  NavigationState,
 } from 'react-navigation';
 import HandyHeader from './HandyHeader';
 
 export interface Props {
-    navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+  navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 class ProfilesScreen extends React.Component<Props, object> {
+  state = {
+    profiles: [],
+    rating: 0,
+  };
 
+  componentDidMount() {
+    const categoryName = this.props.navigation.getParam('categoryName');
+    const {profiles} = this.state;
+    console.log('categoryNameeeeeeeeeee', categoryName);
+    fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getProfiles', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
 
-    render() {
-        const { navigation } = this.props;
+      body: JSON.stringify({ServiceCategory: categoryName}),
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        console.log('response: ', resJson);
+        this.setState({
+          profiles: resJson.profil,
+          rating: resJson.rates,
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    // fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getRate', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({serviceproviderid: profiles.}),
 
-        return (
-            <>
-                <StatusBar barStyle="dark-content" />
-                <SafeAreaView style={{ flex: 1 }}>
+    // })
+    //   .then(res => res.json())
+    //   .then(resJson => {
+    //     console.log('response: ', resJson);
+    //     this.setState({
+    //       rating: resJson,
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
+  }
 
-                    <ScrollView style={{ flex: 1, backgroundColor: '#91cde0' }}>
-                        <HandyHeader navigation={navigation} title="Profiles" />
-
-                        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center' }}>
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                {categories.map(category => {
-                                    return (
-                                        <View key={category.id} style={{ width: 33 + "%" }}>
-                                            <Card
-                                                containerStyle={{ paddingTop: 2, backgroundColor: "#eff7fa" }}
-                                                imageStyle={{ width: 70, height: 70 }}
-                                                image={category.img}>
-                                                <Button
-                                                    titleStyle={{ fontSize: 12 }}
-                                                    buttonStyle={{ backgroundColor: '#91cde0', borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0, padding: 0 }}
-                                                    title={category.name}
-                                                    onPress={() => Alert.alert('hello')} />
-                                            </Card>
-                                        </View>
-                                    )
-                                })}
-                            </View>
-                        </View>
-                    </ScrollView>
-                </SafeAreaView>
-            </>
-        );
-    }
+  render() {
+    const {profiles} = this.state;
+    const {navigation} = this.props;
+    // const {rating} = this.props;
+    const {rating} = this.state;
+    const categoryName = this.props.navigation.getParam('categoryName');
+    return (
+      <>
+        <HandyHeader navigation={navigation} title={categoryName} />
+        <Card containerStyle={{padding: 5}}>
+          {console.log('profiles ', profiles)}
+          {profiles.map((user, i) => {
+            return (
+              <View key={i}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('ProviderProfile', {
+                      userId: user['_id'],
+                    })
+                  }>
+                  <ListItem
+                    leftAvatar={{
+                      title: user['userName'][0],
+                      source: {uri: user['userImg']},
+                    }}
+                    title={user['userName']}
+                    chevron></ListItem>
+                </TouchableOpacity>
+                <View style={{alignItems: 'flex-start'}}>
+                  <Rating
+                    type="custom"
+                    ratingColor="#63b8d4"
+                    ratingBackgroundColor="#eff7fa"
+                    readonly
+                    imageSize={20}
+                    startingValue={rating[i]}
+                  />
+                </View>
+              </View>
+            );
+          })}
+        </Card>
+      </>
+    );
+  }
 }
-
-
-const styles = StyleSheet.create({
-    baseText: {
-        fontFamily: 'Cochin',
-    },
-    titleText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    }
-});
-
-const categories = [
-    {
-        id: 1,
-        name: 'Carpenters',
-        img: require('./../assets/carpenters.jpg')
-    },
-
-    {
-        id: 3,
-        name: 'Plumming',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 5,
-        name: 'Drivers',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 4,
-        name: 'Moving Services',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 2,
-        name: 'Electrical maintanance',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 10,
-        name: 'Security Services',
-        img: require('./../assets/shaghelohm.png')
-    },
-
-    {
-        id: 6,
-        name: 'Painers',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 7,
-        name: 'Gardeners',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 8,
-        name: 'Nurses',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 9,
-        name: 'Babysitters',
-        img: require('./../assets/shaghelohm.png')
-    },
-
-    {
-        id: 11,
-        name: 'Carpenters',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 12,
-        name: 'Tutoers',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 13,
-        name: 'Blacksmiths',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 14,
-        name: 'Builders',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 15,
-        name: 'Aluminum Services',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 16,
-        name: 'Satellite Services',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 17,
-        name: 'Cooking Services',
-        img: require('./../assets/shaghelohm.png')
-    },
-    {
-        id: 18,
-        name: 'General Services',
-        img: require('./../assets/shaghelohm.png')
-    }
-
-]
 
 export default ProfilesScreen;
