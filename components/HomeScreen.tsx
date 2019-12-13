@@ -75,9 +75,6 @@ class HomeScreen extends React.Component<Props, object> {
                 onPress={this.handleAddUserProfileBtn}
               />
             </View>
-            <View style={{flex: 1}}>
-              <Button title="Pay" color="#63b8d4" onPress={this.handlePayBtn} />
-            </View>
           </View>
         </SafeAreaView>
       </>
