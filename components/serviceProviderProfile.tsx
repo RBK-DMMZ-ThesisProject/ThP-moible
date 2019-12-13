@@ -19,6 +19,7 @@ import {
 
 import HandyHeader from './HandyHeader';
 import {any} from 'prop-types';
+import {Linking} from 'react-native';
 
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -66,7 +67,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 source={{
                   uri: profile.userImg,
                 }}
-                title="MD"
+                title="pic"
               />
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', color: '#63b8d4'}}>
@@ -80,7 +81,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 alignItems: 'center',
                 justifyContent: 'space-around',
               }}>
-              <Icon raised name="phone" color="#00aced" />
+              <Icon
+                raised
+                name="phone"
+                color="#00aced"
+                onPress={() => {
+                  Linking.openURL(`tel:${profile.userMobileNum}`);
+                }}
+              />
 
               <Icon
                 raised
@@ -88,7 +96,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 color="#00aced"
                 onPress={() => navigation.navigate('chattScreen')}
               />
-              <Icon raised name="star" color="#00aced" />
+              <Icon raised name="haert" color="#00aced" />
             </View>
 
             {/* <View

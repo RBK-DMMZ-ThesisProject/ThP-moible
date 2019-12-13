@@ -14,7 +14,7 @@ export interface Props {
 class ProfilesScreen extends React.Component<Props, object> {
   state = {
     profiles: [],
-    rating: 1,
+    rating: 0,
   };
 
   componentDidMount() {
@@ -34,7 +34,8 @@ class ProfilesScreen extends React.Component<Props, object> {
       .then(resJson => {
         console.log('response: ', resJson);
         this.setState({
-          profiles: resJson,
+          profiles: resJson.profil,
+          rating: resJson.rates,
         });
       })
       .catch(error => {
@@ -71,7 +72,7 @@ class ProfilesScreen extends React.Component<Props, object> {
       <>
         <HandyHeader navigation={navigation} title={categoryName} />
         <Card containerStyle={{padding: 5}}>
-          {console.log(profiles)}
+          {console.log('profiles ', profiles)}
           {profiles.map((user, i) => {
             return (
               <View key={i}>
@@ -96,7 +97,7 @@ class ProfilesScreen extends React.Component<Props, object> {
                     ratingBackgroundColor="#eff7fa"
                     readonly
                     imageSize={20}
-                    startingValue={rating}
+                    startingValue={rating[i]}
                   />
                 </View>
               </View>
