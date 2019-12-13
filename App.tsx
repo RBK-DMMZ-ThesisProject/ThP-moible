@@ -15,18 +15,19 @@ import {
   Image,
   StatusBar,
   SafeAreaView,
-  ScrollView
+  ScrollView,
 } from 'react-native';
-import { Icon } from 'native-base';
-import { createAppContainer } from 'react-navigation';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import {Icon} from 'native-base';
+import {createAppContainer} from 'react-navigation';
+import {createDrawerNavigator} from 'react-navigation-drawer';
 // import { createStackNavigator } from 'react-navigation-stack';
 import HomeScreen from './components/HomeScreen';
 import CategoriesScreen from './components/CategoriesScreen';
 import ProfilesScreen from './components/ProfilesScreen';
 import AddProfileScreen from './components/AddProfileScreen';
-
-
+import ViewProfileScreen from './components/ViewProfileScreen';
+import serviceProviderProfile from './components/serviceProviderProfile';
+import chatt from './components/chattingApp/chatt';
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -39,27 +40,44 @@ const Drawer = createDrawerNavigator({
     screen: HomeScreen,
     navigationOptions: {
       title: 'Homepage',
-
-    }
+    },
   },
   Categories: {
     screen: CategoriesScreen,
     navigationOptions: {
-      title: 'Categories'
-    }
+      title: 'Categories',
+    },
   },
   ProfilesScreen: {
     screen: ProfilesScreen,
     navigationOptions: {
-      title: 'Profiles'
-    }
+      title: 'Profiles',
+    },
   },
   AddProfileScreen: {
     screen: AddProfileScreen,
     navigationOptions: {
-      title: 'Add Profile'
-    }
-  }
+      title: 'Add Profile',
+    },
+  },
+  ViewProfile: {
+    screen: ViewProfileScreen,
+    navigationOptions: {
+      title: 'Profile',
+    },
+  },
+  ProviderProfile: {
+    screen: serviceProviderProfile,
+    navigationOptions: {
+      title: 'ProviderProfile',
+    },
+  },
+  chattScreen: {
+    screen: chatt,
+    navigationOptions: {
+      title: 'chattScreen',
+    },
+  },
 });
 const App = createAppContainer(Drawer);
 
