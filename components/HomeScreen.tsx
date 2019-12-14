@@ -14,15 +14,14 @@ import {
   NavigationState,
 } from 'react-navigation';
 import HandyHeader from './HandyHeader';
-export interface Props {
-  navigation: NavigationScreenProp<NavigationState, NavigationParams>;
-}
+
 import stripe from 'tipsi-stripe';
-import axios from 'axios';
 stripe.setOptions({
   publishableKey: 'pk_test_u7t7CW4JRlx90adyZxR5lgTv000buXI4XF',
 });
-
+export interface Props {
+  navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+}
 
 class HomeScreen extends React.Component<Props, object> {
   handleAddUserProfileBtn = () => {
@@ -32,7 +31,7 @@ class HomeScreen extends React.Component<Props, object> {
     SharedPreferences.getItem('handyToken', function (value: any) {
       console.log('our tocken ', value);
       if (value === null) {
-        that.props.navigation.navigate('SignIn');
+        that.props.navigation.navigate('SignIn', { nextPage: 'AddProfileScreen' });
       } else {
         that.props.navigation.navigate('AddProfileScreen');
       }
@@ -69,7 +68,7 @@ class HomeScreen extends React.Component<Props, object> {
             </Text>
             <View style={{ flex: 1 }}>
               <Button
-                title="Discover"
+                title="Find a Handyman"
                 color="#63b8d4"
                 onPress={() => navigation.navigate('Categories')}
               />
@@ -87,4 +86,5 @@ class HomeScreen extends React.Component<Props, object> {
     );
   }
 }
+
 export default HomeScreen;

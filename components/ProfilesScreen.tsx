@@ -1,12 +1,14 @@
 import React from 'react';
-import {View, TouchableOpacity, Alert} from 'react-native';
-import {Card, ListItem, Button, Icon, Rating} from 'react-native-elements';
+import { View, TouchableOpacity, Alert } from 'react-native';
+import { Card, ListItem, Button, Icon, Rating } from 'react-native-elements';
 import {
   NavigationParams,
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
 import HandyHeader from './HandyHeader';
+import NavigationService from './NavigationService.js';
+
 
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -19,7 +21,7 @@ class ProfilesScreen extends React.Component<Props, object> {
 
   componentDidMount() {
     const categoryName = this.props.navigation.getParam('categoryName');
-    const {profiles} = this.state;
+    const { profiles } = this.state;
     console.log('categoryNameeeeeeeeeee', categoryName);
     fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getProfiles', {
       method: 'POST',
@@ -28,7 +30,7 @@ class ProfilesScreen extends React.Component<Props, object> {
         'Content-Type': 'application/json',
       },
 
-      body: JSON.stringify({ServiceCategory: categoryName}),
+      body: JSON.stringify({ ServiceCategory: categoryName }),
     })
       .then(res => res.json())
       .then(resJson => {
@@ -63,34 +65,34 @@ class ProfilesScreen extends React.Component<Props, object> {
   }
 
   render() {
-    const {profiles} = this.state;
-    const {navigation} = this.props;
+    const { profiles } = this.state;
+    const { navigation } = this.props;
     // const {rating} = this.props;
-    const {rating} = this.state;
+    const { rating } = this.state;
     const categoryName = this.props.navigation.getParam('categoryName');
     return (
       <>
         <HandyHeader navigation={navigation} title={categoryName} />
-        <Card containerStyle={{padding: 5}}>
+        <Card containerStyle={{ padding: 5 }}>
           {console.log('profiles ', profiles)}
           {profiles.map((user, i) => {
             return (
               <View key={i}>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('ProviderProfile', {
+                    NavigationService.navigate('ProviderProfile', {
                       userId: user['_id'],
                     })
                   }>
                   <ListItem
                     leftAvatar={{
                       title: user['userName'][0],
-                      source: {uri: user['userImg']},
+                      source: { uri: user['userImg'] },
                     }}
                     title={user['userName']}
                     chevron></ListItem>
                 </TouchableOpacity>
-                <View style={{alignItems: 'flex-start'}}>
+                <View style={{ alignItems: 'flex-start' }}>
                   <Rating
                     type="custom"
                     ratingColor="#63b8d4"

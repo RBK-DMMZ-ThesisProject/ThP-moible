@@ -18,7 +18,8 @@ export type ChangeStateAction = {
     id: number;
 }
 export type ChangeStateSignedIn = {
-    type: string;
+    type: string,
+    login: number
 }
 
 // union type to be used in reducers.
