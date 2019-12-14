@@ -7,12 +7,14 @@ export const changeStateItem = (id: number): actionTypes.ChangeStateAction => {
         id: id
     });
 }
-export const changeStateSignedIn = (): actionTypes.ChangeStateSignedIn => {
+export const changeStateSignedIn = (state: number): actionTypes.ChangeStateSignedIn => {
     console.log(({
         type: actionTypes.LOGIN_STATE,
+        login: state
     }))
     return ({
         type: actionTypes.LOGIN_STATE,
+        login: state
     });
 }
 

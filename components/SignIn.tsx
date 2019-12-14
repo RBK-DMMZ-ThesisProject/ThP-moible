@@ -65,26 +65,40 @@ class SignIn extends React.Component<Props, object> {
 
         }).then(res => res.json())
             .then(resJson => {
+                if (resJson.token !== undefined) {
+                    var SharedPreferences = require('react-native-shared-preferences');
+                    SharedPreferences.setName("handyInfo");
+                    SharedPreferences.setItem("handyToken", resJson.token);
+                }
                 console.log('response: ', resJson);
                 this.setState({
+                    email: '',
+                    password: '',
                     signInLoading: false
                 });
                 // check if a user is a service provider to add also 20
-                // this.props.changeSignedInState();
-                this.props.changeState(3);
-                this.props.changeState(4);
-                this.props.changeState(7);
-                this.props.changeState(8);
-                this.props.changeState(9);
-                this.props.changeState(10);
-                this.props.changeState(11);
-                this.props.changeState(30);
+                this.props.changeSignedInState(1);
+
+                // if(this.props.hasProfile()){
+                //     this.props.changeState(20); // view profile
+                // }
+
+                // this.props.changeState(3);
+                // this.props.changeState(4);
+                // this.props.changeState(7);
+                // this.props.changeState(8);
+                // this.props.changeState(9);
+                // this.props.changeState(10);
+                // this.props.changeState(11);
+                // this.props.changeState(30);
                 navigation.navigate(navigation.getParam('nextPage'));
             })
             .catch((error) => {
                 console.error(error);
                 this.setState({
-                    saveLoading: false
+                    email: '',
+                    password: '',
+                    signInLoading: false
                 });
                 // process erro messages
             });
@@ -114,6 +128,7 @@ class SignIn extends React.Component<Props, object> {
                         <Input
                             inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
                             label='Password:'
+                            secureTextEntry={true}
                             labelStyle={{ fontSize: 20, color: "#91cde0" }}
                             onChangeText={(password) => this.setState({ password })}
                             placeholder={'Enter your password...'}
@@ -152,9 +167,8 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
     changeState: (id: number) => {
         dispatch(changeStateItem(id));
     },
-    changeSignedInState: () => {
-        dispatch(changeStateSignedIn());
-
+    changeSignedInState: (state: number) => {
+        dispatch(changeStateSignedIn(state));
     }
     // other callbacks go here...
 });

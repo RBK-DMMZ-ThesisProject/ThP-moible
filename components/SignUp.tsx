@@ -73,19 +73,23 @@ class SignUp extends React.Component<Props, object> {
                     SharedPreferences.setItem("handyToken", resJson.token);
                 }
                 this.setState({
+                    userName: '',
+                    email: '',
+                    password: '',
+                    mobileNO: null,
                     signUpLoading: false
                 });
                 console.log('change state of add profile');
-                this.props.changeSignedInState();
+                this.props.changeSignedInState(1);
 
-                this.props.changeState(3); //remove
-                this.props.changeState(4);// remove
-                this.props.changeState(7);
-                this.props.changeState(8);
-                this.props.changeState(9);
-                this.props.changeState(10);
-                this.props.changeState(11);
-                this.props.changeState(30);
+                // this.props.changeState(3); //remove
+                // this.props.changeState(4);// remove
+                // this.props.changeState(7);
+                // this.props.changeState(8);
+                // this.props.changeState(9);
+                // this.props.changeState(10);
+                // this.props.changeState(11);
+                // this.props.changeState(30);
 
                 navigation.navigate(navigation.getParam('nextPage'));
 
@@ -93,6 +97,10 @@ class SignUp extends React.Component<Props, object> {
             .catch((error) => {
                 console.error(error);
                 this.setState({
+                    userName: '',
+                    email: '',
+                    password: '',
+                    mobileNO: null,
                     signUpLoading: false
                 });
                 // process erro messages
@@ -168,8 +176,8 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
         console.log('item to hange : ' + id);
         dispatch(changeStateItem(id));
     },
-    changeSignedInState: () => {
-        dispatch(changeStateSignedIn());
+    changeSignedInState: (state: number) => {
+        dispatch(changeStateSignedIn(state));
     }
     // other callbacks go here...
 });

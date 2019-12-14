@@ -7,7 +7,7 @@ export const initialItemState: types.MenuItemsListState = [{
 },
 {
     id: 2,
-    itemtxt: 'Find Me',
+    itemtxt: 'Find a Handyman',
     toPage: 'Categories',
     show: 1
 },
@@ -117,7 +117,7 @@ export const changeGeneralState = (
         case types.LOGIN_STATE:
             console.log('reached login ', state)
             return Object.assign({}, state, {
-                login: !!state.login ? 0 : 1
+                login: action.login
             })
 
         default:
