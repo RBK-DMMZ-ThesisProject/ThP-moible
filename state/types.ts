@@ -14,8 +14,9 @@ export enum MENU_LIST_ACTION_TYPES {
 }
 // each action inputs type
 export type ChangeStateAction = {
-    type: string;
-    id: number;
+    type: string,
+    id: number,
+    show: number
 }
 export type ChangeStateSignedIn = {
     type: string,
@@ -29,6 +30,10 @@ export type ChangeActivityIndicatorState = {
     type: string,
     activityIndicatorState: boolean
 }
+export type SetUserId = {
+    type: string,
+    userId: number
+}
 
 // union type to be used in reducers.
 export type MenuItemsListAction = ChangeStateAction;
@@ -40,15 +45,18 @@ export type ActivityIndicatorState = boolean;
 export const ACTIVITY_INDICATOR_STATE = "ACTIVITY_INDICATOR_STATE";
 export type HasProfileState = number;
 export const HAS_PROFILE_STATE = "HAS_PROFILE_STATE";
+export type UserId = number;
+export const SET_USER_ID = "SET_USER_ID";
 export type AppState = {
     menuList: MenuItemsListState,
     login: LoginState,
     hasProfile: HasProfileState,
-    activityIndicatorState: ActivityIndicatorState
+    activityIndicatorState: ActivityIndicatorState,
+    userId: UserId
     // add future state slices here
 }
 
-export type GeneralAction = ChangeStateSignedIn | ChangeHasProfileState | ChangeActivityIndicatorState;
+export type GeneralAction = ChangeStateSignedIn | ChangeHasProfileState | ChangeActivityIndicatorState | SetUserId;
 
 // export enum NAVIGATE_ACTIONS {
 //     NAVIGATE_TO = "NAVIGATE_TO"

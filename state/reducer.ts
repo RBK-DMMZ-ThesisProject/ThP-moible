@@ -92,7 +92,7 @@ export const menuList = (
             return state.map((item, index) => {
                 if (item.id === action.id) {
                     return Object.assign({}, item, {
-                        show: !!item.show ? 0 : 1
+                        show: action.show
                     })
                 }
                 return item
@@ -105,12 +105,14 @@ export const menuList = (
 export const login: types.LoginState = 0
 export const hasProfile: types.HasProfileState = 0
 export const activityIndicatorState: types.ActivityIndicatorState = false
+export const userId: types.UserId = 0
 
 export const initialState: types.AppState = {
     menuList: initialItemState,
     login: login,
     hasProfile: hasProfile,
-    activityIndicatorState: activityIndicatorState
+    activityIndicatorState: activityIndicatorState,
+    userId: userId
 }
 
 
@@ -138,6 +140,12 @@ export const changeGeneralState = (
             const { activityIndicatorState } = <types.ChangeActivityIndicatorState>action
             return Object.assign({}, state, {
                 activityIndicatorState: activityIndicatorState
+            })
+        case types.SET_USER_ID:
+            console.log('reached id  ', state)
+            const { userId } = <types.SetUserId>action
+            return Object.assign({}, userId, {
+                userId: userId
             })
         default:
             return state;

@@ -26,7 +26,8 @@ export interface Props {
     hasProfile: number,
     activityIndicatorState: boolean,
     changeActivityIndicatorState: any,
-    changeSignedInState: any
+    changeSignedInState: any,
+    changeHasProfileState: any
 }
 
 class CustomHamburgerMenuDrawer extends Component<Props> {
@@ -38,87 +39,83 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         SharedPreferences.setName("handyInfo");
         var that = this;
         SharedPreferences.getItem("handyToken", function (value: any) {
-            console.log("token from menu: ", value);
             if (value !== null) {
                 that.props.changeSignedInState(1);
                 // check if the user has profile
-                changeActivityIndicatorState(true);
+                that.props.changeActivityIndicatorState(true);
                 // fetch from sever
-                fetch('https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userToken: value }),
-                })
-                    .then(res => res.json())
-                    .then(resJson => {
-                        console.log('response: ', resJson);
-                        if (resJson.result) {
-                            changeHasProfileState(1);
-                        }
-                        changeActivityIndicatorState(false);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        changeActivityIndicatorState(false);
-                    });
-
-
+                that.getUserHasProfile(value);
             }
         });
 
 
     }
     componentDidUpdate(prevProps: Props, prevState: Props) {
-        if (prevProps.hasProfile !== this.props.hasProfile) {
-            this.props.changeState(20);
+        if (prevProps.hasProfile !== this.props.hasProfile && this.props.hasProfile === 1) {
+            if (!!this.props.hasProfile) {
+                this.props.changeState(20, 1);
+                this.props.changeState(7, 0);
+            }
         }
         if (prevProps.login !== this.props.login) {
-            console.log('prev', prevProps.login);
-            console.log('now', this.props.login);
             if (!!this.props.login) {
                 // check if has profile
-                this.props.changeState(3);
-                this.props.changeState(4);
-                this.props.changeState(7);
-                this.props.changeState(8);
-                this.props.changeState(9);
-                this.props.changeState(10);
-                this.props.changeState(11);
-                this.props.changeState(30);
+                this.props.changeState(3, 0);
+                this.props.changeState(4, 0);
+
+                this.props.changeState(8, 1);
+                this.props.changeState(9, 1);
+                this.props.changeState(10, 1);
+                this.props.changeState(11, 1);
+                this.props.changeState(30, 1);
             }
         }
     }
+    async getUserHasProfile(token: string) {
+        var response = await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userToken: token }),
+        });
+        var resJson = await response.json()
+        if (resJson.result) {
+            this.props.changeHasProfileState(1);
+        }
+        this.props.changeActivityIndicatorState(false);
+
+        // .catch(error => {
+        //     console.error(error);
+        //     that.props.changeActivityIndicatorState(false);
+        // });
+
+    }
     navigateToScreen(page: string, params: object) {
-        console.log('naviatione ')
+
         NavigationService.navigate(page, params);
     }
     logout() {
         // change state login ??????????
-        console.log('loging out');
+
         var SharedPreferences = require('react-native-shared-preferences');
         SharedPreferences.setName("handyInfo");
         SharedPreferences.removeItem("handyToken");
         this.props.changeSignedInState(0);
 
-        this.props.changeState(3);
-        this.props.changeState(4);
-        this.props.changeState(7);
-        this.props.changeState(8);
-        this.props.changeState(9);
-        this.props.changeState(10);
-        this.props.changeState(11);
-        this.props.changeState(30);
+        this.props.changeState(3, 1);
+        this.props.changeState(4, 1);
+        this.props.changeState(7, 0);
+        this.props.changeState(8, 0);
+        this.props.changeState(9, 0);
+        this.props.changeState(10, 0);
+        this.props.changeState(11, 0);
+        this.props.changeState(30, 0);
         NavigationService.navigate('Home');
 
     }
     render() {
-        console.log("menu props", this.props);
-        console.log("login status", this.props.login);
-
-
 
         return (
             <View style={{ flex: 1, paddingTop: 30, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
@@ -158,7 +155,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                 </ScrollView>
                 {(this.props.activityIndicatorState ? <View style={[styles.loading]}>
                     <ActivityIndicator size="large" color="#c5df16" />
-                </View> : '')}
+                </View> : <Text></Text>)}
             </View>
         );
     }
@@ -170,13 +167,14 @@ const mapStateToProps = (appstate: any, navigation: NavigationScreenProp<Navigat
     return ({
         items: appstate.menuList,
         login: appstate.changeGeneralState.login,
+        hasProfile: appstate.changeGeneralState.hasProfile,
         activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
         navigation: navigation
     })
 };
 const mapDsipatchToProps = (dispatch: Dispatch) => ({
-    changeState: (id: number) => {
-        dispatch(changeStateItem(id));
+    changeState: (id: number, state: number) => {
+        dispatch(changeStateItem(id, state));
     },
     changeSignedInState: (state: number) => {
         dispatch(changeStateSignedIn(state));
