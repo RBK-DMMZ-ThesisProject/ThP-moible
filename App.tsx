@@ -29,6 +29,7 @@ import store from './state/store';
 import CustomHamburgerMenuDrawer from './components/HamburgerMenuDrawer';
 import NavigationService from './components/NavigationService';
 import serviceProviderProfile from './components/serviceProviderProfile';
+import Chatt from './components/chattingApp/chatt';
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -82,7 +83,7 @@ const Drawer = createDrawerNavigator(
       },
     },
     chattScreen: {
-      screen: chatt,
+      screen: Chatt,
       navigationOptions: {
         title: 'chattScreen',
       },

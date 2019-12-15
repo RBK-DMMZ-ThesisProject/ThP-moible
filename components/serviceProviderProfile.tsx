@@ -1,10 +1,21 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, View, StatusBar } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  StatusBar,
+  Modal,
+  TouchableHighlight,
+  Alert,
+  TextInput,
+} from 'react-native';
 import {
   NavigationParams,
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
+import {Formik} from 'formik';
+
 import {
   Input,
   Avatar,
@@ -19,8 +30,8 @@ import {
 } from 'react-native-elements';
 
 import HandyHeader from './HandyHeader';
-import { any } from 'prop-types';
-import { Linking } from 'react-native';
+import {any} from 'prop-types';
+import {Linking} from 'react-native';
 import stripe from 'tipsi-stripe';
 import axios from 'axios';
 stripe.setOptions({
@@ -36,12 +47,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
     token: '',
     reviews: [],
     isVisible: false,
+    modalVisible: false,
   };
   requestPayment = () => {
     return stripe
       .paymentRequestWithCardForm()
       .then((stripeTokenInfo: any) => {
-        console.warn('Token created', { stripeTokenInfo });
+        console.warn('Token created', {stripeTokenInfo});
         const body = {
           amount: 100,
           tokenId: stripeTokenInfo.tokenId,
@@ -50,8 +62,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
           'Content-Type': 'application/json',
         };
         axios
-          .post('http://localhost:5000/api/doPayment', body, { headers })
-          .then(({ data }) => {
+          .post('http://localhost:5000/api/doPayment', body, {headers})
+          .then(({data}) => {
             return data;
           })
           .catch(error => {
@@ -59,16 +71,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
           });
       })
       .catch((error: any) => {
-        console.warn('Payment failed', { error });
+        console.warn('Payment failed', {error});
       });
   };
   componentDidMount() {
-
     var that = this;
-    console.log('hello from profile')
+    console.log('hello from profile');
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function (value: any) {
+    SharedPreferences.getItem('handyToken', function(value: any) {
       if (value === undefined) {
         console.log('no token');
         that.props.navigation.navigate('SignIn');
@@ -86,7 +97,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: userId }),
+      body: JSON.stringify({id: userId}),
     })
       .then(res => res.json())
       .then(resJson => {
@@ -103,7 +114,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ serviceproviderid: userId }),
+      body: JSON.stringify({serviceproviderid: userId}),
     })
       .then(res => res.json())
       .then(resJson => {
@@ -117,9 +128,9 @@ class serviceProviderProfile extends React.Component<Props, object> {
   }
   hireSP() {
     var SharedPreferences = require('react-native-shared-preferences');
-    SharedPreferences.setName("handyInfo");
+    SharedPreferences.setName('handyInfo');
     var that = this;
-    SharedPreferences.getItem("handyToken", function (value: any) {
+    SharedPreferences.getItem('handyToken', function(value: any) {
       console.log('our tocken', value);
       if (value !== null) {
         const x = value;
@@ -132,7 +143,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
+          body: JSON.stringify({serviceproviderid: userId, customerID: x}),
         })
           .then(res => {
             res.json();
@@ -147,21 +158,23 @@ class serviceProviderProfile extends React.Component<Props, object> {
             console.error(error);
           });
       }
-    })
-
+    });
+  }
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
   }
   render() {
-    const { navigation } = this.props;
-    const { profile } = this.state;
-    const { reviews } = this.state;
-    console.log('hello agina')
+    const {navigation} = this.props;
+    const {profile} = this.state;
+    const {reviews} = this.state;
+    console.log('hello agina');
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{flex: 1}}>
+          <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
             <HandyHeader navigation={navigation} title="Profile" />
-            <View style={{ flex: 3, alignItems: 'center' }}>
+            <View style={{flex: 3, alignItems: 'center'}}>
               <Avatar
                 size="xlarge"
                 rounded
@@ -171,7 +184,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 title="pic"
               />
               <Text
-                style={{ fontSize: 20, fontWeight: 'bold', color: '#63b8d4' }}>
+                style={{fontSize: 20, fontWeight: 'bold', color: '#63b8d4'}}>
                 {/* {profile.firstName + ' ' + profile.familyName} */}
                 {profile.userName}
               </Text>
@@ -240,12 +253,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
             <Card
               title="Service Description"
               image={require('./../assets/shaghelohm.png')}>
-              <Text style={{ marginBottom: 20, marginTop: 20 }}>
+              <Text style={{marginBottom: 20, marginTop: 20}}>
                 {profile.ServiceDescription}
               </Text>
               <Overlay
                 isVisible={this.state.isVisible}
-                onBackdropPress={() => this.setState({ isVisible: false })}>
+                onBackdropPress={() => this.setState({isVisible: false})}>
                 <Text>Hello from Overlay!</Text>
               </Overlay>
 
@@ -280,6 +293,69 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   />
                 ))}
               </View>
+              <Button
+                icon={<Icon name="check" color="#ffffff" />}
+                buttonStyle={{
+                  borderRadius: 10,
+                  marginLeft: 0,
+                  marginRight: 0,
+                  marginBottom: 0,
+                  backgroundColor: '#63b8d4',
+                }}
+                title="ADD REVIEW"
+                onPress={() => {
+                  this.setModalVisible(true);
+                }}
+              />
+
+              <Modal
+                animationType="slide"
+                transparent={false}
+                visible={this.state.modalVisible}
+                onRequestClose={() => {
+                  Alert.alert('YOUR REQUEST HAS BEEN SENDED');
+                }}>
+                <View style={{alignItems: 'center'}}>
+                  <View>
+                    {/* <Formik
+                      initialValues={{email: ''}}
+                      onSubmit={values => console.log(values)}>
+                      {({handleChange, handleBlur, handleSubmit, values}) => (
+                        <View>
+                          <TextInput
+                            onChangeText={handleChange('email')}
+                            onBlur={handleBlur('email')}
+                            value={values.email}
+                          />
+                          <Button onPress={handleSubmit} title="SEND" />
+                        </View>
+                      )}
+                    </Formik> */}
+                    <TouchableHighlight>
+                      <Button
+                        icon={
+                          <Icon
+                            name="sc-telegram"
+                            type="evilicon"
+                            color="#ffffff"
+                          />
+                        }
+                        buttonStyle={{
+                          borderRadius: 10,
+                          marginLeft: 0,
+                          marginRight: 0,
+                          marginBottom: 0,
+                          backgroundColor: '#63b8d4',
+                        }}
+                        title="CLOSE"
+                        onPress={() => {
+                          this.setModalVisible(!this.state.modalVisible);
+                        }}
+                      />
+                    </TouchableHighlight>
+                  </View>
+                </View>
+              </Modal>
             </Card>
           </ScrollView>
         </SafeAreaView>
