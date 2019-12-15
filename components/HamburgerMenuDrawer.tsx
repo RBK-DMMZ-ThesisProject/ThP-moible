@@ -17,6 +17,7 @@ import {
     NavigationState
 
 } from 'react-navigation';
+import { Divider } from 'react-native-elements';
 
 export interface Props {
     items: [],
@@ -118,45 +119,50 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
     render() {
 
         return (
-            <View style={{ flex: 1, paddingTop: 30, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                <View style={{ height: 20, backgroundColor: 'white', marginLeft: 10, marginBottom: 10 }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#63b8d4' }} >Handy</Text>
+            <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', margin: 0, padding: 0 }}>
+                <View style={{ width: 100 + "%", height: 60, backgroundColor: '#078ca9', padding: 10, marginBottom: 10 }}>
+                    <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#f2f2f2' }} >Handy</Text>
                 </View>
-                <ScrollView style={{ flex: 8, }}>
-                    <View>
-                        {this.props.items.map((item: any) => {
-                            if (item.show === 1) {
-                                if (item.itemtxt === "Log out") {
-                                    return <Text
-                                        key={item.id}
-                                        style={{ fontSize: 16, lineHeight: 30, marginLeft: 20 }}
-                                        onPress={() => this.logout()}
-                                    >
-                                        {item.itemtxt}
-                                    </Text>
-                                }
-                                var nextPage = (item.itemtxt === 'Sign in' || item.itemtxt === 'Sign Up') ? 'Home' : '';
-                                return (
+
+                <View style={{ height: 500 }}>
+                    {this.props.items.map((item: any) => {
+                        if (item.show === 1) {
+                            if (item.itemtxt === "Log out") {
+                                return <Text
+                                    key={item.id}
+                                    style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#67A443' }}
+                                    onPress={() => this.logout()}
+                                >
+                                    {item.itemtxt}
+                                </Text>
+                            }
+                            var nextPage = (item.itemtxt === 'Sign in' || item.itemtxt === 'Sign Up') ? 'Home' : '';
+                            return (
+                                <>
                                     <Text
                                         key={item.id}
-                                        style={{ fontSize: 16, lineHeight: 30, marginLeft: 20 }}
+                                        style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#078ca9' }}
                                         onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage })}
                                     >
                                         {item.itemtxt}
                                     </Text>
-                                )
-                            }
-                            return;
+                                    <Divider></Divider>
+                                </>
+                            )
                         }
+                        return;
+                    }
 
-                        )}
-                    </View>
+                    )}
+                </View>
 
-                </ScrollView>
-                {(this.props.activityIndicatorState ? <View style={[styles.loading]}>
-                    <ActivityIndicator size="large" color="#c5df16" />
-                </View> : <Text></Text>)}
-            </View>
+
+                {
+                    (this.props.activityIndicatorState ? <View style={[styles.loading]}>
+                        <ActivityIndicator size="large" color="#c5df16" />
+                    </View> : <Text></Text>)
+                }
+            </View >
         );
     }
 }

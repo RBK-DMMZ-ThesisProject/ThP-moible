@@ -24,14 +24,16 @@ import AddProfileScreen from './components/AddProfileScreen';
 import ViewProfileScreen from './components/ViewProfileScreen';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
+import Favorites from './components/Favorites';
+import HireHistory from './components/HireHistory';
 import { DrawerNavigatorItems } from 'react-navigation-drawer';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Provider } from 'react-redux';
 import store from './state/store';
 import CustomHamburgerMenuDrawer from './components/HamburgerMenuDrawer';
 import NavigationService from './components/NavigationService';
-import serviceProviderProfile from './components/serviceProviderProfile'
-
+import serviceProviderProfile from './components/serviceProviderProfile';
+import Chatt from './components/chattingApp/chatt';
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -41,8 +43,7 @@ import serviceProviderProfile from './components/serviceProviderProfile'
 import {
   NavigationParams,
   NavigationScreenProp,
-  NavigationState
-
+  NavigationState,
 } from 'react-navigation';
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -96,7 +97,25 @@ export const MainStack = createStackNavigator({
     navigationOptions: {
       title: 'Sign up'
     }
-  }
+  },
+  chattScreen: {
+    screen: Chatt,
+    navigationOptions: {
+      title: 'chattScreen',
+    },
+  },
+  Favorites: {
+    screen: Favorites,
+    navigationOptions: {
+      title: 'Favorites',
+    },
+  },
+  HireHistory: {
+    screen: HireHistory,
+    navigationOptions: {
+      title: 'HireHistory',
+    },
+  },
 }, { headerMode: 'none' });
 
 export const Drawer = createDrawerNavigator({
@@ -151,12 +170,6 @@ export const Drawer = createDrawerNavigator({
   // },
   MainStack: {
     screen: MainStack
-  },
-  CustomHamburgerMenuDrawer: {
-    screen: CustomHamburgerMenuDrawer,
-    navigationOptions: {
-      title: 'Custom menu'
-    }
   }
 },
 
@@ -164,7 +177,11 @@ export const Drawer = createDrawerNavigator({
     contentComponent: () => {
       return <CustomHamburgerMenuDrawer />
     },
-    drawerWidth: 170,
+    contentOptions: {
+      activeTintColor: '#666666',
+      activeBackgroundColor: '#000000',
+    },
+    drawerWidth: 180,
     navigationOptions: {
       gestureEnabled: true,
     }

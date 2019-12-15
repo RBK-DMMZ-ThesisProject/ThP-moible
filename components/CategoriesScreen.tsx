@@ -52,19 +52,24 @@ class CategoriesScreen extends React.Component<Props, object> {
                       <Card
                         containerStyle={{
                           paddingTop: 2,
-                          backgroundColor: '#eff7fa',
+                          backgroundColor: '#f2f2f2',
+                          width: 90,
+                          elevation: 0,
+                          borderColor: '#f2f2f2'
                         }}
-                        imageStyle={{ width: 70, height: 70, borderRadius: 35 }}
+                        imageWrapperStyle={{ borderRadius: 35 }}
+                        imageStyle={{ width: 70, height: 70 }}
                         image={category.img}>
                         <Button
                           titleStyle={{ fontSize: 12 }}
                           buttonStyle={{
-                            backgroundColor: '#6fb98f',
+                            backgroundColor: '#078ca9',
                             borderRadius: 5,
                             marginLeft: 0,
                             marginRight: 0,
                             marginBottom: 0,
-                            padding: 0,
+                            padding: 5,
+                            width: 70
                           }}
                           title={category.name}
                           onPress={() =>
