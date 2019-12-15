@@ -27,7 +27,7 @@ import { Dispatch } from 'react-redux';
 import { changeStateItem, changeStateSignedIn } from '../state/actions';
 
 export interface Props {
-    navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+    navigation: NavigationScreenProp<NavigationState, NavigationParams>,
     changeState: any,
     changeSignedInState: any
 }

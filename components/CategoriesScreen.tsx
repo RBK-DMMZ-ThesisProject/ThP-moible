@@ -9,8 +9,8 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import {Card, ListItem, Button, Header} from 'react-native-elements';
-import {Left, Right, Icon} from 'native-base';
+import { Card, ListItem, Button, Header } from 'react-native-elements';
+import { Left, Right, Icon } from 'native-base';
 
 import {
   NavigationParams,
@@ -26,12 +26,12 @@ export interface Props {
 
 class CategoriesScreen extends React.Component<Props, object> {
   render() {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{flex: 1}}>
-          <ScrollView style={{flex: 1, backgroundColor: '#91cde0'}}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
             <HandyHeader navigation={navigation} title="Categories" />
             <View
               style={{
@@ -48,18 +48,18 @@ class CategoriesScreen extends React.Component<Props, object> {
                 }}>
                 {categories.map(category => {
                   return (
-                    <View key={category.id} style={{width: 33 + '%'}}>
+                    <View key={category.id} style={{ width: 33 + '%' }}>
                       <Card
                         containerStyle={{
                           paddingTop: 2,
                           backgroundColor: '#eff7fa',
                         }}
-                        imageStyle={{width: 70, height: 70}}
+                        imageStyle={{ width: 70, height: 70, borderRadius: 35 }}
                         image={category.img}>
                         <Button
-                          titleStyle={{fontSize: 12}}
+                          titleStyle={{ fontSize: 12 }}
                           buttonStyle={{
-                            backgroundColor: '#91cde0',
+                            backgroundColor: '#6fb98f',
                             borderRadius: 5,
                             marginLeft: 0,
                             marginRight: 0,

@@ -24,6 +24,7 @@ export interface Props {
 }
 
 class HomeScreen extends React.Component<Props, object> {
+
   handleAddUserProfileBtn = () => {
     var that = this;
     var SharedPreferences = require('react-native-shared-preferences');
@@ -47,16 +48,21 @@ class HomeScreen extends React.Component<Props, object> {
           <HandyHeader navigation={navigation} title="Home" />
           <View
             style={{
-              flex: 1,
+              flex: 5,
               flexDirection: 'column',
               justifyContent: 'space-around',
               alignItems: 'center',
             }}>
-            <Image
-              source={require('./../assets/shaghelohm.png')}
-              style={{ flex: 7, width: 90 + '%', height: 200 }}
-            />
-            <Text
+            <View style={{ flex: 4, alignContent: 'flex-end' }}>
+
+              {/* <Text style={{ fontSize: 50, fontWeight: "bold", color: '#c5df16', padding: 20 }} onPress={() => navigation.navigate('Categories')}>Welcome</Text> */}
+              <Image
+                source={require('./../assets/Handy.png')}
+                style={{ marginTop: 70, marginBottom: 30, marginRight: 10, marginLeft: 10 }}
+              />
+            </View>
+
+            {/* <Text
               style={{
                 flex: 1,
                 color: '#91cde0',
@@ -65,20 +71,24 @@ class HomeScreen extends React.Component<Props, object> {
                 fontWeight: 'bold',
               }}>
               Handy
-            </Text>
-            <View style={{ flex: 1 }}>
-              <Button
+            </Text> */}
+            <View style={{ flex: 1, alignContent: 'flex-end' }}>
+              <Text style={{ width: 250, height: 70, fontSize: 25, backgroundColor: "#078ca9", color: '#f2f2f2', borderRadius: 8, padding: 20 }} onPress={() => navigation.navigate('Categories')}>Find A Handyman</Text>
+              {/* <Button
                 title="Find a Handyman"
                 color="#63b8d4"
                 onPress={() => navigation.navigate('Categories')}
-              />
+
+              /> */}
             </View>
             <View style={{ flex: 1 }}>
-              <Button
+              <Text style={{ width: 250, height: 70, fontSize: 25, backgroundColor: "#078ca9", color: '#f2f2f2', borderRadius: 8, padding: 20 }} onPress={this.handleAddUserProfileBtn}>Add Your Profile</Text>
+
+              {/* <Button
                 title="Add User Profile"
                 color="#63b8d4"
                 onPress={this.handleAddUserProfileBtn}
-              />
+              /> */}
             </View>
           </View>
         </SafeAreaView>

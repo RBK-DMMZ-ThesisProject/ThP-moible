@@ -10,12 +10,13 @@
 import React from 'react';
 import {
   View,
-  Button
+  Button,
+
 } from 'react-native';
 import { Icon } from 'native-base';
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-// import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator } from 'react-navigation-stack';
 import HomeScreen from './components/HomeScreen';
 import CategoriesScreen from './components/CategoriesScreen';
 import ProfilesScreen from './components/ProfilesScreen';
@@ -30,6 +31,7 @@ import store from './state/store';
 import CustomHamburgerMenuDrawer from './components/HamburgerMenuDrawer';
 import NavigationService from './components/NavigationService';
 import serviceProviderProfile from './components/serviceProviderProfile'
+
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -45,7 +47,7 @@ import {
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
-const Drawer = createDrawerNavigator({
+export const MainStack = createStackNavigator({
   Home: {
     screen: HomeScreen,
     navigationOptions: {
@@ -94,6 +96,61 @@ const Drawer = createDrawerNavigator({
     navigationOptions: {
       title: 'Sign up'
     }
+  }
+}, { headerMode: 'none' });
+
+export const Drawer = createDrawerNavigator({
+  // Home: {
+  //   screen: HomeScreen,
+  //   navigationOptions: {
+  //     title: 'Homepage',
+
+  //   }
+  // },
+  // Categories: {
+  //   screen: CategoriesScreen,
+  //   navigationOptions: {
+  //     title: 'Categories'
+  //   }
+  // },
+  // ProfilesScreen: {
+  //   screen: ProfilesScreen,
+  //   navigationOptions: {
+  //     title: 'Profiles'
+  //   }
+  // },
+  // AddProfileScreen: {
+  //   screen: AddProfileScreen,
+  //   navigationOptions: {
+  //     title: 'Add Profile'
+  //   }
+  // },
+  // ViewProfile: {
+  //   screen: ViewProfileScreen,
+  //   navigationOptions: {
+  //     title: 'Profile'
+  //   }
+  // },
+  // ProviderProfile: {
+  //   screen: serviceProviderProfile,
+  //   navigationOptions: {
+  //     title: 'Profile'
+  //   }
+  // },
+  // SignIn: {
+  //   screen: SignIn,
+  //   navigationOptions: {
+  //     title: 'Sign in'
+  //   }
+  // },
+  // SignUp: {
+  //   screen: SignUp,
+  //   navigationOptions: {
+  //     title: 'Sign up'
+  //   }
+  // },
+  MainStack: {
+    screen: MainStack
   },
   CustomHamburgerMenuDrawer: {
     screen: CustomHamburgerMenuDrawer,
@@ -105,19 +162,27 @@ const Drawer = createDrawerNavigator({
 
   {
     contentComponent: () => {
-
       return <CustomHamburgerMenuDrawer />
     },
+    drawerWidth: 170,
+    navigationOptions: {
+      gestureEnabled: true,
+    }
 
   });
+export const AppStack = createAppContainer(Drawer);
 
-const AppContainer = createAppContainer(Drawer);
+// In Your App.js
+
+// const AppContainer = createAppContainer(Drawer);
 export default class App extends React.Component<Props> {
   render() {
     return (<Provider store={store}>
-      <AppContainer ref={(navigatorRef: any) => {
+      <AppStack ref={(navigatorRef: any) => {
         NavigationService.setTopLevelNavigator(navigatorRef);
       }} />
+
     </Provider>);
   }
 }
+

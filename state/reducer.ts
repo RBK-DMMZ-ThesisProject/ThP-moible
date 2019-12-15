@@ -103,23 +103,42 @@ export const menuList = (
     }
 }
 export const login: types.LoginState = 0
+export const hasProfile: types.HasProfileState = 0
+export const activityIndicatorState: types.ActivityIndicatorState = false
+
 export const initialState: types.AppState = {
     menuList: initialItemState,
-    login: login
+    login: login,
+    hasProfile: hasProfile,
+    activityIndicatorState: activityIndicatorState
 }
 
 
 export const changeGeneralState = (
     state: types.AppState = initialState,
-    action: types.ChangeStateSignedIn
+    action: types.GeneralAction
 ) => {
     switch (action.type) {
         case types.LOGIN_STATE:
             console.log('reached login ', state)
+            const { login } = <types.ChangeStateSignedIn>action
             return Object.assign({}, state, {
-                login: action.login
-            })
+                login: login
+            });
 
+        case types.HAS_PROFILE_STATE:
+            console.log('reached HAS PROFILE  ', state)
+            const { hasProfile } = <types.ChangeHasProfileState>action
+
+            return Object.assign({}, state, {
+                hasProfile: hasProfile
+            })
+        case types.ACTIVITY_INDICATOR_STATE:
+            console.log('reached HAS indicator  ', state)
+            const { activityIndicatorState } = <types.ChangeActivityIndicatorState>action
+            return Object.assign({}, state, {
+                activityIndicatorState: activityIndicatorState
+            })
         default:
             return state;
     }

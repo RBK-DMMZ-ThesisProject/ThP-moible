@@ -15,12 +15,12 @@ export interface Props {
 const HandyHeader = ({ title, navigation }: Props) => {
     return (
         <Header
-            containerStyle={{ height: 50, backgroundColor: '#63b8d4', marginBottom: 10, paddingTop: 0 }}
+            containerStyle={{ height: 50, backgroundColor: '#078ca9', marginBottom: 10, paddingTop: 0 }}
 
             leftComponent={<HamburgerMenu navigation={navigation} />}
             centerComponent={{
                 text: title,
-                style: { color: "#eff7fa", fontWeight: "bold", fontFamily: 'Cochin', fontSize: 30, backgroundColor: '#63b8d4' }
+                style: { color: "#f2f2f2", fontWeight: "bold", fontFamily: 'Cochin', fontSize: 30, backgroundColor: '#078ca9' }
             }}
             statusBarProps={{ barStyle: "light-content" }}
 

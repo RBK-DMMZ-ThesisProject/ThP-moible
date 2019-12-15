@@ -8,13 +8,27 @@ export const changeStateItem = (id: number): actionTypes.ChangeStateAction => {
     });
 }
 export const changeStateSignedIn = (state: number): actionTypes.ChangeStateSignedIn => {
-    console.log(({
-        type: actionTypes.LOGIN_STATE,
-        login: state
-    }))
     return ({
         type: actionTypes.LOGIN_STATE,
         login: state
+    });
+}
+export const changeHasProfileState = (state: number): actionTypes.ChangeHasProfileState => {
+    console.log(({
+        type: actionTypes.LOGIN_STATE,
+        hasProfile: state
+    }))
+    return ({
+        type: actionTypes.LOGIN_STATE,
+        hasProfile: state
+    });
+}
+
+export const changeActivityIndicatorState = (state: boolean): actionTypes.ChangeActivityIndicatorState => {
+
+    return ({
+        type: actionTypes.LOGIN_STATE,
+        activityIndicatorState: state
     });
 }
 

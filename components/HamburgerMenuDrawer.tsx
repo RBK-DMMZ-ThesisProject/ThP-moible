@@ -1,13 +1,16 @@
 
 import React, { Component } from 'react';
-import { ScrollView, Text, View, Image } from 'react-native';
+import {
+    ScrollView, Text, View, Image, StyleSheet,
+    ActivityIndicator
+} from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { menuList } from '../state/reducer';
 import * as types from '../state/types';
 import NavigationService from './NavigationService.js';
 import { Dispatch } from 'react-redux';
-import { changeStateItem, changeStateSignedIn } from '../state/actions';
+import { changeStateItem, changeStateSignedIn, changeHasProfileState, changeActivityIndicatorState } from '../state/actions';
 import {
     NavigationParams,
     NavigationScreenProp,
@@ -20,6 +23,9 @@ export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>,
     changeState: any,
     login: number,
+    hasProfile: number,
+    activityIndicatorState: boolean,
+    changeActivityIndicatorState: any,
     changeSignedInState: any
 }
 
@@ -32,14 +38,43 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         SharedPreferences.setName("handyInfo");
         var that = this;
         SharedPreferences.getItem("handyToken", function (value: any) {
-            console.log(value);
+            console.log("token from menu: ", value);
             if (value !== null) {
                 that.props.changeSignedInState(1);
+                // check if the user has profile
+                changeActivityIndicatorState(true);
+                // fetch from sever
+                fetch('https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userToken: value }),
+                })
+                    .then(res => res.json())
+                    .then(resJson => {
+                        console.log('response: ', resJson);
+                        if (resJson.result) {
+                            changeHasProfileState(1);
+                        }
+                        changeActivityIndicatorState(false);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        changeActivityIndicatorState(false);
+                    });
+
+
             }
-        })
+        });
+
+
     }
     componentDidUpdate(prevProps: Props, prevState: Props) {
-
+        if (prevProps.hasProfile !== this.props.hasProfile) {
+            this.props.changeState(20);
+        }
         if (prevProps.login !== this.props.login) {
             console.log('prev', prevProps.login);
             console.log('now', this.props.login);
@@ -86,18 +121,18 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
 
 
         return (
-            <View style={{ flex: 1, paddingTop: 30 }}>
-                <View style={{ height: 80, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-                    <Text >Handy</Text>
+            <View style={{ flex: 1, paddingTop: 30, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <View style={{ height: 20, backgroundColor: 'white', marginLeft: 10, marginBottom: 10 }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#63b8d4' }} >Handy</Text>
                 </View>
-                <ScrollView>
+                <ScrollView style={{ flex: 8, }}>
                     <View>
                         {this.props.items.map((item: any) => {
                             if (item.show === 1) {
                                 if (item.itemtxt === "Log out") {
                                     return <Text
                                         key={item.id}
-                                        style={{ fontSize: 16, lineHeight: 30, textAlign: 'center' }}
+                                        style={{ fontSize: 16, lineHeight: 30, marginLeft: 20 }}
                                         onPress={() => this.logout()}
                                     >
                                         {item.itemtxt}
@@ -107,7 +142,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                                 return (
                                     <Text
                                         key={item.id}
-                                        style={{ fontSize: 16, lineHeight: 30, textAlign: 'center' }}
+                                        style={{ fontSize: 16, lineHeight: 30, marginLeft: 20 }}
                                         onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage })}
                                     >
                                         {item.itemtxt}
@@ -119,7 +154,11 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
 
                         )}
                     </View>
+
                 </ScrollView>
+                {(this.props.activityIndicatorState ? <View style={[styles.loading]}>
+                    <ActivityIndicator size="large" color="#c5df16" />
+                </View> : '')}
             </View>
         );
     }
@@ -131,6 +170,7 @@ const mapStateToProps = (appstate: any, navigation: NavigationScreenProp<Navigat
     return ({
         items: appstate.menuList,
         login: appstate.changeGeneralState.login,
+        activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
         navigation: navigation
     })
 };
@@ -140,8 +180,25 @@ const mapDsipatchToProps = (dispatch: Dispatch) => ({
     },
     changeSignedInState: (state: number) => {
         dispatch(changeStateSignedIn(state));
+    },
+    changeHasProfileState: (state: number) => {
+        dispatch(changeHasProfileState(state));
+    },
+    changeActivityIndicatorState: (state: boolean) => {
+        dispatch(changeActivityIndicatorState(state));
     }
     // other callbacks go here...
+});
+const styles = StyleSheet.create({
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });
 
 
