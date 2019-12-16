@@ -36,7 +36,7 @@ import { any } from 'prop-types';
 import { Linking } from 'react-native';
 import stripe from 'tipsi-stripe';
 import axios from 'axios';
-import {throwStatement} from '@babel/types';
+import { throwStatement } from '@babel/types';
 import Favorites from './Favorites';
 stripe.setOptions({
   publishableKey: 'pk_test_u7t7CW4JRlx90adyZxR5lgTv000buXI4XF',
@@ -113,7 +113,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
             if (resJson.favs) {
               for (var i = 0; i < resJson.favs.length; i++) {
                 if (resJson.favs[i].serviceProviderID === resJson.profile._id) {
-                  that.setState({isfavorite: true});
+                  that.setState({ isfavorite: true });
                 }
               }
             }
@@ -123,30 +123,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
           });
       }
     });
-<<<<<<< HEAD
-
-=======
-    const userId = this.props.navigation.getParam('userId');
-    console.log('userId : ', userId);
-    fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ serviceproviderid: userId }),
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        console.log('user Profile', resJson)
-        this.setState({
-          profile: resJson.profile,
-        });
-      })
-      .catch(error => {
-        console.error(error);
-      });
->>>>>>> 34aec491f334c103a7b9002c8036d1924a3dcb92
     fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getReviews', {
       method: 'POST',
       headers: {
@@ -170,7 +146,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
-    SharedPreferences.getItem('handyToken', function(value: any) {
+    SharedPreferences.getItem('handyToken', function (value: any) {
       if (value !== null) {
         const x = value;
         if (!that.state.isfavorite) {
@@ -185,7 +161,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
+              body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
             },
           )
             .then(res => {
@@ -211,7 +187,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
+              body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
             },
           )
             .then(res => {
@@ -233,12 +209,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
-<<<<<<< HEAD
-    SharedPreferences.getItem('handyToken', function(value: any) {
-=======
     SharedPreferences.getItem('handyToken', function (value: any) {
       console.log('our tocken', value);
->>>>>>> 34aec491f334c103a7b9002c8036d1924a3dcb92
       if (value !== null) {
         const x = value;
         const userId = that.props.navigation.getParam('userId');
@@ -281,7 +253,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     return (
       <Overlay
         isVisible={this.state.isVisiblereview}
-        onBackdropPress={() => this.setState({isVisiblereview: false})}>
+        onBackdropPress={() => this.setState({ isVisiblereview: false })}>
         <Text>Add review</Text>
       </Overlay>
     );
@@ -289,18 +261,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
   ratingCompleted(rating) {
     console.log('Rating is: ' + rating);
-    this.setState({rating: rating});
+    this.setState({ rating: rating });
   }
   render() {
-<<<<<<< HEAD
-    const {navigation} = this.props;
-    const {profile, ratingGiven, reviews} = this.state;
-
-=======
     const { navigation } = this.props;
     const { profile } = this.state;
     const { reviews } = this.state;
->>>>>>> 34aec491f334c103a7b9002c8036d1924a3dcb92
     console.log('hello agina');
     return (
       <>
@@ -455,9 +421,9 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }}>
                 <Card>
                   <Formik
-                    initialValues={{review: '', name: ''}}
+                    initialValues={{ review: '', name: '' }}
                     onSubmit={values => console.log(values)}>
-                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                    {({ handleChange, handleBlur, handleSubmit, values }) => (
                       <View>
                         <Input
                           onChangeText={handleChange('review')}
@@ -497,11 +463,11 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     reviews={['Terrible', 'Bad', 'Meh', 'OK', 'Good']}
                     defaultRating={5}
                     onFinishRating={rating => {
-                      this.setState({ratingGiven: rating});
+                      this.setState({ ratingGiven: rating });
                       console.log('ratingGiven', ratingGiven);
                     }}
                     size={25}
-                    // ratingColor={'blue'}
+                  // ratingColor={'blue'}
                   />
 
                   <TouchableHighlight>
