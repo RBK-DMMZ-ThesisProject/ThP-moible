@@ -110,6 +110,7 @@ class SignUp extends React.Component<Props, object> {
                     // process erro messages
                 });
         }
+        return;
     }
     render() {
         console.log(this.state);

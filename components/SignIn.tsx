@@ -99,7 +99,7 @@ class SignIn extends React.Component<Props, object> {
                         this.props.changeSignedInState(1);
                         this.getUserHasProfile(resJson.token);
                         if (this.props.hasProfile) {
-                            this.props.changeState(20); // view profile
+                            this.props.changeState(20, 1); // view profile
                         }
 
                         navigation.navigate(navigation.getParam('nextPage'));
@@ -129,6 +129,7 @@ class SignIn extends React.Component<Props, object> {
                     // process erro messages
                 });
         }
+        return;
     }
     render() {
         const { navigation } = this.props;
