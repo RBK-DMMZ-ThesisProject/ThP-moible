@@ -48,6 +48,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     reviews: [],
     isVisible: false,
     modalVisible: false,
+    isfavorite: false,
   };
   requestPayment = () => {
     return stripe
@@ -126,12 +127,75 @@ class serviceProviderProfile extends React.Component<Props, object> {
         console.error(error);
       });
   }
+
+  addFav() {
+    var SharedPreferences = require('react-native-shared-preferences');
+    SharedPreferences.setName('handyInfo');
+    var that = this;
+    SharedPreferences.getItem('handyToken', function(value: any) {
+      if (value !== null) {
+        const x = value;
+        if (!that.state.isfavorite) {
+          const userId = that.props.navigation.getParam('userId');
+          console.log('user id', userId);
+          console.log('token: ', x);
+          fetch(
+            'https://salty-garden-58258.herokuapp.com/mobileApi/addfavorite',
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
+            },
+          )
+            .then(res => {
+              res.json();
+            })
+            .then(resJson => {
+              that.setState({
+                isfavorite: true,
+              });
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        } else {
+          const userId = that.props.navigation.getParam('userId');
+          console.log('user id', userId);
+          console.log('token: ', x);
+          fetch(
+            'https://salty-garden-58258.herokuapp.com/mobileApi/deletefavorite',
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
+            },
+          )
+            .then(res => {
+              res.json();
+            })
+            .then(resJson => {
+              that.setState({
+                isfavorite: false,
+              });
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+      }
+    });
+  }
   hireSP() {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
     SharedPreferences.getItem('handyToken', function(value: any) {
-      console.log('our tocken', value);
       if (value !== null) {
         const x = value;
         const userId = that.props.navigation.getParam('userId');
@@ -162,6 +226,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
   }
   setModalVisible(visible) {
     this.setState({modalVisible: visible});
+  }
+  isFave() {
+    if (this.state.isfavorite) {
+      return '#00aced';
+    } else {
+      return '#666';
+    }
   }
   render() {
     const {navigation} = this.props;
@@ -210,7 +281,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 color="#00aced"
                 onPress={() => navigation.navigate('chattScreen')}
               />
-              <Icon raised color="#00aced" name="star" />
+              <Icon
+                raised
+                color={this.isFave()}
+                name="star"
+                onPress={() => this.addFav()}
+              />
             </View>
 
             {/* <View

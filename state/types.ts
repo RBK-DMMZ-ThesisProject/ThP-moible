@@ -1,62 +1,65 @@
-// menu item type 
+// menu item type
 export type MenuItem = {
-    id: number,
-    itemtxt: string,
-    toPage: string,
-    show: number
-
-}
+  id: number;
+  itemtxt: string;
+  toPage: string;
+  show: number;
+};
 // menu item list types
 export type MenuItemsListState = MenuItem[];
 // menu action types
 export enum MENU_LIST_ACTION_TYPES {
-    CHANGE_STATE = "CHANGE_STATE"
+  CHANGE_STATE = 'CHANGE_STATE',
 }
 // each action inputs type
 export type ChangeStateAction = {
-    type: string,
-    id: number,
-    show: number
-}
+  type: string;
+  id: number;
+  show: number;
+};
 export type ChangeStateSignedIn = {
-    type: string,
-    login: number
-}
+  type: string;
+  login: number;
+};
 export type ChangeHasProfileState = {
-    type: string,
-    hasProfile: number
-}
+  type: string;
+  hasProfile: number;
+};
 export type ChangeActivityIndicatorState = {
-    type: string,
-    activityIndicatorState: boolean
-}
+  type: string;
+  activityIndicatorState: boolean;
+};
 export type SetUserId = {
-    type: string,
-    userId: number
-}
+  type: string;
+  userId: number;
+};
 
 // union type to be used in reducers.
 export type MenuItemsListAction = ChangeStateAction;
 
 // whole application state
 export type LoginState = number;
-export const LOGIN_STATE = "LOGIN_STATE";
+export const LOGIN_STATE = 'LOGIN_STATE';
 export type ActivityIndicatorState = boolean;
-export const ACTIVITY_INDICATOR_STATE = "ACTIVITY_INDICATOR_STATE";
+export const ACTIVITY_INDICATOR_STATE = 'ACTIVITY_INDICATOR_STATE';
 export type HasProfileState = number;
-export const HAS_PROFILE_STATE = "HAS_PROFILE_STATE";
+export const HAS_PROFILE_STATE = 'HAS_PROFILE_STATE';
 export type UserId = number;
-export const SET_USER_ID = "SET_USER_ID";
+export const SET_USER_ID = 'SET_USER_ID';
 export type AppState = {
-    menuList: MenuItemsListState,
-    login: LoginState,
-    hasProfile: HasProfileState,
-    activityIndicatorState: ActivityIndicatorState,
-    userId: UserId
-    // add future state slices here
-}
+  menuList: MenuItemsListState;
+  login: LoginState;
+  hasProfile: HasProfileState;
+  activityIndicatorState: ActivityIndicatorState;
+  userId: UserId;
+  // add future state slices here
+};
 
-export type GeneralAction = ChangeStateSignedIn | ChangeHasProfileState | ChangeActivityIndicatorState | SetUserId;
+export type GeneralAction =
+  | ChangeStateSignedIn
+  | ChangeHasProfileState
+  | ChangeActivityIndicatorState
+  | SetUserId;
 
 // export enum NAVIGATE_ACTIONS {
 //     NAVIGATE_TO = "NAVIGATE_TO"
@@ -77,11 +80,10 @@ export type GeneralAction = ChangeStateSignedIn | ChangeHasProfileState | Change
 //     type: string,
 //     pages: Page
 // };
-// // Union 
+// // Union
 // export type NavigationListAction = NavigateToAction;
 
 // // export const PAGE_DIRECTION = {
 // //     CURRENT_PAGE: 'CURRENT_PAGE',
 // //     NEXT_PAGE: 'NEXT_PAGE'
 // // }
-

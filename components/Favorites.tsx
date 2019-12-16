@@ -36,7 +36,7 @@ class Favorites extends React.Component<Props, object> {
         })
           .then(res => res.json())
           .then(resJson => {
-            console.log('response: ', resJson);
+            console.log('hjbyigvbytigiytgi7: ', resJson);
             that.setState({
               favorites: resJson,
             });
