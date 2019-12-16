@@ -72,7 +72,6 @@ class SignIn extends React.Component<Props, object> {
     // @description:sign in to our application
     // 
     async signIn() {
-        console.log(this.state)
         if (this.state.emailError === undefined && this.state.passwordError === undefined) {
             const { navigation } = this.props;
             this.setState({
@@ -107,13 +106,17 @@ class SignIn extends React.Component<Props, object> {
                     } else {
                         this.setState({
                             loginError: resJson.msg,
-                            email: '',
-                            password: '',
-                            signInLoading: false
+
                         })
                         // check if a user is a service provider to add also 20
 
                     }
+                    this.setState({
+
+                        email: '',
+                        password: '',
+                        signInLoading: false
+                    })
                 })
                 .catch((error) => {
                     console.error(error);
@@ -151,7 +154,7 @@ class SignIn extends React.Component<Props, object> {
                             }}
                             placeholder={'Enter your email...'}
                             placeholderTextColor="#999"
-                            errorMessage={emailError}
+                            errorMessage={Array.isArray(emailError) ? emailError[0] : emailError}
                         >{email}</Input>
 
                         <Input
@@ -163,10 +166,10 @@ class SignIn extends React.Component<Props, object> {
                             onBlur={() => this.setState({ passwordError: validate({ password: password }, { password: { presence: true, length: { minimum: 6 } } }, { format: "flat" }) })}
                             placeholder={'Enter your password...'}
                             placeholderTextColor="#999"
-                            errorMessage={passwordError}
+                            errorMessage={Array.isArray(passwordError) ? passwordError[0] : passwordError}
                         >{password}</Input>
 
-                        <Text style={{ fontSize: 16, lineHeight: 20, color: '#67A443', textAlign: 'center' }} > {loginError}</Text>
+                        <Text style={{ fontSize: 16, lineHeight: 20, color: 'red', textAlign: 'center' }} > {loginError}</Text>
 
                         <View style={{ flex: 1, margin: 10 }}>
                             <Button buttonStyle={{

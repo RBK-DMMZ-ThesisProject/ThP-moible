@@ -25,10 +25,21 @@ import ImagePicker from 'react-native-image-picker';
 import storage, { firebase } from '@react-native-firebase/storage';
 import { any } from 'prop-types';
 import categories from './categories';
+import { connect } from 'react-redux';
+import { menuList } from '../state/reducer';
+import * as types from '../state/types';
+import { Dispatch } from 'react-redux';
+import { changeStateItem, changeStateSignedIn, setProfileId, changeHasProfileState, setUserId } from '../state/actions';
 import validate from 'validate.js';
+import NavigationService from './NavigationService.js';
 
 export interface Props {
-    navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+    navigation: NavigationScreenProp<NavigationState, NavigationParams>,
+    hasProfile: boolean,
+    changeState: any,
+    changeHasProfileState: any,
+    changeSignedInState: any,
+    setProfileId: any
 }
 class AddProfileScreen extends React.Component<Props, object> {
 
@@ -51,6 +62,7 @@ class AddProfileScreen extends React.Component<Props, object> {
         avatarUri: "",
         avatarFileName: "",
         avartfbUrl: "",
+        avatarError: '',
         // service info
         category: 'Carpenter',
         serverDesription: '',
@@ -60,6 +72,7 @@ class AddProfileScreen extends React.Component<Props, object> {
         sampleWorkImgUri: "",
         sampleWorkImgFileName: "",
         sampleWorkImgfbUrl: "",
+        wsError: '',
         // activity indicator
         saveLoading: false,
         // form validation 
@@ -180,6 +193,28 @@ class AddProfileScreen extends React.Component<Props, object> {
             }
         });
     }
+    // check user has a profile
+    async getUserHasProfile(token: string) {
+        var response = await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userToken: token }),
+        });
+        var resJson = await response.json()
+        if (resJson.result) {
+            this.props.changeHasProfileState(1);
+            this.props.setProfileId(resJson.profileId);
+        }
+
+        // .catch(error => {
+        //     console.error(error);
+        //     that.props.changeActivityIndicatorState(false);
+        // });
+
+    }
     // @function: saveProfile  
     // @description: Save profile info to the databae
     // 
@@ -195,44 +230,62 @@ class AddProfileScreen extends React.Component<Props, object> {
             })
             await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
             await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
-            var profileData = {
-                firstName: this.state.firstName.trim(),
-                familyName: this.state.familyName.trim(),
-                phoneNum: this.state.phoneNum,
-                email: this.state.email.trim(),
-                birthdate: this.state.birthdate,
-                avatarSource: this.state.avartfbUrl,
-                category: this.state.category,
-                serverDesription: this.state.serverDesription.trim(),
-                sampleWorkImg: this.state.sampleWorkImgfbUrl
-            };
-            fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(profileData),
+            if (this.state.avartfbUrl === '' || this.state.sampleWorkImgfbUrl === '') {
+                if (this.state.avartfbUrl === '') {
+                    this.setState({
+                        avatarError: 'Please choose a personal image'
+                    })
+                }
+                if (this.state.sampleWorkImgfbUrl === '') {
+                    this.setState({
+                        wsError: 'Please choose a work sample image'
+                    })
+                }
 
-            }).then(res => res.json())
-                .then(resJson => {
-                    console.log('response: ', resJson);
-                    this.setState({
-                        saveLoading: false
+            } else {
+                var profileData = {
+                    firstName: this.state.firstName.trim(),
+                    familyName: this.state.familyName.trim(),
+                    phoneNum: this.state.phoneNum,
+                    email: this.state.email.trim(),
+                    birthdate: this.state.birthdate,
+                    avatarSource: this.state.avartfbUrl,
+                    category: this.state.category,
+                    serverDesription: this.state.serverDesription.trim(),
+                    sampleWorkImg: this.state.sampleWorkImgfbUrl
+                };
+                fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(profileData),
+
+                }).then(res => res.json())
+                    .then(resJson => {
+                        console.log('response: ', resJson);
+                        this.setState({
+                            saveLoading: false
+                        });
+                        this.getUserHasProfile(resJson.token);
+                        if (this.props.hasProfile) {
+                            this.props.changeState(20); // view profile
+                        }
+                        NavigationService.navigate('ViewProfile', { 'profile': profileData });
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        this.setState({
+                            saveLoading: false
+                        });
                     });
-                    navigation.navigate('ViewProfile', { 'profile': profileData });
-                })
-                .catch((error) => {
-                    console.error(error);
-                    this.setState({
-                        saveLoading: false
-                    });
-                });
+            }
         }
     }
     render() {
         const { navigation } = this.props;
-        const { firstName, firstNameError, familyName, familyNameError, phoneNum, phoneNumError, email, emailError, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading } = this.state;
+        const { firstName, firstNameError, familyName, familyNameError, phoneNum, phoneNumError, email, emailError, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading, avatarError, wsError } = this.state;
         return (
             <>
                 <StatusBar barStyle="dark-content" />
@@ -249,7 +302,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                             }}
                             placeholder={'Enter your first name...'}
                             placeholderTextColor="#999"
-                            errorMessage={firstNameError}
+                            errorMessage={Array.isArray(firstNameError) ? firstNameError[0] : firstNameError}
                         >{firstName}</Input>
                         {/* {this.validator.message('firstName', firstName, 'required')} */}
 
@@ -263,7 +316,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                             }}
                             placeholder={'Enter your family name...'}
                             placeholderTextColor="#999"
-                            errorMessage={familyNameError}
+                            errorMessage={Array.isArray(familyNameError) ? familyNameError[0] : familyNameError}
 
                         >{familyName}</Input>
                         <Input
@@ -277,7 +330,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                             }}
                             placeholder={'Enter your phone number...'}
                             placeholderTextColor="#999"
-                            errorMessage={phoneNumError}
+                            errorMessage={Array.isArray(phoneNumError) ? phoneNumError[0] : phoneNumError}
 
                         >{phoneNum}</Input>
                         <Input
@@ -290,7 +343,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                             }}
                             placeholder={'Enter your email...'}
                             placeholderTextColor="#999"
-                            errorMessage={emailError}
+                            errorMessage={Array.isArray(emailError) ? emailError[0] : emailError}
                         >{email}</Input>
                         {/* Begin: date input */}
                         <Input
@@ -326,6 +379,8 @@ class AddProfileScreen extends React.Component<Props, object> {
                                 {showAvatar && <Avatar rounded source={this.state.avatarSource} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#078ca9' }} />}
                             </View>
                         </View>
+                        <Text style={{ fontSize: 16, lineHeight: 20, color: 'red', textAlign: 'center' }} > {avatarError}</Text>
+
                         {/* end of upload avatar input */}
                         {/* Service Info */}
                         <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10, marginBottom: 20 }}>
@@ -383,6 +438,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                                 {showSampleWorkImg && <Avatar rounded source={this.state.sampleWorkImg} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#078ca9' }} />}
                             </View>
                         </View>
+                        <Text style={{ fontSize: 16, lineHeight: 20, color: 'red', textAlign: 'center' }} > {wsError}</Text>
 
                         {/* End of service Info */}
                         <View style={{ flex: 1, margin: 10 }}>
@@ -402,5 +458,34 @@ class AddProfileScreen extends React.Component<Props, object> {
     }
 }
 
+const mapDipatchToProps = (dispatch: Dispatch) => ({
+    changeState: (id: number, state: number) => {
+        dispatch(changeStateItem(id, state));
+    },
+    changeSignedInState: (state: number) => {
+        dispatch(changeStateSignedIn(state));
+    },
+    changeHasProfileState: (state: number) => {
+        dispatch(changeHasProfileState(state));
+    },
+    setUserId: (userId: number) => {
+        dispatch(setUserId(userId));
+    },
+    setProfileId: (profileId: string) => {
+        dispatch(setProfileId(profileId));
+    },
 
-export default AddProfileScreen;
+    // other callbacks go here...
+});
+const mapStateToProps = (appstate: any, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => ({
+    items: appstate,
+    hasProfile: appstate.changeGeneralState.hasProfile,
+    profileId: appstate.changeGeneralState.profileId,
+    navigation: navigation
+});
+
+export default connect(mapStateToProps, mapDipatchToProps)(AddProfileScreen);
+
+
+
+// export default AddProfileScreen;
