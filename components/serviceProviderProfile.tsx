@@ -27,6 +27,8 @@ import {
   ListItem,
   Card,
   Overlay,
+  Rating,
+  AirbnbRating,
 } from 'react-native-elements';
 
 import HandyHeader from './HandyHeader';
@@ -51,6 +53,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     isVisible: false,
     modalVisible: false,
     isfavorite: false,
+    rating: 0,
   };
   requestPayment = () => {
     return stripe
@@ -84,7 +87,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     SharedPreferences.setName('handyInfo');
     SharedPreferences.getItem('handyToken', function(value: any) {
       if (value === undefined) {
-        console.log('no token');
+        console.log('no token from here');
         that.props.navigation.navigate('SignIn');
       } else {
         that.setState({
@@ -246,10 +249,24 @@ class serviceProviderProfile extends React.Component<Props, object> {
       return '#666';
     }
   }
+  addReview() {
+    return (
+      <Overlay
+        isVisible={this.state.isVisiblereview}
+        onBackdropPress={() => this.setState({isVisiblereview: false})}>
+        <Text>Add review</Text>
+      </Overlay>
+    );
+  }
+
+  ratingCompleted(rating) {
+    console.log('Rating is: ' + rating);
+    this.setState({rating: rating});
+  }
   render() {
     const {navigation} = this.props;
-    const {profile} = this.state;
-    const {reviews} = this.state;
+    const {profile, rating, reviews} = this.state;
+
     console.log('hello agina');
     return (
       <>
@@ -398,51 +415,73 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
               <Modal
                 animationType="slide"
-                transparent={false}
                 visible={this.state.modalVisible}
                 onRequestClose={() => {
-                  Alert.alert('YOUR REQUEST HAS BEEN SENDED');
+                  Alert.alert('send your review or close it please');
                 }}>
-                <View style={{alignItems: 'center'}}>
-                  <View>
-                    {/* <Formik
-                      initialValues={{email: ''}}
-                      onSubmit={values => console.log(values)}>
-                      {({handleChange, handleBlur, handleSubmit, values}) => (
-                        <View>
-                          <TextInput
-                            onChangeText={handleChange('email')}
-                            onBlur={handleBlur('email')}
-                            value={values.email}
-                          />
-                          <Button onPress={handleSubmit} title="SEND" />
-                        </View>
-                      )}
-                    </Formik> */}
-                    <TouchableHighlight>
-                      <Button
-                        icon={
-                          <Icon
-                            name="sc-telegram"
-                            type="evilicon"
-                            color="#ffffff"
-                          />
-                        }
-                        buttonStyle={{
-                          borderRadius: 10,
-                          marginLeft: 0,
-                          marginRight: 0,
-                          marginBottom: 0,
-                          backgroundColor: '#63b8d4',
-                        }}
-                        title="CLOSE"
-                        onPress={() => {
-                          this.setModalVisible(!this.state.modalVisible);
-                        }}
-                      />
-                    </TouchableHighlight>
-                  </View>
-                </View>
+                <Card>
+                  <Formik
+                    initialValues={{review: '', name: ''}}
+                    onSubmit={values => console.log(values)}>
+                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                      <View>
+                        <Input
+                          onChangeText={handleChange('review')}
+                          onBlur={handleBlur('review')}
+                          value={values.review}
+                        />
+                        <Divider></Divider>
+                        <Input
+                          onChangeText={handleChange('name')}
+                          onBlur={handleBlur('name')}
+                          value={values.name}
+                        />
+                        <Button
+                          onPress={handleSubmit}
+                          title="SEND"
+                          buttonStyle={{
+                            borderRadius: 10,
+                            marginLeft: 25,
+                            marginRight: 25,
+                            marginBottom: 25,
+                            marginTop: 25,
+                            backgroundColor: '#63b8d4',
+                          }}
+                        />
+                      </View>
+                    )}
+                  </Formik>
+                  <AirbnbRating
+                    count={5}
+                    reviews={['Terrible', 'Bad', 'Meh', 'OK', 'Good']}
+                    defaultRating={5}
+                    size={25}
+                  />
+
+                  <TouchableHighlight>
+                    <Button
+                      icon={
+                        <Icon
+                          name="sc-telegram"
+                          type="evilicon"
+                          color="#ffffff"
+                        />
+                      }
+                      buttonStyle={{
+                        borderRadius: 10,
+                        marginLeft: 25,
+                        marginRight: 25,
+                        marginBottom: 25,
+                        marginTop: 25,
+                        backgroundColor: '#63b8d4',
+                      }}
+                      title="CLOSE"
+                      onPress={() => {
+                        this.setModalVisible(!this.state.modalVisible);
+                      }}
+                    />
+                  </TouchableHighlight>
+                </Card>
               </Modal>
             </Card>
           </ScrollView>
@@ -451,5 +490,4 @@ class serviceProviderProfile extends React.Component<Props, object> {
     );
   }
 }
-
 export default serviceProviderProfile;

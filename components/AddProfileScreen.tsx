@@ -25,6 +25,7 @@ import ImagePicker from 'react-native-image-picker';
 import storage, { firebase } from '@react-native-firebase/storage';
 import { any } from 'prop-types';
 import categories from './categories';
+import validate from 'validate.js';
 
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -34,9 +35,13 @@ class AddProfileScreen extends React.Component<Props, object> {
     state = {
         // personal info
         firstName: '',
+        firstNameError: '',
         familyName: '',
+        familyNameError: '',
         phoneNum: '',
+        phoneNumError: '',
         email: '',
+        emailError: '',
         // for date birth
         birthdate: new Date(),
         showDate: false,
@@ -180,51 +185,54 @@ class AddProfileScreen extends React.Component<Props, object> {
     // 
     async saveProfile() {
         // console.log(this.state)
-        const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
-        const { navigation } = this.props;
-        this.setState({
-            saveLoading: true,
-            isSbumitted: true,
-        })
-        await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
-        await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
-        var profileData = {
-            firstName: this.state.firstName,
-            familyName: this.state.familyName,
-            phoneNum: this.state.phoneNum,
-            email: this.state.email,
-            birthdate: this.state.birthdate,
-            avatarSource: this.state.avartfbUrl,
-            category: this.state.category,
-            serverDesription: this.state.serverDesription,
-            sampleWorkImg: this.state.sampleWorkImgfbUrl
-        };
-        fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(profileData),
+        if (this.state.emailError === undefined && this.state.firstNameError === undefined && this.state.familyNameError === undefined && this.state.phoneNumError === undefined) {
 
-        }).then(res => res.json())
-            .then(resJson => {
-                console.log('response: ', resJson);
-                this.setState({
-                    saveLoading: false
-                });
-                navigation.navigate('ViewProfile', { 'profile': profileData });
+            const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
+            const { navigation } = this.props;
+            this.setState({
+                saveLoading: true,
+                isSbumitted: true,
             })
-            .catch((error) => {
-                console.error(error);
-                this.setState({
-                    saveLoading: false
+            await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
+            await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
+            var profileData = {
+                firstName: this.state.firstName.trim(),
+                familyName: this.state.familyName.trim(),
+                phoneNum: this.state.phoneNum,
+                email: this.state.email.trim(),
+                birthdate: this.state.birthdate,
+                avatarSource: this.state.avartfbUrl,
+                category: this.state.category,
+                serverDesription: this.state.serverDesription.trim(),
+                sampleWorkImg: this.state.sampleWorkImgfbUrl
+            };
+            fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(profileData),
+
+            }).then(res => res.json())
+                .then(resJson => {
+                    console.log('response: ', resJson);
+                    this.setState({
+                        saveLoading: false
+                    });
+                    navigation.navigate('ViewProfile', { 'profile': profileData });
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.setState({
+                        saveLoading: false
+                    });
                 });
-            });
+        }
     }
     render() {
         const { navigation } = this.props;
-        const { firstName, familyName, phoneNum, email, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading } = this.state;
+        const { firstName, firstNameError, familyName, familyNameError, phoneNum, phoneNumError, email, emailError, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading } = this.state;
         return (
             <>
                 <StatusBar barStyle="dark-content" />
@@ -232,53 +240,65 @@ class AddProfileScreen extends React.Component<Props, object> {
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <HandyHeader navigation={navigation} title="Add Profile" />
                         <Input
-                            inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
                             label='First Name:'
-                            labelStyle={{ fontSize: 20, color: "#91cde0" }}
+                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             onChangeText={(firstName) => this.setState({ firstName })}
+                            onBlur={() => {
+                                this.setState({ firstNameError: validate({ firstName: firstName }, { firstName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your first name...'}
-                            placeholderTextColor="#91cde0"
-                        // errorMessage={(firstName !== "") ? 'Please enter your first name' : ''}
+                            placeholderTextColor="#999"
+                            errorMessage={firstNameError}
                         >{firstName}</Input>
                         {/* {this.validator.message('firstName', firstName, 'required')} */}
 
                         <Input
-                            inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
                             label='Family Name:'
-                            labelStyle={{ fontSize: 20, color: "#91cde0" }}
+                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             onChangeText={(familyName) => this.setState({ familyName })}
+                            onBlur={() => {
+                                this.setState({ familyNameError: validate({ familyName: familyName }, { familyName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your family name...'}
-                            placeholderTextColor="#91cde0"
-                        // errorMessage='Enter your family name'
+                            placeholderTextColor="#999"
+                            errorMessage={familyNameError}
 
                         >{familyName}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
                             label='Phone No.:'
-                            labelStyle={{ fontSize: 20, color: "#91cde0" }}
+                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             keyboardType="number-pad"
                             onChangeText={(phoneNum) => this.setState({ phoneNum })}
+                            onBlur={() => {
+                                this.setState({ phoneNumError: validate({ phoneNum: phoneNum }, { phoneNum: { presence: true, length: { minimum: 6 } } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your phone number...'}
-                            placeholderTextColor="#91cde0"
-                        // errorMessage='Enter your family name'
+                            placeholderTextColor="#999"
+                            errorMessage={phoneNumError}
 
                         >{phoneNum}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
                             label='Email:'
-                            labelStyle={{ fontSize: 20, color: "#91cde0" }}
+                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             onChangeText={(email) => this.setState({ email })}
+                            onBlur={() => {
+                                this.setState({ emailError: validate({ email: email }, { email: { presence: true, email: true } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your email...'}
-                            placeholderTextColor="#91cde0"
-                        // errorMessage='Enter your family name'
+                            placeholderTextColor="#999"
+                            errorMessage={emailError}
                         >{email}</Input>
                         {/* Begin: date input */}
                         <Input
-                            inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
                             label='Birth Date:'
-                            labelStyle={{ fontSize: 20, color: "#91cde0" }}
+                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             placeholder={'Enter your birthDate...'}
-                            placeholderTextColor="#91cde0"
+                            placeholderTextColor="#999"
                             onChangeText={(birthdate) => this.setState({ birthdate })}
                             onFocus={this.showDatePicker}
                         >{birthdate.toDateString()}</Input>
@@ -288,34 +308,34 @@ class AddProfileScreen extends React.Component<Props, object> {
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
                             <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={{ fontWeight: 'bold', color: "#91cde0", fontSize: 22 }}>Upload Avatar:</Text>
+                                    <Text style={{ fontWeight: 'bold', color: "#078ca9", fontSize: 22 }}>Upload Avatar:</Text>
                                 </View>
                                 <View style={{ flex: 2, marginLeft: 10 }}>
                                     <Button buttonStyle={{
-                                        backgroundColor: '#91cde0',
+                                        backgroundColor: '#67A443',
                                         width: 100 + "%",
                                     }}
                                         titleStyle={{
-                                            color: '#dff0f6'
+                                            color: '#f2f2f2'
                                         }}
                                         title="Upload" onPress={this.showImagePicker} ></Button>
                                 </View>
                             </View>
                             <View style={{ flex: 2, alignItems: 'center' }}>
-                                {!showAvatar && <Avatar rounded title="SP" titleStyle={{ fontSize: 60 }} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#91cde0' }} />}
-                                {showAvatar && <Avatar rounded source={this.state.avatarSource} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#91cde0' }} />}
+                                {!showAvatar && <Avatar rounded title="SP" titleStyle={{ fontSize: 60 }} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#078ca9' }} />}
+                                {showAvatar && <Avatar rounded source={this.state.avatarSource} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#078ca9' }} />}
                             </View>
                         </View>
                         {/* end of upload avatar input */}
                         {/* Service Info */}
                         <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10, marginBottom: 20 }}>
                             <View style={{ flex: 1 }}>
-                                <Text style={{ fontWeight: 'bold', color: "#91cde0", fontSize: 22 }}>Service Category:</Text>
+                                <Text style={{ fontWeight: 'bold', color: "#078ca9", fontSize: 22 }}>Service Category:</Text>
                             </View>
                             <Picker
                                 selectedValue={this.state.category}
                                 style={{ flex: 2, height: 50, width: 100 + "%" }}
-                                itemStyle={{ backgroundColor: '#fff', color: '#91cde0', fontSize: 20 }}
+                                itemStyle={{ backgroundColor: '#fff', color: '#078ca9', fontSize: 20 }}
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.setState({ category: itemValue })
                                 }>
@@ -331,47 +351,47 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         <Input
                             containerStyle={{ marginBottom: 20 }}
-                            inputStyle={{ backgroundColor: '#dff0f6', borderRadius: 5, color: "#91cde0", textAlignVertical: 'top' }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9", textAlignVertical: 'top' }}
                             label='Service Description:'
-                            labelStyle={{ fontSize: 20, color: "#91cde0", textAlignVertical: 'top' }}
+                            labelStyle={{ fontSize: 20, color: "#078ca9", textAlignVertical: 'top' }}
                             onChangeText={(serverDesription) => this.setState({ serverDesription })}
                             placeholder={'Enter Service Description...'}
                             multiline={true}
                             numberOfLines={8}
-                            placeholderTextColor="#91cde0"
+                            placeholderTextColor="#999"
                         // errorMessage='Enter your family name'
                         >{this.state.serverDesription}</Input>
                         {/* sample work image */}
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
                             <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={{ fontWeight: 'bold', color: "#91cde0", fontSize: 22 }}>Upload Sample Work:</Text>
+                                    <Text style={{ fontWeight: 'bold', color: "#078ca9", fontSize: 22 }}>Upload Sample Work:</Text>
                                 </View>
                                 <View style={{ flex: 2, marginLeft: 10 }}>
                                     <Button buttonStyle={{
-                                        backgroundColor: '#91cde0',
+                                        backgroundColor: '#67A443',
                                         width: 100 + "%",
                                     }}
                                         titleStyle={{
-                                            color: '#dff0f6'
+                                            color: '#f2f2f2'
                                         }}
                                         title="Upload" onPress={this.showSampleImagePicker} ></Button>
                                 </View>
                             </View>
                             <View style={{ flex: 2, alignItems: 'center' }}>
-                                {!showSampleWorkImg && <Avatar rounded title="SW" titleStyle={{ fontSize: 60 }} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#91cde0' }} />}
-                                {showSampleWorkImg && <Avatar rounded source={this.state.sampleWorkImg} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#91cde0' }} />}
+                                {!showSampleWorkImg && <Avatar rounded title="SW" titleStyle={{ fontSize: 60 }} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#078ca9' }} />}
+                                {showSampleWorkImg && <Avatar rounded source={this.state.sampleWorkImg} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#078ca9' }} />}
                             </View>
                         </View>
 
                         {/* End of service Info */}
                         <View style={{ flex: 1, margin: 10 }}>
                             <Button buttonStyle={{
-                                backgroundColor: '#91cde0',
+                                backgroundColor: '#078ca9',
                                 width: 100 + "%",
                             }}
                                 titleStyle={{
-                                    color: '#dff0f6'
+                                    color: '#f2f2f2'
                                 }}
                                 title="Save Profile" onPress={() => this.saveProfile()} loading={saveLoading}></Button>
                         </View>

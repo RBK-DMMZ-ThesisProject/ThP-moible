@@ -70,7 +70,7 @@ export const initialItemState: types.MenuItemsListState = [{
 {
     id: 20,
     itemtxt: 'View Profile',
-    toPage: 'ViewProfileScreen',
+    toPage: 'ProviderProfile',
     show: 0
 },
 //General for signed in users
@@ -106,13 +106,14 @@ export const login: types.LoginState = 0
 export const hasProfile: types.HasProfileState = 0
 export const activityIndicatorState: types.ActivityIndicatorState = false
 export const userId: types.UserId = 0
-
+export const profileId: types.profileId = ''
 export const initialState: types.AppState = {
     menuList: initialItemState,
     login: login,
     hasProfile: hasProfile,
     activityIndicatorState: activityIndicatorState,
-    userId: userId
+    userId: userId,
+    profileId: profileId
 }
 
 
@@ -144,8 +145,14 @@ export const changeGeneralState = (
         case types.SET_USER_ID:
             console.log('reached id  ', state)
             const { userId } = <types.SetUserId>action
-            return Object.assign({}, userId, {
+            return Object.assign({}, state, {
                 userId: userId
+            })
+        case types.SET_PROFILE_ID:
+            console.log('reached PROFILE ID  ', state)
+            const { profileId } = <types.SetProfileId>action
+            return Object.assign({}, state, {
+                profileId: profileId
             })
         default:
             return state;

@@ -175,7 +175,7 @@ export const Drawer = createDrawerNavigator({
 
   {
     contentComponent: () => {
-      return <CustomHamburgerMenuDrawer />
+      return <CustomHamburgerMenuDrawer key={2156} />
     },
     contentOptions: {
       activeTintColor: '#666666',
