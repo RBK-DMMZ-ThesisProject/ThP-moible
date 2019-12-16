@@ -84,15 +84,18 @@ class SignUp extends React.Component<Props, object> {
                     else {
                         this.setState({
                             loginError: resJson.msg,
-                            userName: '',
-                            email: '',
-                            password: '',
-                            mobileNO: null,
-                            signUpLoading: false
+
                         });
 
                     }
+                    this.setState({
 
+                        userName: '',
+                        email: '',
+                        password: '',
+                        mobileNO: null,
+                        signUpLoading: false
+                    });
 
                 })
                 .catch((error) => {
@@ -111,7 +114,7 @@ class SignUp extends React.Component<Props, object> {
     render() {
         console.log(this.state);
         const { navigation } = this.props;
-        const { userName, userNameError, email, emailError, password, passwordError, mobileNO, mobileNOError, signUpLoading } = this.state;
+        const { userName, userNameError, email, emailError, password, passwordError, mobileNO, mobileNOError, signUpLoading, loginError } = this.state;
         return (
             <>
                 <StatusBar barStyle="dark-content" />
@@ -130,7 +133,7 @@ class SignUp extends React.Component<Props, object> {
                             }}
                             onChangeText={(userName) => this.setState({ userName })}
                             placeholder={'Enter your Name...'}
-                            errorMessage={userNameError}
+                            errorMessage={Array.isArray(userNameError) ? userNameError[0] : userNameError}
                             placeholderTextColor="#999"
                         >{userName}</Input>
                         <Input
@@ -142,7 +145,7 @@ class SignUp extends React.Component<Props, object> {
                                 this.setState({ emailError: validate({ email: email }, { email: { presence: true, email: true } }, { format: "flat" }) })
                             }}
                             placeholder={'Enter your email...'}
-                            errorMessage={emailError}
+                            errorMessage={Array.isArray(emailError) ? emailError[0] : emailError}
                             placeholderTextColor="#999"
                         >{email}</Input>
                         <Input
@@ -156,7 +159,7 @@ class SignUp extends React.Component<Props, object> {
                             }}
                             placeholder={'Enter your Mobile NO...'}
                             placeholderTextColor="#999"
-                            errorMessage={mobileNOError}
+                            errorMessage={Array.isArray(mobileNOError) ? mobileNOError[0] : mobileNOError}
                         >{mobileNO}</Input>
                         <Input
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
@@ -168,9 +171,10 @@ class SignUp extends React.Component<Props, object> {
                             }}
                             onChangeText={(password) => this.setState({ password })}
                             placeholder={'Enter your password...'}
-                            errorMessage={passwordError}
+                            errorMessage={Array.isArray(passwordError) ? passwordError[0] : passwordError}
                             placeholderTextColor="#999"
                         >{password}</Input>
+                        <Text style={{ fontSize: 16, lineHeight: 20, color: 'red', textAlign: 'center' }} > {loginError}</Text>
 
                         <View style={{ flex: 1, margin: 10 }}>
                             <Button buttonStyle={{
@@ -191,9 +195,9 @@ class SignUp extends React.Component<Props, object> {
 }
 
 const mapDipatchToProps = (dispatch: Dispatch) => ({
-    changeState: (id: number) => {
+    changeState: (id: number, state: number) => {
         console.log('item to hange : ' + id);
-        dispatch(changeStateItem(id));
+        dispatch(changeStateItem(id, state));
     },
     changeSignedInState: (state: number) => {
         dispatch(changeStateSignedIn(state));

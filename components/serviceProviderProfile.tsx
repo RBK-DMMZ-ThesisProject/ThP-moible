@@ -53,7 +53,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     isVisible: false,
     modalVisible: false,
     isfavorite: false,
-    rating: 0,
+    ratingGiven: 0,
   };
   requestPayment = () => {
     return stripe
@@ -265,7 +265,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
   }
   render() {
     const {navigation} = this.props;
-    const {profile, rating, reviews} = this.state;
+    const {profile, ratingGiven, reviews} = this.state;
 
     console.log('hello agina');
     return (
@@ -437,6 +437,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
                           value={values.name}
                         />
                         <Button
+                          icon={
+                            <Icon
+                              name="sc-telegram"
+                              type="evilicon"
+                              color="#ffffff"
+                            />
+                          }
                           onPress={handleSubmit}
                           title="SEND"
                           buttonStyle={{
@@ -455,18 +462,16 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     count={5}
                     reviews={['Terrible', 'Bad', 'Meh', 'OK', 'Good']}
                     defaultRating={5}
+                    onFinishRating={rating => {
+                      this.setState({ratingGiven: rating});
+                      console.log('ratingGiven', ratingGiven);
+                    }}
                     size={25}
+                    // ratingColor={'blue'}
                   />
 
                   <TouchableHighlight>
                     <Button
-                      icon={
-                        <Icon
-                          name="sc-telegram"
-                          type="evilicon"
-                          color="#ffffff"
-                        />
-                      }
                       buttonStyle={{
                         borderRadius: 10,
                         marginLeft: 25,
