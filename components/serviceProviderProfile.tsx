@@ -34,6 +34,8 @@ import {any} from 'prop-types';
 import {Linking} from 'react-native';
 import stripe from 'tipsi-stripe';
 import axios from 'axios';
+import {throwStatement} from '@babel/types';
+import Favorites from './Favorites';
 stripe.setOptions({
   publishableKey: 'pk_test_u7t7CW4JRlx90adyZxR5lgTv000buXI4XF',
 });
@@ -77,7 +79,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
   };
   componentDidMount() {
     var that = this;
-    console.log('hello from profile');
+    const userId = this.props.navigation.getParam('userId');
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     SharedPreferences.getItem('handyToken', function(value: any) {
@@ -88,27 +90,37 @@ class serviceProviderProfile extends React.Component<Props, object> {
         that.setState({
           token: value,
         });
+        fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            serviceproviderid: userId,
+            token: that.state.token,
+          }),
+        })
+          .then(res => res.json())
+          .then(resJson => {
+            console.log('response from server', resJson);
+            that.setState({
+              profile: resJson.profile,
+            });
+            if (resJson.favs) {
+              for (var i = 0; i < resJson.favs.length; i++) {
+                if (resJson.favs[i].serviceProviderID === resJson.profile._id) {
+                  that.setState({isfavorite: true});
+                }
+              }
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
       }
     });
-    const userId = this.props.navigation.getParam('userId');
-    console.log('userId : ', userId);
-    fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({id: userId}),
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        this.setState({
-          profile: resJson[0],
-        });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+
     fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getReviews', {
       method: 'POST',
       headers: {
