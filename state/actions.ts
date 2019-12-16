@@ -40,6 +40,13 @@ export const setUserId = (id: number): actionTypes.SetUserId => {
         userId: id
     });
 }
+export const setProfileId = (profileId: string): actionTypes.SetProfileId => {
+
+    return ({
+        type: actionTypes.SET_PROFILE_ID,
+        profileId: profileId
+    });
+}
 
 // export const navigateTo = (current: string, next: string, previous: string): actionTypes.NavigateToAction => {
 //     return {

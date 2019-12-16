@@ -35,6 +35,11 @@ export type SetUserId = {
     userId: number
 }
 
+export type SetProfileId = {
+    type: string,
+    profileId: string
+}
+
 // union type to be used in reducers.
 export type MenuItemsListAction = ChangeStateAction;
 
@@ -47,16 +52,20 @@ export type HasProfileState = number;
 export const HAS_PROFILE_STATE = "HAS_PROFILE_STATE";
 export type UserId = number;
 export const SET_USER_ID = "SET_USER_ID";
+export type profileId = string;
+export const SET_PROFILE_ID = "SET_PROFILE_ID";
 export type AppState = {
     menuList: MenuItemsListState,
     login: LoginState,
     hasProfile: HasProfileState,
     activityIndicatorState: ActivityIndicatorState,
-    userId: UserId
+    userId: UserId,
+    profileId: profileId
+
     // add future state slices here
 }
 
-export type GeneralAction = ChangeStateSignedIn | ChangeHasProfileState | ChangeActivityIndicatorState | SetUserId;
+export type GeneralAction = ChangeStateSignedIn | ChangeHasProfileState | ChangeActivityIndicatorState | SetUserId | SetProfileId;
 
 // export enum NAVIGATE_ACTIONS {
 //     NAVIGATE_TO = "NAVIGATE_TO"

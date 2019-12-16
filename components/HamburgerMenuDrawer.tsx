@@ -10,7 +10,7 @@ import { menuList } from '../state/reducer';
 import * as types from '../state/types';
 import NavigationService from './NavigationService.js';
 import { Dispatch } from 'react-redux';
-import { changeStateItem, changeStateSignedIn, changeHasProfileState, changeActivityIndicatorState } from '../state/actions';
+import { changeStateItem, changeStateSignedIn, changeHasProfileState, changeActivityIndicatorState, setUserId, setProfileId } from '../state/actions';
 import {
     NavigationParams,
     NavigationScreenProp,
@@ -25,10 +25,13 @@ export interface Props {
     changeState: any,
     login: number,
     hasProfile: number,
+    profileId: string
     activityIndicatorState: boolean,
     changeActivityIndicatorState: any,
     changeSignedInState: any,
-    changeHasProfileState: any
+    changeHasProfileState: any,
+    setUserId: any,
+    setProfileId: any
 }
 
 class CustomHamburgerMenuDrawer extends Component<Props> {
@@ -40,6 +43,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         SharedPreferences.setName("handyInfo");
         var that = this;
         SharedPreferences.getItem("handyToken", function (value: any) {
+            console.log(value);
             if (value !== null) {
                 that.props.changeSignedInState(1);
                 // check if the user has profile
@@ -48,9 +52,8 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                 that.getUserHasProfile(value);
             }
         });
-
-
     }
+
     componentDidUpdate(prevProps: Props, prevState: Props) {
         if (prevProps.hasProfile !== this.props.hasProfile && this.props.hasProfile === 1) {
             if (!!this.props.hasProfile) {
@@ -63,7 +66,6 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                 // check if has profile
                 this.props.changeState(3, 0);
                 this.props.changeState(4, 0);
-
                 this.props.changeState(8, 1);
                 this.props.changeState(9, 1);
                 this.props.changeState(10, 1);
@@ -84,6 +86,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         var resJson = await response.json()
         if (resJson.result) {
             this.props.changeHasProfileState(1);
+            this.props.setProfileId(resJson.profileId);
         }
         this.props.changeActivityIndicatorState(false);
 
@@ -94,6 +97,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
 
     }
     navigateToScreen(page: string, params: object) {
+        console.log('hello from view profile', page)
 
         NavigationService.navigate(page, params);
     }
@@ -104,7 +108,8 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         SharedPreferences.setName("handyInfo");
         SharedPreferences.removeItem("handyToken");
         this.props.changeSignedInState(0);
-
+        this.props.changeHasProfileState(0);
+        this.props.setProfileId('');
         this.props.changeState(3, 1);
         this.props.changeState(4, 1);
         this.props.changeState(7, 0);
@@ -112,6 +117,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         this.props.changeState(9, 0);
         this.props.changeState(10, 0);
         this.props.changeState(11, 0);
+        this.props.changeState(20, 0);
         this.props.changeState(30, 0);
         NavigationService.navigate('Home');
 
@@ -125,22 +131,36 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                 </View>
 
                 <View style={{ height: 500 }}>
-                    {this.props.items.map((item: any) => {
+                    {this.props.items.map((item: any, index) => {
                         if (item.show === 1) {
                             if (item.itemtxt === "Log out") {
                                 return <Text
-                                    key={item.id}
+                                    key={item.index}
                                     style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#67A443' }}
                                     onPress={() => this.logout()}
                                 >
                                     {item.itemtxt}
                                 </Text>
                             }
+                            if (item.id === 20) {
+                                return (
+                                    <>
+                                        <Text
+                                            key={item.index}
+                                            style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#078ca9' }}
+                                            onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage, userId: this.props.profileId })}
+                                        >
+                                            {item.itemtxt}
+                                        </Text>
+                                        <Divider></Divider>
+                                    </>
+                                )
+                            }
                             var nextPage = (item.itemtxt === 'Sign in' || item.itemtxt === 'Sign Up') ? 'Home' : '';
                             return (
                                 <>
                                     <Text
-                                        key={item.id}
+                                        key={item.index}
                                         style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#078ca9' }}
                                         onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage })}
                                     >
@@ -150,7 +170,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                                 </>
                             )
                         }
-                        return;
+                        return <></>;
                     }
 
                     )}
@@ -174,6 +194,7 @@ const mapStateToProps = (appstate: any, navigation: NavigationScreenProp<Navigat
         items: appstate.menuList,
         login: appstate.changeGeneralState.login,
         hasProfile: appstate.changeGeneralState.hasProfile,
+        profileId: appstate.changeGeneralState.profileId,
         activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
         navigation: navigation
     })
@@ -190,7 +211,13 @@ const mapDsipatchToProps = (dispatch: Dispatch) => ({
     },
     changeActivityIndicatorState: (state: boolean) => {
         dispatch(changeActivityIndicatorState(state));
-    }
+    },
+    setUserId: (userId: number) => {
+        dispatch(setUserId(userId));
+    },
+    setProfileId: (profileId: string) => {
+        dispatch(setProfileId(profileId));
+    },
     // other callbacks go here...
 });
 const styles = StyleSheet.create({
