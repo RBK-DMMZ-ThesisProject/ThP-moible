@@ -193,6 +193,7 @@ class AddProfileScreen extends React.Component<Props, object> {
             }
         });
     }
+
     // check user has a profile
     async getUserHasProfile(token: string) {
         var response = await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile', {
@@ -221,15 +222,33 @@ class AddProfileScreen extends React.Component<Props, object> {
     async saveProfile() {
         // console.log(this.state)
         if (this.state.emailError === undefined && this.state.firstNameError === undefined && this.state.familyNameError === undefined && this.state.phoneNumError === undefined) {
-
-            const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
-            const { navigation } = this.props;
             this.setState({
                 saveLoading: true,
                 isSbumitted: true,
             })
-            await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
-            await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
+            const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
+            const { navigation } = this.props;
+
+            if (avatarUri !== '') {
+                await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
+            } else {
+                this.setState({
+                    saveLoading: false,
+                    isSbumitted: false,
+                })
+                return;
+
+            }
+            if (sampleWorkImgUri !== '') {
+
+                await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
+            } else {
+                this.setState({
+                    saveLoading: false,
+                    isSbumitted: false,
+                })
+                return;
+            }
             if (this.state.avartfbUrl === '' || this.state.sampleWorkImgfbUrl === '') {
                 if (this.state.avartfbUrl === '') {
                     this.setState({
@@ -243,6 +262,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                 }
 
             } else {
+
                 var profileData = {
                     firstName: this.state.firstName.trim(),
                     familyName: this.state.familyName.trim(),
@@ -268,10 +288,20 @@ class AddProfileScreen extends React.Component<Props, object> {
                         this.setState({
                             saveLoading: false
                         });
-                        this.getUserHasProfile(resJson.token);
-                        if (this.props.hasProfile) {
-                            this.props.changeState(20); // view profile
-                        }
+                        var SharedPreferences = require('react-native-shared-preferences');
+                        SharedPreferences.setName("handyInfo");
+                        var that = this;
+                        SharedPreferences.getItem("handyToken", function (value: any) {
+                            console.log(value);
+                            if (value !== null) {
+
+                                that.getUserHasProfile(value);
+                                if (that.props.hasProfile) {
+                                    that.props.changeState(20, 1); // view profile
+                                }
+                            }
+                        });
+
                         NavigationService.navigate('ViewProfile', { 'profile': profileData });
                     })
                     .catch((error) => {
@@ -282,6 +312,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                     });
             }
         }
+        return;
     }
     render() {
         const { navigation } = this.props;
@@ -339,7 +370,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                             labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             onChangeText={(email) => this.setState({ email })}
                             onBlur={() => {
-                                this.setState({ emailError: validate({ email: email }, { email: { presence: true, email: true } }, { format: "flat" }) })
+                                this.setState({ emailError: validate({ email: email.trim() }, { email: { presence: true, email: true } }, { format: "flat" }) })
                             }}
                             placeholder={'Enter your email...'}
                             placeholderTextColor="#999"

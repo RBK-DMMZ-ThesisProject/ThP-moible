@@ -17,7 +17,6 @@ import {
   NavigationState,
 } from 'react-navigation';
 import {Input, Button, Image} from 'react-native-elements';
-
 import HandyHeader from './HandyHeader';
 import {any} from 'prop-types';
 import {connect} from 'react-redux';
@@ -40,7 +39,6 @@ export interface Props {
   changeSignedInState: any;
   setProfileId: any;
 }
-
 class SignIn extends React.Component<Props, object> {
   state = {
     // personal info
@@ -69,7 +67,6 @@ class SignIn extends React.Component<Props, object> {
       this.props.changeHasProfileState(1);
       this.props.setProfileId(resJson.profileId);
     }
-
     // .catch(error => {
     //     console.error(error);
     //     that.props.changeActivityIndicatorState(false);
@@ -79,7 +76,6 @@ class SignIn extends React.Component<Props, object> {
   // @description:sign in to our application
   //
   async signIn() {
-    console.log(this.state);
     if (
       this.state.emailError === undefined &&
       this.state.passwordError === undefined
@@ -110,19 +106,20 @@ class SignIn extends React.Component<Props, object> {
             this.props.changeSignedInState(1);
             this.getUserHasProfile(resJson.token);
             if (this.props.hasProfile) {
-              this.props.changeState(20); // view profile
+              this.props.changeState(20, 1); // view profile
             }
-
             navigation.navigate(navigation.getParam('nextPage'));
           } else {
             this.setState({
               loginError: resJson.msg,
-              email: '',
-              password: '',
-              signInLoading: false,
             });
             // check if a user is a service provider to add also 20
           }
+          this.setState({
+            email: '',
+            password: '',
+            signInLoading: false,
+          });
         })
         .catch(error => {
           console.error(error);
@@ -135,6 +132,7 @@ class SignIn extends React.Component<Props, object> {
           // process erro messages
         });
     }
+    return;
   }
   render() {
     const {navigation} = this.props;
@@ -159,7 +157,7 @@ class SignIn extends React.Component<Props, object> {
                 style={{flex: 2, width: 150, height: 190}}
               />
             </View>
-
+            ​
             <Input
               inputStyle={{
                 backgroundColor: '#f2f2f2',
@@ -181,10 +179,12 @@ class SignIn extends React.Component<Props, object> {
               }}
               placeholder={'Enter your email...'}
               placeholderTextColor="#999"
-              errorMessage={emailError}>
+              errorMessage={
+                Array.isArray(emailError) ? emailError[0] : emailError
+              }>
               {email}
             </Input>
-
+            ​
             <Input
               inputStyle={{
                 backgroundColor: '#f2f2f2',
@@ -206,21 +206,23 @@ class SignIn extends React.Component<Props, object> {
               }
               placeholder={'Enter your password...'}
               placeholderTextColor="#999"
-              errorMessage={passwordError}>
+              errorMessage={
+                Array.isArray(passwordError) ? passwordError[0] : passwordError
+              }>
               {password}
             </Input>
-
+            ​
             <Text
               style={{
                 fontSize: 16,
                 lineHeight: 20,
-                color: '#67A443',
+                color: 'red',
                 textAlign: 'center',
               }}>
               {' '}
               {loginError}
             </Text>
-
+            ​
             <View style={{flex: 1, margin: 10}}>
               <Button
                 buttonStyle={{
@@ -280,7 +282,6 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
   setProfileId: (profileId: string) => {
     dispatch(setProfileId(profileId));
   },
-
   // other callbacks go here...
 });
 const mapStateToProps = (
@@ -292,5 +293,4 @@ const mapStateToProps = (
   profileId: appstate.changeGeneralState.profileId,
   navigation: navigation,
 });
-
 export default connect(null, mapDipatchToProps)(SignIn);

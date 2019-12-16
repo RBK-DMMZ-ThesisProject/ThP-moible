@@ -62,6 +62,13 @@ export const initialItemState: types.MenuItemsListState = [{
 },
 {
     id: 11,
+    itemtxt: 'Offers',
+    toPage: 'Offers',
+    show: 0
+},
+
+{
+    id: 12,
     itemtxt: 'Messages',
     toPage: 'Messages',
     show: 0

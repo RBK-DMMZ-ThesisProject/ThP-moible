@@ -34,6 +34,7 @@ import CustomHamburgerMenuDrawer from './components/HamburgerMenuDrawer';
 import NavigationService from './components/NavigationService';
 import serviceProviderProfile from './components/serviceProviderProfile';
 import Chatt from './components/chattingApp/chatt';
+import Offers from './components/Offers';
 // const MainNavigator = createStackNavigator({
 //   Home: { screen: HomeScreen },
 //   Categories: { screen: CategoriesScreen },
@@ -113,9 +114,15 @@ export const MainStack = createStackNavigator({
   HireHistory: {
     screen: HireHistory,
     navigationOptions: {
-      title: 'HireHistory',
+      title: 'Hire History',
     },
   },
+  Offers: {
+    screen: Offers,
+    navigationOptions: {
+      title: 'Offers',
+    },
+  }
 }, { headerMode: 'none' });
 
 export const Drawer = createDrawerNavigator({
