@@ -97,6 +97,13 @@ class SignIn extends React.Component<Props, object> {
                         var SharedPreferences = require('react-native-shared-preferences');
                         SharedPreferences.setName("handyInfo");
                         SharedPreferences.setItem("handyToken", resJson.token);
+                        this.props.changeSignedInState(1);
+                        this.getUserHasProfile(resJson.token);
+                        if (this.props.hasProfile) {
+                            this.props.changeState(20); // view profile
+                        }
+
+                        navigation.navigate(navigation.getParam('nextPage'));
                     } else {
                         this.setState({
                             loginError: resJson.msg,
@@ -105,13 +112,7 @@ class SignIn extends React.Component<Props, object> {
                             signInLoading: false
                         })
                         // check if a user is a service provider to add also 20
-                        this.props.changeSignedInState(1);
-                        this.getUserHasProfile(resJson.token);
-                        if (this.props.hasProfile) {
-                            this.props.changeState(20); // view profile
-                        }
 
-                        navigation.navigate(navigation.getParam('nextPage'));
                     }
                 })
                 .catch((error) => {

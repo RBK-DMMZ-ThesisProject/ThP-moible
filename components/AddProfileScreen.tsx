@@ -25,6 +25,7 @@ import ImagePicker from 'react-native-image-picker';
 import storage, { firebase } from '@react-native-firebase/storage';
 import { any } from 'prop-types';
 import categories from './categories';
+import validate from 'validate.js';
 
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -34,9 +35,13 @@ class AddProfileScreen extends React.Component<Props, object> {
     state = {
         // personal info
         firstName: '',
+        firstNameError: '',
         familyName: '',
+        familyNameError: '',
         phoneNum: '',
+        phoneNumError: '',
         email: '',
+        emailError: '',
         // for date birth
         birthdate: new Date(),
         showDate: false,
@@ -180,51 +185,54 @@ class AddProfileScreen extends React.Component<Props, object> {
     // 
     async saveProfile() {
         // console.log(this.state)
-        const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
-        const { navigation } = this.props;
-        this.setState({
-            saveLoading: true,
-            isSbumitted: true,
-        })
-        await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
-        await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
-        var profileData = {
-            firstName: this.state.firstName.trim(),
-            familyName: this.state.familyName.trim(),
-            phoneNum: this.state.phoneNum,
-            email: this.state.email.trim(),
-            birthdate: this.state.birthdate,
-            avatarSource: this.state.avartfbUrl,
-            category: this.state.category,
-            serverDesription: this.state.serverDesription.trim(),
-            sampleWorkImg: this.state.sampleWorkImgfbUrl
-        };
-        fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(profileData),
+        if (this.state.emailError === undefined && this.state.firstNameError === undefined && this.state.familyNameError === undefined && this.state.phoneNumError === undefined) {
 
-        }).then(res => res.json())
-            .then(resJson => {
-                console.log('response: ', resJson);
-                this.setState({
-                    saveLoading: false
-                });
-                navigation.navigate('ViewProfile', { 'profile': profileData });
+            const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
+            const { navigation } = this.props;
+            this.setState({
+                saveLoading: true,
+                isSbumitted: true,
             })
-            .catch((error) => {
-                console.error(error);
-                this.setState({
-                    saveLoading: false
+            await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
+            await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
+            var profileData = {
+                firstName: this.state.firstName.trim(),
+                familyName: this.state.familyName.trim(),
+                phoneNum: this.state.phoneNum,
+                email: this.state.email.trim(),
+                birthdate: this.state.birthdate,
+                avatarSource: this.state.avartfbUrl,
+                category: this.state.category,
+                serverDesription: this.state.serverDesription.trim(),
+                sampleWorkImg: this.state.sampleWorkImgfbUrl
+            };
+            fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addNewProfile', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(profileData),
+
+            }).then(res => res.json())
+                .then(resJson => {
+                    console.log('response: ', resJson);
+                    this.setState({
+                        saveLoading: false
+                    });
+                    navigation.navigate('ViewProfile', { 'profile': profileData });
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.setState({
+                        saveLoading: false
+                    });
                 });
-            });
+        }
     }
     render() {
         const { navigation } = this.props;
-        const { firstName, familyName, phoneNum, email, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading } = this.state;
+        const { firstName, firstNameError, familyName, familyNameError, phoneNum, phoneNumError, email, emailError, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading } = this.state;
         return (
             <>
                 <StatusBar barStyle="dark-content" />
@@ -236,9 +244,12 @@ class AddProfileScreen extends React.Component<Props, object> {
                             label='First Name:'
                             labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             onChangeText={(firstName) => this.setState({ firstName })}
+                            onBlur={() => {
+                                this.setState({ firstNameError: validate({ firstName: firstName }, { firstName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your first name...'}
                             placeholderTextColor="#999"
-                        // errorMessage={(firstName !== "") ? 'Please enter your first name' : ''}
+                            errorMessage={firstNameError}
                         >{firstName}</Input>
                         {/* {this.validator.message('firstName', firstName, 'required')} */}
 
@@ -247,9 +258,12 @@ class AddProfileScreen extends React.Component<Props, object> {
                             label='Family Name:'
                             labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             onChangeText={(familyName) => this.setState({ familyName })}
+                            onBlur={() => {
+                                this.setState({ familyNameError: validate({ familyName: familyName }, { familyName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your family name...'}
                             placeholderTextColor="#999"
-                        // errorMessage='Enter your family name'
+                            errorMessage={familyNameError}
 
                         >{familyName}</Input>
                         <Input
@@ -258,9 +272,12 @@ class AddProfileScreen extends React.Component<Props, object> {
                             labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             keyboardType="number-pad"
                             onChangeText={(phoneNum) => this.setState({ phoneNum })}
+                            onBlur={() => {
+                                this.setState({ phoneNumError: validate({ phoneNum: phoneNum }, { phoneNum: { presence: true, length: { minimum: 6 } } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your phone number...'}
                             placeholderTextColor="#999"
-                        // errorMessage='Enter your family name'
+                            errorMessage={phoneNumError}
 
                         >{phoneNum}</Input>
                         <Input
@@ -268,9 +285,12 @@ class AddProfileScreen extends React.Component<Props, object> {
                             label='Email:'
                             labelStyle={{ fontSize: 20, color: "#078ca9" }}
                             onChangeText={(email) => this.setState({ email })}
+                            onBlur={() => {
+                                this.setState({ emailError: validate({ email: email }, { email: { presence: true, email: true } }, { format: "flat" }) })
+                            }}
                             placeholder={'Enter your email...'}
                             placeholderTextColor="#999"
-                        // errorMessage='Enter your family name'
+                            errorMessage={emailError}
                         >{email}</Input>
                         {/* Begin: date input */}
                         <Input

@@ -78,6 +78,8 @@ class SignUp extends React.Component<Props, object> {
                         var SharedPreferences = require('react-native-shared-preferences');
                         SharedPreferences.setName("handyInfo");
                         SharedPreferences.setItem("handyToken", resJson.token);
+                        this.props.changeSignedInState(1);
+                        navigation.navigate(navigation.getParam('nextPage'));
                     }
                     else {
                         this.setState({
@@ -88,8 +90,7 @@ class SignUp extends React.Component<Props, object> {
                             mobileNO: null,
                             signUpLoading: false
                         });
-                        this.props.changeSignedInState(1);
-                        navigation.navigate(navigation.getParam('nextPage'));
+
                     }
 
 
