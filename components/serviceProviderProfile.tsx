@@ -55,31 +55,31 @@ class serviceProviderProfile extends React.Component<Props, object> {
     isfavorite: false,
     ratingGiven: 0,
   };
-  requestPayment = () => {
-    return stripe
-      .paymentRequestWithCardForm()
-      .then((stripeTokenInfo: any) => {
-        console.warn('Token created', {stripeTokenInfo});
-        const body = {
-          amount: 100,
-          tokenId: stripeTokenInfo.tokenId,
-        };
-        const headers = {
-          'Content-Type': 'application/json',
-        };
-        axios
-          .post('http://localhost:5000/api/doPayment', body, {headers})
-          .then(({data}) => {
-            return data;
-          })
-          .catch(error => {
-            return Promise.reject('Error in making payment', error);
-          });
-      })
-      .catch((error: any) => {
-        console.warn('Payment failed', {error});
-      });
-  };
+  // requestPayment = () => {
+  //   return stripe
+  //     .paymentRequestWithCardForm()
+  //     .then((stripeTokenInfo: any) => {
+  //       console.warn('Token created', {stripeTokenInfo});
+  //       const body = {
+  //         amount: 100,
+  //         tokenId: stripeTokenInfo.tokenId,
+  //       };
+  //       const headers = {
+  //         'Content-Type': 'application/json',
+  //       };
+  //       axios
+  //         .post('http://localhost:5000/api/doPayment', body, {headers})
+  //         .then(({data}) => {
+  //           return data;
+  //         })
+  //         .catch(error => {
+  //           return Promise.reject('Error in making payment', error);
+  //         });
+  //     })
+  //     .catch((error: any) => {
+  //       console.warn('Payment failed', {error});
+  //     });
+  // };
   componentDidMount() {
     var that = this;
     const userId = this.props.navigation.getParam('userId');
@@ -381,11 +381,11 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   this.hireSP();
                 }}
               />
-              <Button
+              {/* <Button
                 title="Pay"
                 color="#63b8d4"
                 onPress={this.requestPayment}
-              />
+              /> */}
             </Card>
             <Card title="REVIEWS">
               <View>

@@ -19,6 +19,7 @@ import stripe from 'tipsi-stripe';
 stripe.setOptions({
   publishableKey: 'pk_test_u7t7CW4JRlx90adyZxR5lgTv000buXI4XF',
 });
+import axios from 'axios';
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
@@ -38,6 +39,31 @@ class HomeScreen extends React.Component<Props, object> {
         that.props.navigation.navigate('AddProfileScreen');
       }
     });
+  };
+  requestPayment = () => {
+    return stripe
+      .paymentRequestWithCardForm()
+      .then((stripeTokenInfo: any) => {
+        console.warn('Token created', {stripeTokenInfo});
+        const body = {
+          amount: 100,
+          tokenId: stripeTokenInfo.tokenId,
+        };
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+        axios
+          .post('http://localhost:5000/api/doPayment', body, {headers})
+          .then(({data}) => {
+            return data;
+          })
+          .catch(error => {
+            return Promise.reject('Error in making payment', error);
+          });
+      })
+      .catch((error: any) => {
+        console.warn('Payment failed', {error});
+      });
   };
 
   render() {
@@ -122,15 +148,15 @@ class HomeScreen extends React.Component<Props, object> {
             <View style={{flex: 1}}>
               <Text
                 style={{
-                  width: 250,
-                  height: 70,
-                  fontSize: 25,
+                  width: 90,
+                  height: 60,
+                  fontSize: 15,
                   backgroundColor: '#078ca9',
                   color: '#f2f2f2',
                   borderRadius: 8,
                   padding: 20,
                 }}
-                onPress={this.handleAddUserProfileBtn}>
+                onPress={this.requestPayment}>
                 Donate
               </Text>
             </View>
