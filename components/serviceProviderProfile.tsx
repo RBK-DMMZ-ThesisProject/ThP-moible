@@ -55,38 +55,43 @@ class serviceProviderProfile extends React.Component<Props, object> {
     isfavorite: false,
     ratingGiven: 0,
   };
-  requestPayment = () => {
-    return stripe
-      .paymentRequestWithCardForm()
-      .then((stripeTokenInfo: any) => {
-        console.warn('Token created', { stripeTokenInfo });
-        const body = {
-          amount: 100,
-          tokenId: stripeTokenInfo.tokenId,
-        };
-        const headers = {
-          'Content-Type': 'application/json',
-        };
-        axios
-          .post('http://localhost:5000/api/doPayment', body, { headers })
-          .then(({ data }) => {
-            return data;
-          })
-          .catch(error => {
-            return Promise.reject('Error in making payment', error);
-          });
-      })
-      .catch((error: any) => {
-        console.warn('Payment failed', { error });
-      });
-  };
+  // requestPayment = () => {
+  //   return stripe
+  //     .paymentRequestWithCardForm()
+  //     .then((stripeTokenInfo: any) => {
+  //       console.warn('Token created', {stripeTokenInfo});
+  //       const body = {
+  //         amount: 100,
+  //         tokenId: stripeTokenInfo.tokenId,
+  //       };
+  //       const headers = {
+  //         'Content-Type': 'application/json',
+  //       };
+  //       axios
+  //         .post('http://localhost:5000/api/doPayment', body, {headers})
+  //         .then(({data}) => {
+  //           return data;
+  //         })
+  //         .catch(error => {
+  //           return Promise.reject('Error in making payment', error);
+  //         });
+  //     })
+  //     .catch((error: any) => {
+  //       console.warn('Payment failed', {error});
+  //     });
+  // };
   componentDidMount() {
     var that = this;
     const userId = this.props.navigation.getParam('userId');
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
+<<<<<<< HEAD
     SharedPreferences.getItem('handyToken', function (value: any) {
       if (value === null) {
+=======
+    SharedPreferences.getItem('handyToken', function(value: any) {
+      if (value === undefined) {
+>>>>>>> 98d958bfc3966e6662b4d909622d4abc511a2d1c
         console.log('no token from here');
         that.props.navigation.navigate('SignIn');
       } else {
@@ -235,7 +240,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       }
     });
   }
-  setModalVisible(visible) {
+  setModalVisible(visible: any) {
     this.setState({ modalVisible: visible });
   }
   isFave() {
@@ -255,14 +260,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
     );
   }
 
-  ratingCompleted(rating) {
+  ratingCompleted(rating: any) {
     console.log('Rating is: ' + rating);
     this.setState({ rating: rating });
   }
   render() {
     const { navigation } = this.props;
-    const { profile } = this.state;
-    const { reviews } = this.state;
+    const { profile, ratingGiven, reviews } = this.state;
+
     console.log('hello agina');
     return (
       <>
@@ -377,7 +382,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   this.hireSP();
                 }}
               />
-              <Button
+              {/* <Button
                 title="Pay"
                 color="#63b8d4"
                 onPress={this.requestPayment}
