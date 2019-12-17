@@ -22,7 +22,6 @@ class ProfilesScreen extends React.Component<Props, object> {
   componentDidMount() {
     const categoryName = this.props.navigation.getParam('categoryName');
     const { profiles } = this.state;
-    console.log('categoryNameeeeeeeeeee', categoryName);
     fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getProfiles', {
       method: 'POST',
       headers: {
@@ -73,11 +72,11 @@ class ProfilesScreen extends React.Component<Props, object> {
     return (
       <>
         <HandyHeader navigation={navigation} title={categoryName} />
-        <Card containerStyle={{ padding: 5 }}>
-          {console.log('profiles ', profiles)}
-          {profiles.map((user, i) => {
-            return (
-              <View key={i}>
+        {profiles.map((user: any, i: any) => {
+          return (
+            <Card containerStyle={{ padding: 5 }} key={i}>
+
+              <View >
                 <TouchableOpacity
                   onPress={() =>
                     NavigationService.navigate('ProviderProfile', {
@@ -85,27 +84,32 @@ class ProfilesScreen extends React.Component<Props, object> {
                     })
                   }>
                   <ListItem
+
                     leftAvatar={{
-                      title: user['userName'][0],
+                      title: "SP",
                       source: { uri: user['userImg'] },
                     }}
+
+                    titleStyle={{ position: "absolute", top: -20, left: -4 }}
                     title={user['userName']}
                     chevron></ListItem>
                 </TouchableOpacity>
-                <View style={{ alignItems: 'flex-start' }}>
+                <View style={{ position: 'absolute', top: 40, left: 65 }}>
                   <Rating
                     type="custom"
-                    ratingColor="#63b8d4"
-                    ratingBackgroundColor="#eff7fa"
+                    ratingColor="#078ca9"
+                    ratingBackgroundColor="#078ca9"
+
                     readonly
-                    imageSize={20}
+                    imageSize={18}
                     startingValue={rating[i]}
                   />
                 </View>
               </View>
-            );
-          })}
-        </Card>
+
+            </Card>
+          );
+        })}
       </>
     );
   }
