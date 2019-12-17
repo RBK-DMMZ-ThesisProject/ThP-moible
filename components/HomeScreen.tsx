@@ -7,6 +7,7 @@ import {
   StatusBar,
   SafeAreaView,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {
   NavigationParams,
@@ -55,9 +56,9 @@ class HomeScreen extends React.Component<Props, object> {
         axios
           .post('https://salty-garden-58258.herokuapp.com/payApi/doPayment/', body, { headers })
           .then(({ data }) => {
-            return data;
+            Alert.alert('payment has been successful')
           })
-          .catch(error => {
+          .catch((error: any) => {
             return Promise.reject('Error in making payment', error);
           });
       })

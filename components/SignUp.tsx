@@ -123,12 +123,15 @@ class SignUp extends React.Component<Props, object> {
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <HandyHeader navigation={navigation} title="Sign Up" />
                         <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                            <Image source={require('./../assets/Handy.png')} style={{ flex: 2, width: 150, height: 190 }} />
+                            <Image source={require('./../assets/Handy.png')} style={{ flex: 2, width: 190, height: 190, marginBottom: 20 }} />
                         </View>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            containerStyle={{
+                                marginTop: 15
+                            }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Name:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 18, color: "#666" }}
                             onBlur={() => {
                                 this.setState({ userNameError: validate({ userName: userName }, { userName: { presence: true, type: 'string', length: { minimum: 6 } } }, { format: "flat" }) })
                             }}
@@ -138,9 +141,12 @@ class SignUp extends React.Component<Props, object> {
                             placeholderTextColor="#999"
                         >{userName}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            containerStyle={{
+                                marginTop: 15
+                            }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Email:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 18, color: "#666" }}
                             onChangeText={(email) => this.setState({ email })}
                             onBlur={() => {
                                 this.setState({ emailError: validate({ email: email }, { email: { presence: true, email: true } }, { format: "flat" }) })
@@ -150,10 +156,13 @@ class SignUp extends React.Component<Props, object> {
                             placeholderTextColor="#999"
                         >{email}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            containerStyle={{
+                                marginTop: 15
+                            }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Mobile No.:'
                             keyboardType="number-pad"
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 18, color: "#666" }}
                             onChangeText={(mobileNO) => this.setState({ mobileNO })}
                             onBlur={() => {
                                 this.setState({ mobileNOError: validate({ mobileNO: mobileNO }, { mobileNO: { presence: true, length: { minimum: 6 } } }, { format: "flat" }) })
@@ -163,10 +172,13 @@ class SignUp extends React.Component<Props, object> {
                             errorMessage={Array.isArray(mobileNOError) ? mobileNOError[0] : mobileNOError}
                         >{mobileNO}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            containerStyle={{
+                                marginTop: 15
+                            }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Password:'
                             secureTextEntry={true}
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 18, color: "#666" }}
                             onBlur={() => {
                                 this.setState({ passwordError: validate({ password: password }, { password: { presence: true, length: { minimum: 6 } } }, { format: "flat" }) })
                             }}
@@ -175,7 +187,7 @@ class SignUp extends React.Component<Props, object> {
                             errorMessage={Array.isArray(passwordError) ? passwordError[0] : passwordError}
                             placeholderTextColor="#999"
                         >{password}</Input>
-                        <Text style={{ fontSize: 16, lineHeight: 20, color: 'red', textAlign: 'center' }} > {loginError}</Text>
+                        <Text style={{ fontSize: 16, lineHeight: 20, color: '#F44324', textAlign: 'center' }} > {loginError}</Text>
 
                         <View style={{ flex: 1, margin: 10 }}>
                             <Button buttonStyle={{

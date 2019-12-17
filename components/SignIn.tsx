@@ -162,11 +162,12 @@ class SignIn extends React.Component<Props, object> {
                             inputStyle={{
                                 backgroundColor: '#f2f2f2',
                                 borderRadius: 5,
-                                color: '#078ca9',
-                                marginTop: 5
+                                color: '#666',
+                                marginTop: 5,
+
                             }}
                             label="Email:"
-                            labelStyle={{ fontSize: 20, color: '#078ca9' }}
+                            labelStyle={{ fontSize: 18, color: '#666' }}
                             onChangeText={email => this.setState({ email })}
                             keyboardType="email-address"
                             onBlur={() => {
@@ -193,13 +194,13 @@ class SignIn extends React.Component<Props, object> {
                             inputStyle={{
                                 backgroundColor: '#f2f2f2',
                                 borderRadius: 5,
-                                color: '#078ca9',
+                                color: '#666',
                                 marginTop: 5
 
                             }}
                             label="Password:"
                             secureTextEntry={true}
-                            labelStyle={{ fontSize: 20, color: '#078ca9' }}
+                            labelStyle={{ fontSize: 18, color: '#666' }}
                             onChangeText={password => this.setState({ password })}
                             onBlur={() =>
                                 this.setState({
@@ -222,7 +223,7 @@ class SignIn extends React.Component<Props, object> {
                             style={{
                                 fontSize: 16,
                                 lineHeight: 20,
-                                color: 'red',
+                                color: '#F44324',
                                 textAlign: 'center',
                             }}>
 
