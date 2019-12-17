@@ -1,6 +1,13 @@
 import React from 'react';
 import {View, TouchableOpacity, Alert} from 'react-native';
-import {Card, ListItem, Button, Icon, Rating} from 'react-native-elements';
+import {
+  Card,
+  ListItem,
+  Button,
+  Icon,
+  Rating,
+  Text,
+} from 'react-native-elements';
 import {
   NavigationParams,
   NavigationScreenProp,
@@ -69,6 +76,7 @@ class Favorites extends React.Component<Props, object> {
                       source: {uri: provider['userImg']},
                     }}
                     title={provider['userName']}
+                    subtitle={provider['ServiceCategory']}
                     chevron></ListItem>
                 </TouchableOpacity>
               </View>
