@@ -106,13 +106,14 @@ class HomeScreen extends React.Component<Props, object> {
             <View style={{ flex: 1, alignContent: 'flex-end' }}>
               <Text
                 style={{
-                  width: 250,
-                  height: 70,
-                  fontSize: 25,
+                  width: 180,
+                  height: 50,
+                  fontSize: 18,
                   backgroundColor: '#078ca9',
                   color: '#f2f2f2',
                   borderRadius: 8,
-                  padding: 20,
+                  textAlign: 'center',
+                  textAlignVertical: 'center'
                 }}
                 onPress={() => navigation.navigate('Categories')}>
                 Find A Handyman
@@ -127,13 +128,15 @@ class HomeScreen extends React.Component<Props, object> {
             <View style={{ flex: 1 }}>
               <Text
                 style={{
-                  width: 250,
-                  height: 70,
-                  fontSize: 25,
+                  width: 150,
+                  height: 50,
+                  fontSize: 18,
                   backgroundColor: '#078ca9',
                   color: '#f2f2f2',
                   borderRadius: 8,
-                  padding: 20,
+                  textAlign: 'center',
+                  textAlignVertical: 'center'
+
                 }}
                 onPress={this.handleAddUserProfileBtn}>
                 Add Your Profile
@@ -149,12 +152,13 @@ class HomeScreen extends React.Component<Props, object> {
               <Text
                 style={{
                   width: 90,
-                  height: 60,
+                  height: 50,
                   fontSize: 15,
-                  backgroundColor: '#078ca9',
+                  backgroundColor: '#F44324',
                   color: '#f2f2f2',
                   borderRadius: 8,
-                  padding: 20,
+                  textAlign: 'center',
+                  textAlignVertical: 'center'
                 }}
                 onPress={this.requestPayment}>
                 Donate

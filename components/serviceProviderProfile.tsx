@@ -67,6 +67,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
         console.log('no token from here');
         that.props.navigation.navigate('SignIn');
       } else {
+        console.log(value);
         that.setState({
           token: value,
         });

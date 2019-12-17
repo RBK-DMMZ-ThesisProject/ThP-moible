@@ -20,7 +20,7 @@ const HandyHeader = ({ title, navigation }: Props) => {
             leftComponent={<HamburgerMenu navigation={navigation} />}
             centerComponent={{
                 text: title,
-                style: { color: "#f2f2f2", fontWeight: "bold", fontFamily: 'Cochin', fontSize: 30, backgroundColor: '#078ca9' }
+                style: { color: "#f2f2f2", fontWeight: "bold", fontFamily: 'Cochin', fontSize: 25, backgroundColor: '#078ca9' }
             }}
             statusBarProps={{ barStyle: "light-content" }}
 
