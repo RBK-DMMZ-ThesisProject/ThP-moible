@@ -24,15 +24,16 @@ export interface Props {
 }
 
 class HomeScreen extends React.Component<Props, object> {
-
   handleAddUserProfileBtn = () => {
     var that = this;
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function (value: any) {
+    SharedPreferences.getItem('handyToken', function(value: any) {
       console.log('our tocken ', value);
       if (value === null) {
-        that.props.navigation.navigate('SignIn', { nextPage: 'AddProfileScreen' });
+        that.props.navigation.navigate('SignIn', {
+          nextPage: 'AddProfileScreen',
+        });
       } else {
         that.props.navigation.navigate('AddProfileScreen');
       }
@@ -40,11 +41,11 @@ class HomeScreen extends React.Component<Props, object> {
   };
 
   render() {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{flex: 1}}>
           <HandyHeader navigation={navigation} title="Home" />
           <View
             style={{
@@ -53,12 +54,16 @@ class HomeScreen extends React.Component<Props, object> {
               justifyContent: 'space-around',
               alignItems: 'center',
             }}>
-            <View style={{ flex: 4, alignContent: 'flex-end' }}>
-
+            <View style={{flex: 4, alignContent: 'flex-end'}}>
               {/* <Text style={{ fontSize: 50, fontWeight: "bold", color: '#c5df16', padding: 20 }} onPress={() => navigation.navigate('Categories')}>Welcome</Text> */}
               <Image
                 source={require('./../assets/Handy.png')}
-                style={{ marginTop: 70, marginBottom: 30, marginRight: 10, marginLeft: 10 }}
+                style={{
+                  marginTop: 70,
+                  marginBottom: 30,
+                  marginRight: 10,
+                  marginLeft: 10,
+                }}
               />
             </View>
 
@@ -72,8 +77,20 @@ class HomeScreen extends React.Component<Props, object> {
               }}>
               Handy
             </Text> */}
-            <View style={{ flex: 1, alignContent: 'flex-end' }}>
-              <Text style={{ width: 250, height: 70, fontSize: 25, backgroundColor: "#078ca9", color: '#f2f2f2', borderRadius: 8, padding: 20 }} onPress={() => navigation.navigate('Categories')}>Find A Handyman</Text>
+            <View style={{flex: 1, alignContent: 'flex-end'}}>
+              <Text
+                style={{
+                  width: 250,
+                  height: 70,
+                  fontSize: 25,
+                  backgroundColor: '#078ca9',
+                  color: '#f2f2f2',
+                  borderRadius: 8,
+                  padding: 20,
+                }}
+                onPress={() => navigation.navigate('Categories')}>
+                Find A Handyman
+              </Text>
               {/* <Button
                 title="Find a Handyman"
                 color="#63b8d4"
@@ -81,14 +98,41 @@ class HomeScreen extends React.Component<Props, object> {
 
               /> */}
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ width: 250, height: 70, fontSize: 25, backgroundColor: "#078ca9", color: '#f2f2f2', borderRadius: 8, padding: 20 }} onPress={this.handleAddUserProfileBtn}>Add Your Profile</Text>
+            <View style={{flex: 1}}>
+              <Text
+                style={{
+                  width: 250,
+                  height: 70,
+                  fontSize: 25,
+                  backgroundColor: '#078ca9',
+                  color: '#f2f2f2',
+                  borderRadius: 8,
+                  padding: 20,
+                }}
+                onPress={this.handleAddUserProfileBtn}>
+                Add Your Profile
+              </Text>
 
               {/* <Button
                 title="Add User Profile"
                 color="#63b8d4"
                 onPress={this.handleAddUserProfileBtn}
               /> */}
+            </View>
+            <View style={{flex: 1}}>
+              <Text
+                style={{
+                  width: 250,
+                  height: 70,
+                  fontSize: 25,
+                  backgroundColor: '#078ca9',
+                  color: '#f2f2f2',
+                  borderRadius: 8,
+                  padding: 20,
+                }}
+                onPress={this.handleAddUserProfileBtn}>
+                Donate
+              </Text>
             </View>
           </View>
         </SafeAreaView>
