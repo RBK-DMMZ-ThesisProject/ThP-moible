@@ -151,10 +151,10 @@ class SignIn extends React.Component<Props, object> {
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <HandyHeader navigation={navigation} title="Sign In" />
                         <View
-                            style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                            style={{ flex: 2, justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
                             <Image
                                 source={require('./../assets/Handy.png')}
-                                style={{ flex: 2, width: 150, height: 190 }}
+                                style={{ flex: 2, width: 190, height: 190 }}
                             />
                         </View>
 
@@ -163,6 +163,7 @@ class SignIn extends React.Component<Props, object> {
                                 backgroundColor: '#f2f2f2',
                                 borderRadius: 5,
                                 color: '#078ca9',
+                                marginTop: 5
                             }}
                             label="Email:"
                             labelStyle={{ fontSize: 20, color: '#078ca9' }}
@@ -186,10 +187,15 @@ class SignIn extends React.Component<Props, object> {
                         </Input>
 
                         <Input
+                            containerStyle={{
+                                marginTop: 15
+                            }}
                             inputStyle={{
                                 backgroundColor: '#f2f2f2',
                                 borderRadius: 5,
                                 color: '#078ca9',
+                                marginTop: 5
+
                             }}
                             label="Password:"
                             secureTextEntry={true}
@@ -240,7 +246,7 @@ class SignIn extends React.Component<Props, object> {
                             style={{
                                 fontSize: 16,
                                 lineHeight: 20,
-                                color: '#67A443',
+                                color: '#999',
                                 textAlign: 'center',
                             }}>
                             Don't You Have an Account?

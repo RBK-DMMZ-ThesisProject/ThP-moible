@@ -136,7 +136,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                             if (item.itemtxt === "Log out") {
                                 return <Text
                                     key={item.index}
-                                    style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#67A443' }}
+                                    style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#F44324' }}
                                     onPress={() => this.logout()}
                                 >
                                     {item.itemtxt}
@@ -147,7 +147,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                                     <>
                                         <Text
                                             key={item.index}
-                                            style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#078ca9' }}
+                                            style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#333' }}
                                             onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage, userId: this.props.profileId })}
                                         >
                                             {item.itemtxt}
@@ -161,7 +161,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                                 <>
                                     <Text
                                         key={item.index}
-                                        style={{ fontSize: 18, lineHeight: 40, marginLeft: 20, color: '#078ca9' }}
+                                        style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#333' }}
                                         onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage })}
                                     >
                                         {item.itemtxt}

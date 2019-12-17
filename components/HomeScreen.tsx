@@ -53,7 +53,7 @@ class HomeScreen extends React.Component<Props, object> {
           'Content-Type': 'application/json',
         };
         axios
-          .post('http://localhost:5000/api/doPayment', body, { headers })
+          .post('https://salty-garden-58258.herokuapp.com/payApi/doPayment/', body, { headers })
           .then(({ data }) => {
             return data;
           })

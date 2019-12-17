@@ -15,21 +15,7 @@ export default categories = [
     name: 'Drivers',
     img: require('./../assets/Drivers.png'),
   },
-  {
-    id: 4,
-    name: 'Moving Services',
-    img: require('./../assets/MovingServices.png'),
-  },
-  {
-    id: 2,
-    name: 'Electrical maintanance',
-    img: require('./../assets/Electricalmaintanance.png'),
-  },
-  {
-    id: 10,
-    name: 'Security Services',
-    img: require('./../assets/SecurityServices.png'),
-  },
+
 
   {
     id: 6,
@@ -80,11 +66,27 @@ export default categories = [
   {
     id: 17,
     name: 'Cooking Services',
-    img: require('./../assets/CookingServices.jpg'),
+    img: require('./../assets/CookingServices.png'),
   },
   {
     id: 12,
     name: 'Photographer',
     img: require('./../assets/Photographer.png'),
+  },
+  {
+    id: 2,
+    name: 'Electrical maintanance',
+    img: require('./../assets/Electricalmaintanance.png'),
+  },
+  {
+    id: 4,
+    name: 'Moving Services',
+    img: require('./../assets/MovingServices.png'),
+  },
+
+  {
+    id: 10,
+    name: 'Security Services',
+    img: require('./../assets/SecurityServices.png'),
   },
 ];
