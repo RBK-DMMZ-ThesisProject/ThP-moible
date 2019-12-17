@@ -36,7 +36,6 @@ class Favorites extends React.Component<Props, object> {
         })
           .then(res => res.json())
           .then(resJson => {
-            console.log('hjbyigvbytigiytgi7: ', resJson);
             that.setState({
               favorites: resJson,
             });
@@ -54,10 +53,9 @@ class Favorites extends React.Component<Props, object> {
     return (
       <>
         <HandyHeader navigation={navigation} title={'Favorites'} />
-        <Card containerStyle={{padding: 5}}>
-          {console.log('favorites', favorites)}
-          {favorites.map((provider, i) => {
-            return (
+        {favorites.map((provider, i) => {
+          return (
+            <Card containerStyle={{padding: 5}}>
               <View key={i}>
                 <TouchableOpacity
                   onPress={() =>
@@ -74,9 +72,9 @@ class Favorites extends React.Component<Props, object> {
                     chevron></ListItem>
                 </TouchableOpacity>
               </View>
-            );
-          })}
-        </Card>
+            </Card>
+          );
+        })}
       </>
     );
   }

@@ -14,7 +14,7 @@ import {
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 
 import {
   Input,
@@ -32,11 +32,11 @@ import {
 } from 'react-native-elements';
 
 import HandyHeader from './HandyHeader';
-import { any } from 'prop-types';
-import { Linking } from 'react-native';
+import {any} from 'prop-types';
+import {Linking} from 'react-native';
 import stripe from 'tipsi-stripe';
 import axios from 'axios';
-import { throwStatement } from '@babel/types';
+import {throwStatement} from '@babel/types';
 import Favorites from './Favorites';
 stripe.setOptions({
   publishableKey: 'pk_test_M0LfaNyjOIqs4RL9bqklDbb500YZpiXM1H',
@@ -56,13 +56,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
     ratingGiven: 0,
   };
 
-
   componentDidMount() {
     var that = this;
     const userId = this.props.navigation.getParam('userId');
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function (value: any) {
+    SharedPreferences.getItem('handyToken', function(value: any) {
       if (value === null) {
         console.log('no token from here');
         that.props.navigation.navigate('SignIn');
@@ -89,11 +88,11 @@ class serviceProviderProfile extends React.Component<Props, object> {
               profile: resJson.profile,
             });
             if (resJson.favs) {
-              that.setState({ isfavorite: true });
+              that.setState({isfavorite: true});
             }
           })
           .catch(error => {
-            console.log('hello from error')
+            console.log('hello from error');
             console.error(error);
           });
       }
@@ -104,7 +103,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ serviceproviderid: userId }),
+      body: JSON.stringify({serviceproviderid: userId}),
     })
       .then(res => res.json())
       .then(resJson => {
@@ -123,7 +122,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     var that = this;
     const userId = that.props.navigation.getParam('userId');
 
-    SharedPreferences.getItem('handyToken', async function (value: any) {
+    SharedPreferences.getItem('handyToken', async function(value: any) {
       if (value !== null) {
         await fetch(
           'https://salty-garden-58258.herokuapp.com/mobileApi/addReviews',
@@ -133,7 +132,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ review: values.review, token: value, rate: that.state.ratingGiven, serviceproviderid: userId }),
+            body: JSON.stringify({
+              review: values.review,
+              token: value,
+              rate: that.state.ratingGiven,
+              serviceproviderid: userId,
+            }),
           },
         )
           .then(res => {
@@ -149,11 +153,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
     });
   }
   addFav() {
-
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
-    SharedPreferences.getItem('handyToken', async function (value: any) {
+    SharedPreferences.getItem('handyToken', async function(value: any) {
       if (value !== null) {
         const x = value;
         if (!that.state.isfavorite) {
@@ -168,7 +171,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
+              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
             },
           )
             .then(res => {
@@ -194,7 +197,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
+              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
             },
           )
             .then(res => {
@@ -216,21 +219,24 @@ class serviceProviderProfile extends React.Component<Props, object> {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
-    SharedPreferences.getItem('handyToken', async function (value: any) {
+    SharedPreferences.getItem('handyToken', async function(value: any) {
       console.log('our tocken', value);
       if (value !== null) {
         const x = value;
         const userId = that.props.navigation.getParam('userId');
         console.log('user id', userId);
         console.log('token: ', x);
-        await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addHiers', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+        await fetch(
+          'https://salty-garden-58258.herokuapp.com/mobileApi/addHiers',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({serviceproviderid: userId, customerID: x}),
           },
-          body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
-        })
+        )
           .then(res => {
             res.json();
           })
@@ -247,7 +253,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     });
   }
   setModalVisible(visible: any) {
-    this.setState({ modalVisible: visible });
+    this.setState({modalVisible: visible});
   }
   isFave() {
     if (this.state.isfavorite) {
@@ -260,28 +266,25 @@ class serviceProviderProfile extends React.Component<Props, object> {
     return (
       <Overlay
         isVisible={this.state.isVisiblereview}
-        onBackdropPress={() => this.setState({ isVisiblereview: false })}>
+        onBackdropPress={() => this.setState({isVisiblereview: false})}>
         <Text>Add review</Text>
       </Overlay>
     );
   }
 
   ratingCompleted(rating: any) {
-    console.log('Rating is: ' + rating);
-    this.setState({ rating: rating });
+    this.setState({rating: rating});
   }
   render() {
-    const { navigation } = this.props;
-    const { profile, ratingGiven, reviews } = this.state;
-
-    console.log("profiiiiiiiio", profile);
+    const {navigation} = this.props;
+    const {profile, ratingGiven, reviews} = this.state;
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{flex: 1}}>
+          <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
             <HandyHeader navigation={navigation} title="Profile" />
-            <View style={{ flex: 3, alignItems: 'center' }}>
+            <View style={{flex: 3, alignItems: 'center'}}>
               <Avatar
                 size="xlarge"
                 rounded
@@ -291,7 +294,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 title="pic"
               />
               <Text
-                style={{ fontSize: 20, fontWeight: 'bold', color: '#078ca9' }}>
+                style={{
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  marginTop: 15,
+                  marginBottom: 15,
+                  color: '#078ca9',
+                }}>
                 {/* {profile.firstName + ' ' + profile.familyName} */}
                 {profile.userName}
               </Text>
@@ -364,14 +373,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
             </Card>
             <Card
               title="Service Description"
-            // image={profile.userWorkImg[0]}
+              // image={profile.userWorkImg[0]}
             >
-              <Text style={{ marginBottom: 20, marginTop: 20 }}>
+              <Text style={{marginBottom: 20, marginTop: 20}}>
                 {profile.ServiceDescription}
               </Text>
               <Overlay
                 isVisible={this.state.isVisible}
-                onBackdropPress={() => this.setState({ isVisible: false })}>
+                onBackdropPress={() => this.setState({isVisible: false})}>
                 <Text>Hello from Overlay!</Text>
               </Overlay>
 
@@ -427,26 +436,23 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 onRequestClose={() => {
                   Alert.alert('send your review or close it please');
                 }}>
-                <Card
-                  title="Give A Review"
-                >
-
+                <Card title="Give A Review">
                   <AirbnbRating
                     count={5}
                     defaultRating={0}
                     onFinishRating={rating => {
-                      this.setState({ ratingGiven: rating });
+                      this.setState({ratingGiven: rating});
                       console.log('ratingGiven', ratingGiven);
                     }}
                     size={18}
 
-                  // ratingColor={'blue'}
+                    // ratingColor={'blue'}
                   />
                   <Formik
-                    initialValues={{ review: '' }}
+                    initialValues={{review: ''}}
                     onSubmit={values => this.saveReview(values)}>
-                    {({ handleChange, handleBlur, handleSubmit, values }) => (
-                      <View style={{ marginTop: 20 }}>
+                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                      <View style={{marginTop: 20}}>
                         <Text>Please Enter your Review:</Text>
                         <Input
                           onChangeText={handleChange('review')}
@@ -454,8 +460,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
                           value={values.review}
                           numberOfLines={5}
                           textAlignVertical="top"
-                          style={{ borderLeftWidth: 1, borderRadius: 5, marginBottom: 20 }}
-                          placeholder='here...'
+                          style={{
+                            borderLeftWidth: 1,
+                            borderRadius: 5,
+                            marginBottom: 20,
+                          }}
+                          placeholder="here..."
                         />
                         <Button
                           icon={
