@@ -17,7 +17,7 @@ import HandyHeader from './HandyHeader';
 
 import stripe from 'tipsi-stripe';
 stripe.setOptions({
-  publishableKey: 'pk_test_u7t7CW4JRlx90adyZxR5lgTv000buXI4XF',
+  publishableKey: 'pk_test_M0LfaNyjOIqs4RL9bqklDbb500YZpiXM1H',
 });
 import axios from 'axios';
 export interface Props {
@@ -29,7 +29,7 @@ class HomeScreen extends React.Component<Props, object> {
     var that = this;
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function(value: any) {
+    SharedPreferences.getItem('handyToken', function (value: any) {
       console.log('our tocken ', value);
       if (value === null) {
         that.props.navigation.navigate('SignIn', {
@@ -44,7 +44,7 @@ class HomeScreen extends React.Component<Props, object> {
     return stripe
       .paymentRequestWithCardForm()
       .then((stripeTokenInfo: any) => {
-        console.warn('Token created', {stripeTokenInfo});
+        console.warn('Token created', { stripeTokenInfo });
         const body = {
           amount: 100,
           tokenId: stripeTokenInfo.tokenId,
@@ -53,8 +53,8 @@ class HomeScreen extends React.Component<Props, object> {
           'Content-Type': 'application/json',
         };
         axios
-          .post('http://localhost:5000/api/doPayment', body, {headers})
-          .then(({data}) => {
+          .post('http://localhost:5000/api/doPayment', body, { headers })
+          .then(({ data }) => {
             return data;
           })
           .catch(error => {
@@ -62,16 +62,16 @@ class HomeScreen extends React.Component<Props, object> {
           });
       })
       .catch((error: any) => {
-        console.warn('Payment failed', {error});
+        console.warn('Payment failed', { error });
       });
   };
 
   render() {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HandyHeader navigation={navigation} title="Home" />
           <View
             style={{
@@ -80,7 +80,7 @@ class HomeScreen extends React.Component<Props, object> {
               justifyContent: 'space-around',
               alignItems: 'center',
             }}>
-            <View style={{flex: 4, alignContent: 'flex-end'}}>
+            <View style={{ flex: 4, alignContent: 'flex-end' }}>
               {/* <Text style={{ fontSize: 50, fontWeight: "bold", color: '#c5df16', padding: 20 }} onPress={() => navigation.navigate('Categories')}>Welcome</Text> */}
               <Image
                 source={require('./../assets/Handy.png')}
@@ -103,7 +103,7 @@ class HomeScreen extends React.Component<Props, object> {
               }}>
               Handy
             </Text> */}
-            <View style={{flex: 1, alignContent: 'flex-end'}}>
+            <View style={{ flex: 1, alignContent: 'flex-end' }}>
               <Text
                 style={{
                   width: 250,
@@ -124,7 +124,7 @@ class HomeScreen extends React.Component<Props, object> {
 
               /> */}
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text
                 style={{
                   width: 250,
@@ -145,7 +145,7 @@ class HomeScreen extends React.Component<Props, object> {
                 onPress={this.handleAddUserProfileBtn}
               /> */}
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text
                 style={{
                   width: 90,

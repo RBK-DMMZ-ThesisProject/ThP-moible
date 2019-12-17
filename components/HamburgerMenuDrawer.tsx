@@ -68,7 +68,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                 this.props.changeState(4, 0);
                 this.props.changeState(8, 1);
                 // this.props.changeState(9, 1);
-                this.props.changeState(10, 1);
+                // this.props.changeState(10, 1);
                 this.props.changeState(11, 1);
                 this.props.changeState(30, 1);
             }
@@ -115,7 +115,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         this.props.changeState(7, 0);
         this.props.changeState(8, 0);
         // this.props.changeState(9, 0);
-        this.props.changeState(10, 0);
+        // this.props.changeState(10, 0);
         this.props.changeState(11, 0);
         this.props.changeState(20, 0);
         this.props.changeState(30, 0);

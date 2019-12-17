@@ -54,12 +54,12 @@ export const initialItemState: types.MenuItemsListState = [{
 //     toPage: 'HireHistory',
 //     show: 0
 // },
-{
-    id: 10,
-    itemtxt: 'Donate',
-    toPage: 'PaymentHistory',
-    show: 0
-},
+// {
+//     id: 10,
+//     itemtxt: 'Donate',
+//     toPage: 'PaymentHistory',
+//     show: 0
+// },
 {
     id: 13,
     itemtxt: 'Offers',

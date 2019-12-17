@@ -39,7 +39,7 @@ import axios from 'axios';
 import { throwStatement } from '@babel/types';
 import Favorites from './Favorites';
 stripe.setOptions({
-  publishableKey: 'pk_test_u7t7CW4JRlx90adyZxR5lgTv000buXI4XF',
+  publishableKey: 'pk_test_M0LfaNyjOIqs4RL9bqklDbb500YZpiXM1H',
 });
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -55,43 +55,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
     isfavorite: false,
     ratingGiven: 0,
   };
-  // requestPayment = () => {
-  //   return stripe
-  //     .paymentRequestWithCardForm()
-  //     .then((stripeTokenInfo: any) => {
-  //       console.warn('Token created', {stripeTokenInfo});
-  //       const body = {
-  //         amount: 100,
-  //         tokenId: stripeTokenInfo.tokenId,
-  //       };
-  //       const headers = {
-  //         'Content-Type': 'application/json',
-  //       };
-  //       axios
-  //         .post('http://localhost:5000/api/doPayment', body, {headers})
-  //         .then(({data}) => {
-  //           return data;
-  //         })
-  //         .catch(error => {
-  //           return Promise.reject('Error in making payment', error);
-  //         });
-  //     })
-  //     .catch((error: any) => {
-  //       console.warn('Payment failed', {error});
-  //     });
-  // };
+
+
   componentDidMount() {
     var that = this;
     const userId = this.props.navigation.getParam('userId');
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-<<<<<<< HEAD
     SharedPreferences.getItem('handyToken', function (value: any) {
       if (value === null) {
-=======
-    SharedPreferences.getItem('handyToken', function(value: any) {
-      if (value === undefined) {
->>>>>>> 98d958bfc3966e6662b4d909622d4abc511a2d1c
         console.log('no token from here');
         that.props.navigation.navigate('SignIn');
       } else {
@@ -120,6 +92,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
             }
           })
           .catch(error => {
+            console.log('hello from error')
             console.error(error);
           });
       }
@@ -142,19 +115,51 @@ class serviceProviderProfile extends React.Component<Props, object> {
         console.error(error);
       });
   }
-
-  addFav() {
+  saveReview(values: any) {
+    console.log('save reveiwsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd');
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
-    SharedPreferences.getItem('handyToken', function (value: any) {
+    const userId = that.props.navigation.getParam('userId');
+
+    SharedPreferences.getItem('handyToken', async function (value: any) {
+      if (value !== null) {
+        await fetch(
+          'https://salty-garden-58258.herokuapp.com/mobileApi/addReviews',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ review: values.review, token: value, rate: that.state.ratingGiven, serviceproviderid: userId }),
+          },
+        )
+          .then(res => {
+            res.json();
+          })
+          .then(resJson => {
+            console.log(resJson);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    });
+  }
+  addFav() {
+
+    var SharedPreferences = require('react-native-shared-preferences');
+    SharedPreferences.setName('handyInfo');
+    var that = this;
+    SharedPreferences.getItem('handyToken', async function (value: any) {
       if (value !== null) {
         const x = value;
         if (!that.state.isfavorite) {
           const userId = that.props.navigation.getParam('userId');
           console.log('user id', userId);
           console.log('token: ', x);
-          fetch(
+          await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addfavorite',
             {
               method: 'POST',
@@ -180,7 +185,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
           const userId = that.props.navigation.getParam('userId');
           console.log('user id', userId);
           console.log('token: ', x);
-          fetch(
+          await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/deletefavorite',
             {
               method: 'POST',
@@ -210,14 +215,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
-    SharedPreferences.getItem('handyToken', function (value: any) {
+    SharedPreferences.getItem('handyToken', async function (value: any) {
       console.log('our tocken', value);
       if (value !== null) {
         const x = value;
         const userId = that.props.navigation.getParam('userId');
         console.log('user id', userId);
         console.log('token: ', x);
-        fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addHiers', {
+        await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addHiers', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -268,7 +273,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     const { navigation } = this.props;
     const { profile, ratingGiven, reviews } = this.state;
 
-    console.log('hello agina');
+    console.log("profiiiiiiiio", profile);
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -285,7 +290,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 title="pic"
               />
               <Text
-                style={{ fontSize: 20, fontWeight: 'bold', color: '#63b8d4' }}>
+                style={{ fontSize: 20, fontWeight: 'bold', color: '#078ca9' }}>
                 {/* {profile.firstName + ' ' + profile.familyName} */}
                 {profile.userName}
               </Text>
@@ -358,7 +363,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
             </Card>
             <Card
               title="Service Description"
-              image={require('./../assets/shaghelohm.png')}>
+            // image={profile.userWorkImg[0]}
+            >
               <Text style={{ marginBottom: 20, marginTop: 20 }}>
                 {profile.ServiceDescription}
               </Text>
@@ -375,7 +381,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   marginLeft: 0,
                   marginRight: 0,
                   marginBottom: 0,
-                  backgroundColor: '#63b8d4',
+                  backgroundColor: '#078ca9',
                 }}
                 title="HIRE NOW"
                 onPress={() => {
@@ -384,7 +390,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
               />
               {/* <Button
                 title="Pay"
-                color="#63b8d4"
+                color="#078ca9"
                 onPress={this.requestPayment}
               /> */}
             </Card>
@@ -406,7 +412,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   marginLeft: 0,
                   marginRight: 0,
                   marginBottom: 0,
-                  backgroundColor: '#63b8d4',
+                  backgroundColor: '#078ca9',
                 }}
                 title="ADD REVIEW"
                 onPress={() => {
@@ -420,22 +426,35 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 onRequestClose={() => {
                   Alert.alert('send your review or close it please');
                 }}>
-                <Card>
+                <Card
+                  title="Give A Review"
+                >
+
+                  <AirbnbRating
+                    count={5}
+                    defaultRating={0}
+                    onFinishRating={rating => {
+                      this.setState({ ratingGiven: rating });
+                      console.log('ratingGiven', ratingGiven);
+                    }}
+                    size={18}
+
+                  // ratingColor={'blue'}
+                  />
                   <Formik
-                    initialValues={{ review: '', name: '' }}
-                    onSubmit={values => console.log(values)}>
+                    initialValues={{ review: '' }}
+                    onSubmit={values => this.saveReview(values)}>
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
-                      <View>
+                      <View style={{ marginTop: 20 }}>
+                        <Text>Please Enter your Review:</Text>
                         <Input
                           onChangeText={handleChange('review')}
                           onBlur={handleBlur('review')}
                           value={values.review}
-                        />
-                        <Divider></Divider>
-                        <Input
-                          onChangeText={handleChange('name')}
-                          onBlur={handleBlur('name')}
-                          value={values.name}
+                          numberOfLines={5}
+                          textAlignVertical="top"
+                          style={{ borderLeftWidth: 1, borderRadius: 5, marginBottom: 20 }}
+                          placeholder='here...'
                         />
                         <Button
                           icon={
@@ -449,37 +468,20 @@ class serviceProviderProfile extends React.Component<Props, object> {
                           title="SEND"
                           buttonStyle={{
                             borderRadius: 10,
-                            marginLeft: 25,
-                            marginRight: 25,
-                            marginBottom: 25,
-                            marginTop: 25,
-                            backgroundColor: '#63b8d4',
+                            width: 90,
+                            backgroundColor: '#078ca9',
                           }}
                         />
                       </View>
                     )}
                   </Formik>
-                  <AirbnbRating
-                    count={5}
-                    reviews={['Terrible', 'Bad', 'Meh', 'OK', 'Good']}
-                    defaultRating={5}
-                    onFinishRating={rating => {
-                      this.setState({ ratingGiven: rating });
-                      console.log('ratingGiven', ratingGiven);
-                    }}
-                    size={25}
-                  // ratingColor={'blue'}
-                  />
 
                   <TouchableHighlight>
                     <Button
                       buttonStyle={{
                         borderRadius: 10,
-                        marginLeft: 25,
-                        marginRight: 25,
-                        marginBottom: 25,
-                        marginTop: 25,
-                        backgroundColor: '#63b8d4',
+                        width: 70,
+                        backgroundColor: '#078ca9',
                       }}
                       title="CLOSE"
                       onPress={() => {
