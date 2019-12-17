@@ -86,7 +86,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     SharedPreferences.getItem('handyToken', function (value: any) {
-      if (value === undefined) {
+      if (value === null) {
         console.log('no token from here');
         that.props.navigation.navigate('SignIn');
       } else {
@@ -111,11 +111,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
               profile: resJson.profile,
             });
             if (resJson.favs) {
-              for (var i = 0; i < resJson.favs.length; i++) {
-                if (resJson.favs[i].serviceProviderID === resJson.profile._id) {
-                  that.setState({ isfavorite: true });
-                }
-              }
+              that.setState({ isfavorite: true });
             }
           })
           .catch(error => {
@@ -367,7 +363,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 <Text>Hello from Overlay!</Text>
               </Overlay>
 
-              <Button
+              {/* <Button
                 icon={<Icon name="check" color="#ffffff" />}
                 buttonStyle={{
                   borderRadius: 10,
@@ -385,7 +381,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 title="Pay"
                 color="#63b8d4"
                 onPress={this.requestPayment}
-              />
+              /> */}
             </Card>
             <Card title="REVIEWS">
               <View>

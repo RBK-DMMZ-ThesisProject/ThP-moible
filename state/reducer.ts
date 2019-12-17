@@ -48,20 +48,20 @@ export const initialItemState: types.MenuItemsListState = [{
     toPage: 'Favorites',
     show: 0
 },
-{
-    id: 9,
-    itemtxt: 'Hire History',
-    toPage: 'HireHistory',
-    show: 0
-},
+// {
+//     id: 9,
+//     itemtxt: 'Hire History',
+//     toPage: 'HireHistory',
+//     show: 0
+// },
 {
     id: 10,
-    itemtxt: 'Payment History',
+    itemtxt: 'Donate',
     toPage: 'PaymentHistory',
     show: 0
 },
 {
-    id: 11,
+    id: 13,
     itemtxt: 'Offers',
     toPage: 'Offers',
     show: 0
