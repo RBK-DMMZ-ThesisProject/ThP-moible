@@ -228,7 +228,6 @@ class AddProfileScreen extends React.Component<Props, object> {
             })
             const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
             const { navigation } = this.props;
-
             if (avatarUri !== '') {
                 await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
             } else {
@@ -237,10 +236,8 @@ class AddProfileScreen extends React.Component<Props, object> {
                     isSbumitted: false,
                 })
                 return;
-
             }
             if (sampleWorkImgUri !== '') {
-
                 await this.uploadPicture(sampleWorkImgUri, sampleWorkImgFileName, 'workSamples/', 2);
             } else {
                 this.setState({
@@ -260,7 +257,6 @@ class AddProfileScreen extends React.Component<Props, object> {
                         wsError: 'Please choose a work sample image'
                     })
                 }
-
             } else {
 
                 var profileData = {
@@ -292,17 +288,16 @@ class AddProfileScreen extends React.Component<Props, object> {
                         SharedPreferences.setName("handyInfo");
                         var that = this;
                         SharedPreferences.getItem("handyToken", function (value: any) {
-                            console.log(value);
                             if (value !== null) {
-
                                 that.getUserHasProfile(value);
                                 if (that.props.hasProfile) {
                                     that.props.changeState(20, 1); // view profile
                                 }
                             }
                         });
-
-                        NavigationService.navigate('ViewProfile', { 'profile': profileData });
+                        NavigationService.navigate('ProviderProfile', {
+                            userId: resJson.userId,
+                          })
                     })
                     .catch((error) => {
                         console.error(error);
