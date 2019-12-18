@@ -1,6 +1,13 @@
 import React from 'react';
-import {View, TouchableOpacity, Alert} from 'react-native';
-import {Card, ListItem, Button, Icon, Rating} from 'react-native-elements';
+import { View, TouchableOpacity, Alert } from 'react-native';
+import {
+  Card,
+  ListItem,
+  Button,
+  Icon,
+  Rating,
+  Text,
+} from 'react-native-elements';
 import {
   NavigationParams,
   NavigationScreenProp,
@@ -18,30 +25,32 @@ class Favorites extends React.Component<Props, object> {
     favorites: [],
   };
   componentDidMount() {
+    console.log('ffffffffffffffff')
     var that = this;
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function(value: any) {
+    SharedPreferences.getItem('handyToken', async function (value: any) {
       if (value === null) {
         console.log('no token');
         that.props.navigation.navigate('SignIn');
       } else {
-        fetch('https://salty-garden-58258.herokuapp.com/mobileApi/favorites', {
+        await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/favorites', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({customerID: value}),
+          body: JSON.stringify({ customerID: value }),
         })
           .then(res => res.json())
           .then(resJson => {
-            console.log('hjbyigvbytigiytgi7: ', resJson);
+            console.log('favsssssssssssssssssssssss', resJson);
             that.setState({
-              favorites: resJson,
+              favorites: resJson.favorites,
             });
           })
           .catch(error => {
+            console.log('favssssssssssssseeeewwwwssssssssss', error);
             console.error(error);
           });
       }
@@ -49,15 +58,14 @@ class Favorites extends React.Component<Props, object> {
   }
 
   render() {
-    const {favorites} = this.state;
-    const {navigation} = this.props;
+    const { favorites } = this.state;
+    const { navigation } = this.props;
     return (
       <>
         <HandyHeader navigation={navigation} title={'Favorites'} />
-        <Card containerStyle={{padding: 5}}>
-          {console.log('favorites', favorites)}
-          {favorites.map((provider, i) => {
-            return (
+        {favorites.map((provider, i) => {
+          return (
+            <Card containerStyle={{ padding: 5 }}>
               <View key={i}>
                 <TouchableOpacity
                   onPress={() =>
@@ -68,15 +76,16 @@ class Favorites extends React.Component<Props, object> {
                   <ListItem
                     leftAvatar={{
                       title: provider['userName'][0],
-                      source: {uri: provider['userImg']},
+                      source: { uri: provider['userImg'] },
                     }}
                     title={provider['userName']}
+                    subtitle={provider['ServiceCategory']}
                     chevron></ListItem>
                 </TouchableOpacity>
               </View>
-            );
-          })}
-        </Card>
+            </Card>
+          );
+        })}
       </>
     );
   }

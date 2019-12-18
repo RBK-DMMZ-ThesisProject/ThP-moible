@@ -9,8 +9,8 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import { Card, ListItem, Button, Header } from 'react-native-elements';
-import { Left, Right, Icon } from 'native-base';
+import {Card, ListItem, Button, Header} from 'react-native-elements';
+import {Left, Right, Icon} from 'native-base';
 
 import {
   NavigationParams,
@@ -26,12 +26,12 @@ export interface Props {
 
 class CategoriesScreen extends React.Component<Props, object> {
   render() {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+        <SafeAreaView style={{flex: 1}}>
+          <ScrollView style={{flex: 1, backgroundColor: '#f2f2f2'}}>
             <HandyHeader navigation={navigation} title="Categories" />
             <View
               style={{
@@ -48,28 +48,31 @@ class CategoriesScreen extends React.Component<Props, object> {
                 }}>
                 {categories.map(category => {
                   return (
-                    <View key={category.id} style={{ width: 33 + '%' }}>
+                    <View key={category.id} style={{width: 33 + '%'}}>
                       <Card
                         containerStyle={{
                           paddingTop: 2,
                           backgroundColor: '#f2f2f2',
                           width: 90,
                           elevation: 0,
-                          borderColor: '#f2f2f2'
+                          borderColor: '#c0e2ed',
                         }}
-                        imageWrapperStyle={{ borderRadius: 35 }}
-                        imageStyle={{ width: 70, height: 70 }}
+                        imageWrapperStyle={{borderRadius: 35}}
+                        imageStyle={{width: 70, height: 90}}
                         image={category.img}>
                         <Button
-                          titleStyle={{ fontSize: 12 }}
+                          titleStyle={{
+                            fontSize: 12,
+                            color: '#000',
+                          }}
                           buttonStyle={{
-                            backgroundColor: '#078ca9',
+                            backgroundColor: '#c0e2ed',
                             borderRadius: 5,
                             marginLeft: 0,
                             marginRight: 0,
                             marginBottom: 0,
                             padding: 5,
-                            width: 70
+                            width: 70,
                           }}
                           title={category.name}
                           onPress={() =>

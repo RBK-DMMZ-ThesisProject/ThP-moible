@@ -16,7 +16,6 @@ export default categories = [
     img: require('./../assets/Drivers.png'),
   },
 
-
   {
     id: 6,
     name: 'Painters',
@@ -44,19 +43,14 @@ export default categories = [
     img: require('./../assets/Tutoers.png'),
   },
   {
-    id: 11,
-    name: 'Blacksmiths',
-    img: require('./../assets/Blacksmiths.png'),
-  },
-  {
     id: 14,
     name: 'Builders',
     img: require('./../assets/Builders.png'),
   },
   {
-    id: 15,
-    name: 'Aluminum Services',
-    img: require('./../assets/AluminumServices.png'),
+    id: 11,
+    name: 'Blacksmiths',
+    img: require('./../assets/Blacksmiths.png'),
   },
   {
     id: 16,
@@ -64,14 +58,19 @@ export default categories = [
     img: require('./../assets/SatelliteServices.png'),
   },
   {
+    id: 12,
+    name: 'Photographer',
+    img: require('./../assets/Photographer.png'),
+  },
+  {
     id: 17,
     name: 'Cooking Services',
     img: require('./../assets/CookingServices.png'),
   },
   {
-    id: 12,
-    name: 'Photographer',
-    img: require('./../assets/Photographer.png'),
+    id: 15,
+    name: 'Aluminum Services',
+    img: require('./../assets/AluminumServices.png'),
   },
   {
     id: 2,

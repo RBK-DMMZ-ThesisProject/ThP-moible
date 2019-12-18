@@ -324,9 +324,9 @@ class AddProfileScreen extends React.Component<Props, object> {
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <HandyHeader navigation={navigation} title="Add Profile" />
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2',fontSize:15, borderRadius: 5, marginTop:5,color: "#666" }}
                             label='First Name:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 20,marginTop:5, color: "#666" }}
                             onChangeText={(firstName) => this.setState({ firstName })}
                             onBlur={() => {
                                 this.setState({ firstNameError: validate({ firstName: firstName }, { firstName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
@@ -338,9 +338,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                         {/* {this.validator.message('firstName', firstName, 'required')} */}
 
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                        containerStyle={{marginTop:15}}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5,fontSize:15,marginTop:5, color: "#666"  }}
                             label='Family Name:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
                             onChangeText={(familyName) => this.setState({ familyName })}
                             onBlur={() => {
                                 this.setState({ familyNameError: validate({ familyName: familyName }, { familyName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
@@ -351,9 +352,9 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         >{familyName}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize:15, marginTop:5,color: "#666" }}
                             label='Phone No.:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
                             keyboardType="number-pad"
                             onChangeText={(phoneNum) => this.setState({ phoneNum })}
                             onBlur={() => {
@@ -365,9 +366,9 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         >{phoneNum}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize:15, marginTop:5,color: "#666" }}
                             label='Email:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
                             onChangeText={(email) => this.setState({ email })}
                             onBlur={() => {
                                 this.setState({ emailError: validate({ email: email.trim() }, { email: { presence: true, email: true } }, { format: "flat" }) })
@@ -378,9 +379,9 @@ class AddProfileScreen extends React.Component<Props, object> {
                         >{email}</Input>
                         {/* Begin: date input */}
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5,fontSize:15, marginTop:5,color: "#666" }}
                             label='Birth Date:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9" }}
+                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
                             placeholder={'Enter your birthDate...'}
                             placeholderTextColor="#999"
                             onChangeText={(birthdate) => this.setState({ birthdate })}
@@ -392,12 +393,13 @@ class AddProfileScreen extends React.Component<Props, object> {
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
                             <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={{ fontWeight: 'bold', color: "#078ca9", fontSize: 22 }}>Upload Avatar:</Text>
+                                    <Text style={{ fontWeight: 'bold', marginTop:15,marginBottom:5,fontSize:15, color: "#666" }}>Upload Avatar:</Text>
                                 </View>
                                 <View style={{ flex: 2, marginLeft: 10 }}>
                                     <Button buttonStyle={{
-                                        backgroundColor: '#67A443',
+                                        backgroundColor: '#F44324',
                                         width: 100 + "%",
+
                                     }}
                                         titleStyle={{
                                             color: '#f2f2f2'
@@ -416,7 +418,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                         {/* Service Info */}
                         <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10, marginBottom: 20 }}>
                             <View style={{ flex: 1 }}>
-                                <Text style={{ fontWeight: 'bold', color: "#078ca9", fontSize: 22 }}>Service Category:</Text>
+                                <Text style={{ fontWeight: 'bold', color: "#666", fontSize: 18 }}>Service Category:</Text>
                             </View>
                             <Picker
                                 selectedValue={this.state.category}
@@ -437,9 +439,9 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         <Input
                             containerStyle={{ marginBottom: 20 }}
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, color: "#078ca9", textAlignVertical: 'top' }}
+                            inputStyle={{ backgroundColor: '#f2f2f2',marginTop:15 , borderRadius: 5, color: "#666", fontSize:18,textAlignVertical: 'top' }}
                             label='Service Description:'
-                            labelStyle={{ fontSize: 20, color: "#078ca9", textAlignVertical: 'top' }}
+                            labelStyle={{ fontSize: 18, color: "#666", textAlignVertical: 'top'}}
                             onChangeText={(serverDesription) => this.setState({ serverDesription })}
                             placeholder={'Enter Service Description...'}
                             multiline={true}
@@ -451,11 +453,11 @@ class AddProfileScreen extends React.Component<Props, object> {
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
                             <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={{ fontWeight: 'bold', color: "#078ca9", fontSize: 22 }}>Upload Sample Work:</Text>
+                                    <Text style={{ fontWeight: 'bold', color: "#666", fontSize: 18 }}>Upload Sample Work:</Text>
                                 </View>
                                 <View style={{ flex: 2, marginLeft: 10 }}>
                                     <Button buttonStyle={{
-                                        backgroundColor: '#67A443',
+                                        backgroundColor: '#F44324',
                                         width: 100 + "%",
                                     }}
                                         titleStyle={{

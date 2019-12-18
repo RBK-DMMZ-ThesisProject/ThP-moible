@@ -65,8 +65,9 @@ class serviceProviderProfile extends React.Component<Props, object> {
     modalVisible: false,
     isfavorite: false,
     ratingGiven: 0,
+    reviewAdded: false,
+    errorMsg: '',
   };
-
 
   componentDidMount() {
     const userId = this.props.navigation.getParam('userId');
@@ -135,8 +136,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
   }
   async fetchReviews(context: object) {
-    const userId = context.props.navigation.getParam('userId');
-
+    const userId = this.props.navigation.getParam('userId');
+    console.log('helooooooooooooooo', userId);
     await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getReviews', {
       method: 'POST',
       headers: {
@@ -147,6 +148,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     })
       .then(res => res.json())
       .then(resJson => {
+        console.log('helow after fetching reveis', resJson);
         context.setState({
           reviews: resJson,
         });
@@ -156,47 +158,61 @@ class serviceProviderProfile extends React.Component<Props, object> {
       });
   }
   saveReview(values: any) {
+    if (values.review === '' || this.state.ratingGiven === 0) {
+      this.setState({
+        errorMsg: 'Please make sure to fill the rating and the review...'
+      })
+    } else {
+      var SharedPreferences = require('react-native-shared-preferences');
+      SharedPreferences.setName('handyInfo');
+      var that = this;
+      const userId = that.props.navigation.getParam('userId');
 
-    var SharedPreferences = require('react-native-shared-preferences');
-    SharedPreferences.setName('handyInfo');
-    var that = this;
-    const userId = that.props.navigation.getParam('userId');
+      SharedPreferences.getItem('handyToken', async function (value: any) {
+        if (value !== null) {
+          console.log('save reveiwsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd', { review: values.review, token: value, rate: that.state.ratingGiven, serviceproviderid: userId });
 
-    SharedPreferences.getItem('handyToken', async function (value: any) {
-      if (value !== null) {
-        console.log('save reveiwsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd', { review: values.review, token: value, rate: that.state.ratingGiven, serviceproviderid: userId });
-
-        await fetch(
-          'https://salty-garden-58258.herokuapp.com/mobileApi/addReviews',
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
+          await fetch(
+            'https://salty-garden-58258.herokuapp.com/mobileApi/addReviews',
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                review: values.review,
+                token: value,
+                rate: that.state.ratingGiven,
+                serviceproviderid: userId,
+              }),
             },
-            body: JSON.stringify({ review: values.review, token: value, rate: that.state.ratingGiven, serviceproviderid: userId }),
-          },
-        )
-          .then(res => {
-            res.json();
-          })
-          .then(resJson => {
-            console.log('reveis response', resJson);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-    });
+          )
+            .then(res => {
+              return res.json();
+            })
+            .then(resJson => {
+              console.log('reveis response', resJson);
+              that.setModalVisible(!that.state.modalVisible);
+              that.fetchReviews(that);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+      });
+    }
   }
   addFav() {
     const userId = this.props.navigation.getParam('userId');
+    console.log('userId::::::', userId);
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
     SharedPreferences.getItem('handyToken', async function (value: any) {
       if (value !== null) {
         const x = value;
+        console.log(value);
         if (!that.state.isfavorite) {
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addfavorite',
@@ -210,11 +226,16 @@ class serviceProviderProfile extends React.Component<Props, object> {
             },
           )
             .then(res => {
-              res.json();
+              console.log('**************************', res)
+
+              return res.json();
+
             })
             .then(resJson => {
+              console.log('**************************', resJson)
+
               that.setState({
-                isfavorite: true,
+                isfavorite: resJson.msg,
               });
             })
             .catch(error => {
@@ -234,11 +255,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
             },
           )
             .then(res => {
-              res.json();
+              console.log('**************************', res)
+              return res.json();
+
             })
             .then(resJson => {
+              console.log('**************************', resJson)
               that.setState({
-                isfavorite: false,
+                isfavorite: resJson.msg,
               });
             })
             .catch(error => {
@@ -265,16 +289,19 @@ class serviceProviderProfile extends React.Component<Props, object> {
         const userId = that.props.navigation.getParam('userId');
         console.log('user id', userId);
         console.log('token: ', x);
-        await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/addHiers', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+        await fetch(
+          'https://salty-garden-58258.herokuapp.com/mobileApi/addHiers',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
           },
-          body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
-        })
+        )
           .then(res => {
-            res.json();
+            return res.json();
           })
           .then(resJson => {
             console.log('Hired');
@@ -309,15 +336,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
   }
 
   ratingCompleted(rating: any) {
-    console.log('Rating is: ' + rating);
     this.setState({ rating: rating });
   }
   render() {
     const { navigation } = this.props;
     const { profile, ratingGiven, reviews } = this.state;
-
-    console.log("profiiiiiiiio", profile);
     const dateOfBirth = (new Date(profile.dateOfBirth)).toDateString();
+    console.log('profile', profile.userWorkImg[0]);
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -411,8 +436,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
             </Card>
             <Card
               title="Service Description"
-              image={profile.userWorkImg[0]}
+
             >
+              <View>
+                <Image
+                  style={{ width: 300, height: 300, borderRadius: 8 }}
+                  resizeMode="cover"
+                  source={{ uri: profile.userWorkImg[0] }}
+                />
+              </View>
               <Text style={{ marginBottom: 20, marginTop: 20 }}>
                 {profile.ServiceDescription}
               </Text>
@@ -444,33 +476,58 @@ class serviceProviderProfile extends React.Component<Props, object> {
             </Card>
             <Card title="REVIEWS">
               <View>
-                {reviews.map((l, i) => {
-                  console.log('reveiwewwwwwwwwwww date', l['dataAdded']);
-                  var dateAdded = (new Date(l['dataAdded'])).toDateString();
+                {reviews.map((rev, i) => {
+                  console.log('rev***********', rev);
+                  var dateAdded = (new Date(rev.review['dataAdded'])).toDateString();
                   return (
-                    <ListItem
-                      key={i}
-                      title={l['review']}
-                      subtitle={dateAdded}
-                      bottomDivider
-                    />
+
+                    <View style={{ marginBottom: 20 }}>
+
+                      <View style={{ flex: 1, flexDirection: "row", justifyContent: 'space-between' }}>
+                        <View style={{}}>
+
+                          <Text style={{ color: '#078ca9', fontSize: 15 }}>{rev.name}</Text>
+                        </View>
+                        <View style={{}}>
+                          <Rating
+                            type="custom"
+                            ratingColor="#078ca9"
+                            ratingBackgroundColor="#f2f2f2"
+                            readonly
+                            imageSize={18}
+                            startingValue={rev.review['rate']}
+                          />
+                        </View>
+                      </View>
+                      <Text style={{ color: '#999', fontSize: 11, paddingLeft: 10 }}>{dateAdded}</Text>
+                      <Text
+                        style={{ color: '#333', fontSize: 15, paddingLeft: 10 }}
+                      >{rev.review['review']}</Text>
+                    </View>
                   );
                 })}
               </View>
-              <Button
-                icon={<Icon name="check" color="#f2f2f2" />}
-                buttonStyle={{
-                  borderRadius: 10,
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginBottom: 0,
-                  backgroundColor: '#078ca9',
-                }}
-                title="ADD REVIEW"
-                onPress={() => {
-                  this.setModalVisible(true);
-                }}
-              />
+
+              <View style={{ alignContent: 'center' }}>
+                <Button
+                  icon={<Icon name="check" color="#f2f2f2" />}
+                  buttonStyle={{
+                    borderRadius: 8,
+                    marginLeft: 0,
+                    marginRight: 0,
+                    marginBottom: 0,
+                    marginTop: 20,
+                    width: 150,
+                    alignSelf: 'center',
+                    backgroundColor: '#078ca9',
+                  }}
+                  title="ADD REVIEW"
+                  onPress={() => {
+                    this.setModalVisible(true);
+                  }}
+                />
+              </View>
+
 
               <Modal
                 animationType="slide"
@@ -478,10 +535,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 onRequestClose={() => {
                   Alert.alert('Make sure to send the review or close ...');
                 }}>
-                <Card
-                  title="Give A Review"
-                >
-
+                <Card title="Give A Review">
+                  <View><Text style={{ color: '#F44324', fontSize: 15 }}>{this.state.errorMsg}</Text></View>
                   <AirbnbRating
                     count={5}
                     defaultRating={0}
@@ -505,8 +560,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
                           value={values.review}
                           numberOfLines={5}
                           textAlignVertical="top"
-                          style={{ borderLeftWidth: 1, borderRadius: 5, marginBottom: 20 }}
-                          placeholder='here...'
+                          style={{
+                            borderLeftWidth: 1,
+                            borderRadius: 5,
+                            marginBottom: 20,
+                          }}
+                          placeholder="here..."
                         />
                         <Button
                           icon={
@@ -521,6 +580,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
                           buttonStyle={{
                             borderRadius: 10,
                             width: 90,
+                            marginTop: 20,
+                            marginLeft: 10,
                             backgroundColor: '#078ca9',
                           }}
                         />
@@ -528,19 +589,23 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     )}
                   </Formik>
 
-                  <TouchableHighlight>
-                    <Button
-                      buttonStyle={{
-                        borderRadius: 10,
-                        width: 70,
-                        backgroundColor: '#078ca9',
-                      }}
-                      title="CLOSE"
-                      onPress={() => {
-                        this.setModalVisible(!this.state.modalVisible);
-                      }}
-                    />
-                  </TouchableHighlight>
+
+                  <Button
+                    buttonStyle={{
+                      position: 'absolute',
+                      top: -40,
+                      left: 220,
+                      borderRadius: 10,
+                      width: 70,
+                      backgroundColor: '#078ca9',
+                    }}
+                    title="CLOSE"
+                    onPress={() => {
+                      this.setState({ modalVisible: false });
+
+                    }}
+                  />
+
                 </Card>
               </Modal>
             </Card>
