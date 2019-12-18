@@ -131,11 +131,12 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                 </View>
 
                 <View style={{ height: 500 }}>
-                    {this.props.items.map((item: any, index) => {
+                    {this.props.items.map((item: any, index: number) => {
+                        console.log('index', index);
                         if (item.show === 1) {
                             if (item.itemtxt === "Log out") {
                                 return <Text
-                                    key={item.index}
+                                    key={index}
                                     style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#F44324' }}
                                     onPress={() => this.logout()}
                                 >
@@ -146,7 +147,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                                 return (
                                     <>
                                         <Text
-                                            key={item.index}
+                                            key={index}
                                             style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#333' }}
                                             onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage, userId: this.props.profileId })}
                                         >
@@ -160,7 +161,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                             return (
                                 <>
                                     <Text
-                                        key={item.index}
+                                        key={index}
                                         style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#333' }}
                                         onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage })}
                                     >
@@ -170,7 +171,8 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                                 </>
                             )
                         }
-                        return <></>;
+                        return;
+
                     }
 
                     )}

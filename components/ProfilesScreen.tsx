@@ -16,7 +16,7 @@ export interface Props {
 class ProfilesScreen extends React.Component<Props, object> {
   state = {
     profiles: [],
-    rating: 0,
+    rating: [],
   };
 
   componentDidMount() {
@@ -69,6 +69,7 @@ class ProfilesScreen extends React.Component<Props, object> {
     // const {rating} = this.props;
     const { rating } = this.state;
     const categoryName = this.props.navigation.getParam('categoryName');
+
     return (
       <>
         <HandyHeader navigation={navigation} title={categoryName} />
@@ -98,8 +99,7 @@ class ProfilesScreen extends React.Component<Props, object> {
                   <Rating
                     type="custom"
                     ratingColor="#078ca9"
-                    ratingBackgroundColor="#078ca9"
-
+                    ratingBackgroundColor="#f2f2f2"
                     readonly
                     imageSize={18}
                     startingValue={rating[i]}

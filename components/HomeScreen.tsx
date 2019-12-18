@@ -42,10 +42,10 @@ class HomeScreen extends React.Component<Props, object> {
     });
   };
   requestPayment = () => {
-    return stripe
+    stripe
       .paymentRequestWithCardForm()
       .then((stripeTokenInfo: any) => {
-        console.warn('Token created', { stripeTokenInfo });
+        // console.warn('Token created', { stripeTokenInfo });
         const body = {
           amount: 100,
           tokenId: stripeTokenInfo.tokenId,
@@ -56,14 +56,17 @@ class HomeScreen extends React.Component<Props, object> {
         axios
           .post('https://salty-garden-58258.herokuapp.com/payApi/doPayment/', body, { headers })
           .then(({ data }) => {
-            Alert.alert('payment has been successful')
+            Alert.alert('Your Payment Process has been successful')
           })
           .catch((error: any) => {
-            return Promise.reject('Error in making payment', error);
+            Alert.alert('Error in making payment')
+            // return Promise.reject('Error in making payment', error);
           });
       })
       .catch((error: any) => {
-        console.warn('Payment failed', { error });
+        Alert.alert('Payment Process Canceled')
+
+        // console.warn('Payment failed', { error });
       });
   };
 
@@ -129,7 +132,7 @@ class HomeScreen extends React.Component<Props, object> {
             <View style={{ flex: 1 }}>
               <Text
                 style={{
-                  width: 150,
+                  width: 180,
                   height: 50,
                   fontSize: 18,
                   backgroundColor: '#078ca9',
@@ -152,7 +155,7 @@ class HomeScreen extends React.Component<Props, object> {
             <View style={{ flex: 1 }}>
               <Text
                 style={{
-                  width: 90,
+                  width: 180,
                   height: 50,
                   fontSize: 15,
                   backgroundColor: '#F44324',
