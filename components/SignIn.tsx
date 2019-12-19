@@ -49,7 +49,8 @@ class SignIn extends React.Component<Props, object> {
         signInLoading: false,
         loginError: '',
     };
-    // check user has a profile
+
+    //@Description: check user has a profile
     async getUserHasProfile(token: string) {
         var response = await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile',
@@ -67,14 +68,11 @@ class SignIn extends React.Component<Props, object> {
             this.props.changeHasProfileState(1);
             this.props.setProfileId(resJson.profileId);
         }
-        // .catch(error => {
-        //     console.error(error);
-        //     that.props.changeActivityIndicatorState(false);
-        // });
+
     }
-    // @function: signIn
+
+
     // @description:sign in to our application
-    //
     async signIn() {
         if (
             this.state.emailError === undefined &&
@@ -134,6 +132,8 @@ class SignIn extends React.Component<Props, object> {
         }
         return;
     }
+
+    //@Description: render the component
     render() {
         const { navigation } = this.props;
         const {
@@ -154,7 +154,7 @@ class SignIn extends React.Component<Props, object> {
                             style={{ flex: 2, justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
                             <Image
                                 source={require('./../assets/Handy.png')}
-                                style={{ flex: 2, width: 190, height: 190 }}
+                                style={{ flex: 2, width: 150, height: 190 }}
                             />
                         </View>
 
@@ -272,6 +272,8 @@ class SignIn extends React.Component<Props, object> {
         );
     }
 }
+
+//@Description: send actions as components props
 const mapDipatchToProps = (dispatch: Dispatch) => ({
     changeState: (id: number, state: number) => {
         dispatch(changeStateItem(id, state));
@@ -288,8 +290,11 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
     setProfileId: (profileId: string) => {
         dispatch(setProfileId(profileId));
     },
-    // other callbacks go here...
+
 });
+
+//@Description: send actions as components props
+
 const mapStateToProps = (
     appstate: any,
     navigation: NavigationScreenProp<NavigationState, NavigationParams>,
@@ -299,4 +304,5 @@ const mapStateToProps = (
     profileId: appstate.changeGeneralState.profileId,
     navigation: navigation,
 });
+
 export default connect(null, mapDipatchToProps)(SignIn);

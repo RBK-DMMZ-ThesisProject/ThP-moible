@@ -46,9 +46,8 @@ class SignUp extends React.Component<Props, object> {
         signUpLoading: false
     }
 
-    // @function: saveProfile  
+
     // @description: Save profile info to the databae
-    // 
     async signUp() {
         if (this.state.emailError === undefined && this.state.passwordError === undefined && this.state.userNameError === undefined && this.state.mobileNOError === undefined) {
             // console.log(this.state)
@@ -79,39 +78,37 @@ class SignUp extends React.Component<Props, object> {
                         SharedPreferences.setName("handyInfo");
                         SharedPreferences.setItem("handyToken", resJson.token);
                         this.props.changeSignedInState(1);
+                        this.setState({
+                            userName: '',
+                            email: '',
+                            password: '',
+                            mobileNO: null,
+                            signUpLoading: false
+                        });
                         navigation.navigate(navigation.getParam('nextPage'));
                     }
                     else {
                         this.setState({
                             loginError: resJson.msg,
-
                         });
-
                     }
-                    this.setState({
-
-                        userName: '',
-                        email: '',
-                        password: '',
-                        mobileNO: null,
-                        signUpLoading: false
-                    });
-
                 })
                 .catch((error) => {
                     console.error(error);
-                    this.setState({
-                        userName: '',
-                        email: '',
-                        password: '',
-                        mobileNO: null,
-                        signUpLoading: false
-                    });
+                    // this.setState({
+                    //     userName: '',
+                    //     email: '',
+                    //     password: '',
+                    //     mobileNO: null,
+                    //     signUpLoading: false
+                    // });
                     // process erro messages
                 });
         }
         return;
     }
+
+    //@Description: render the component
     render() {
         console.log(this.state);
         const { navigation } = this.props;
@@ -123,7 +120,7 @@ class SignUp extends React.Component<Props, object> {
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <HandyHeader navigation={navigation} title="Sign Up" />
                         <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                            <Image source={require('./../assets/Handy.png')} style={{ flex: 2, width: 190, height: 190, marginBottom: 20 }} />
+                            <Image source={require('./../assets/Handy.png')} style={{ flex: 2, width: 150, height: 190, marginBottom: 20 }} />
                         </View>
                         <Input
                             containerStyle={{
@@ -215,7 +212,6 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
     changeSignedInState: (state: number) => {
         dispatch(changeStateSignedIn(state));
     }
-    // other callbacks go here...
 });
 const mapStateToProps = (state: types.MenuItemsListState, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => ({
     items: state,

@@ -26,6 +26,8 @@ export interface Props {
 }
 
 class HomeScreen extends React.Component<Props, object> {
+
+  //@Descriptoin: Handles the click on the add profile button if signed in user or not.
   handleAddUserProfileBtn = () => {
     var that = this;
     var SharedPreferences = require('react-native-shared-preferences');
@@ -41,6 +43,8 @@ class HomeScreen extends React.Component<Props, object> {
       }
     });
   };
+
+  //@Descripion: send payment request to stripe server
   requestPayment = () => {
     stripe
       .paymentRequestWithCardForm()
@@ -89,7 +93,7 @@ class HomeScreen extends React.Component<Props, object> {
               <Image
                 source={require('./../assets/Handy.png')}
                 style={{
-                  marginTop: 70,
+                  marginTop: 40,
                   marginBottom: 30,
                   marginRight: 10,
                   marginLeft: 10,
