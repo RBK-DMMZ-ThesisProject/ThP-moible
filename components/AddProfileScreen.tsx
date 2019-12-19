@@ -197,6 +197,7 @@ class AddProfileScreen extends React.Component<Props, object> {
         });
 
     }
+
     showSampleImagePicker = () => {
         // initial settings 
         const options: object = {
@@ -254,10 +255,9 @@ class AddProfileScreen extends React.Component<Props, object> {
     }
     // @function: saveProfile  
     // @description: Save profile info to the databae
-    // 
     async saveProfile() {
         console.log(this.state)
-        if (this.state.emailError === undefined && this.state.firstNameError === undefined && this.state.familyNameError === undefined && this.state.phoneNumError === undefined) {
+        if (this.state.emailError === '' && this.state.firstNameError === '' && this.state.familyNameError === '' && this.state.phoneNumError === '') {
             this.setState({
                 saveLoading: true,
                 isSbumitted: true,
@@ -283,6 +283,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                 return;
             }
             if (this.state.avartfbUrl === '' || this.state.sampleWorkImgfbUrl === '') {
+
                 if (this.state.avartfbUrl === '') {
                     this.setState({
                         avatarError: 'Please choose a personal image'
@@ -345,8 +346,9 @@ class AddProfileScreen extends React.Component<Props, object> {
         }
         return;
     }
+
     render() {
-        const { userInfo } = this.state;
+
         const { navigation } = this.props;
         const { firstName, firstNameError, familyName, familyNameError, phoneNum, phoneNumError, email, emailError, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading, avatarError, wsError } = this.state;
         return (

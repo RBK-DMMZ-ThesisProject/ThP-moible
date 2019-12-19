@@ -315,9 +315,11 @@ class serviceProviderProfile extends React.Component<Props, object> {
       }
     });
   }
+
   setModalVisible(visible: any) {
     this.setState({ modalVisible: visible });
   }
+
   isFave() {
     if (this.state.isfavorite) {
       return '#078ca9';
@@ -325,6 +327,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       return '#666';
     }
   }
+
   addReview() {
     return (
       <Overlay
