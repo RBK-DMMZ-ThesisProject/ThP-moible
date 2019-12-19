@@ -41,8 +41,8 @@ export interface Props {
     changeSignedInState: any,
     setProfileId: any
 }
-class AddProfileScreen extends React.Component<Props, object> {
 
+class AddProfileScreen extends React.Component<Props, object> {
     state = {
         // personal info
         firstName: '',
@@ -77,48 +77,45 @@ class AddProfileScreen extends React.Component<Props, object> {
         saveLoading: false,
         // form validation 
         isSbumitted: false,
-        userInfo:[]
-
-
     }
 
-    componentDidMount(){
+    componentDidMount() {
         var that = this;
-    var SharedPreferences = require('react-native-shared-preferences');
-    SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function(value: any) {
-      if (value === null) {
-        console.log('no token');
-        that.props.navigation.navigate('SignIn');
-      } else {
-        fetch(
-          'https://salty-garden-58258.herokuapp.com/mobileApi/getUser',
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({customerID: value}),
-          },
-        )
-          .then(res => res.json())
-          .then(resJson => {
-              var name = resJson[0].userName.split(" ")
-              console.log(name)
-            that.setState({
-                firstName: name[0],
-                familyName: name[1],
-                phoneNum: resJson[0].email,
-                email: resJson[0].mobileNO,
-            });
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-    });
-  }
+        var SharedPreferences = require('react-native-shared-preferences');
+        SharedPreferences.setName('handyInfo');
+        SharedPreferences.getItem('handyToken', function (value: any) {
+            if (value === null) {
+                console.log('no token');
+                that.props.navigation.navigate('SignIn');
+            } else {
+                fetch(
+                    'https://salty-garden-58258.herokuapp.com/mobileApi/getUser',
+                    {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ customerID: value }),
+                    },
+                )
+                    .then(res => res.json())
+                    .then(resJson => {
+                        var name = resJson[0].userName.split(" ")
+                        console.log(name)
+                        that.setState({
+                            firstName: name[0],
+                            familyName: name[1],
+                            phoneNum: resJson[0].mobileNO,
+                            email: resJson[0].email,
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+    }
 
     setDate = (event: SyntheticEvent<Readonly<{ timestamp: number; }>, Event>, birthdate?: Date) => {
         birthdate = birthdate || this.state.birthdate;
@@ -259,7 +256,7 @@ class AddProfileScreen extends React.Component<Props, object> {
     // @description: Save profile info to the databae
     // 
     async saveProfile() {
-         console.log(this.state)
+        console.log(this.state)
         if (this.state.emailError === undefined && this.state.firstNameError === undefined && this.state.familyNameError === undefined && this.state.phoneNumError === undefined) {
             this.setState({
                 saveLoading: true,
@@ -336,7 +333,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                         });
                         NavigationService.navigate('ProviderProfile', {
                             userId: resJson.userId,
-                          })
+                        })
                     })
                     .catch((error) => {
                         console.error(error);
@@ -349,7 +346,7 @@ class AddProfileScreen extends React.Component<Props, object> {
         return;
     }
     render() {
-        const {userInfo} = this.state;
+        const { userInfo } = this.state;
         const { navigation } = this.props;
         const { firstName, firstNameError, familyName, familyNameError, phoneNum, phoneNumError, email, emailError, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading, avatarError, wsError } = this.state;
         return (
@@ -359,9 +356,9 @@ class AddProfileScreen extends React.Component<Props, object> {
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <HandyHeader navigation={navigation} title="Add Profile" />
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2',fontSize:15, borderRadius: 5, marginTop:5,color: "#666" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', fontSize: 15, borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='First Name:'
-                            labelStyle={{ fontSize: 20,marginTop:5, color: "#666" }}
+                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
                             onChangeText={(firstName) => this.setState({ firstName })}
                             onBlur={() => {
                                 this.setState({ firstNameError: validate({ firstName: firstName }, { firstName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
@@ -373,10 +370,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                         {/* {this.validator.message('firstName', firstName, 'required')} */}
 
                         <Input
-                        containerStyle={{marginTop:15}}
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5,fontSize:15,marginTop:5, color: "#666"  }}
+                            containerStyle={{ marginTop: 15 }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Family Name:'
-                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
+                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
                             onChangeText={(familyName) => this.setState({ familyName })}
                             onBlur={() => {
                                 this.setState({ familyNameError: validate({ familyName: familyName }, { familyName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
@@ -387,9 +384,9 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         >{familyName}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize:15, marginTop:5,color: "#666" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Phone No.:'
-                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
+                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
                             keyboardType="number-pad"
                             onChangeText={(phoneNum) => this.setState({ phoneNum })}
                             onBlur={() => {
@@ -401,9 +398,9 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         >{phoneNum}</Input>
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize:15, marginTop:5,color: "#666" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Email:'
-                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
+                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
                             onChangeText={(email) => this.setState({ email })}
                             onBlur={() => {
                                 this.setState({ emailError: validate({ email: email.trim() }, { email: { presence: true, email: true } }, { format: "flat" }) })
@@ -414,9 +411,9 @@ class AddProfileScreen extends React.Component<Props, object> {
                         >{email}</Input>
                         {/* Begin: date input */}
                         <Input
-                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5,fontSize:15, marginTop:5,color: "#666" }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Birth Date:'
-                            labelStyle={{ fontSize: 20, marginTop:5, color: "#666" }}
+                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
                             placeholder={'Enter your birthDate...'}
                             placeholderTextColor="#999"
                             onChangeText={(birthdate) => this.setState({ birthdate })}
@@ -428,7 +425,7 @@ class AddProfileScreen extends React.Component<Props, object> {
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
                             <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={{ fontWeight: 'bold', marginTop:15,marginBottom:5,fontSize:15, color: "#666" }}>Upload Avatar:</Text>
+                                    <Text style={{ fontWeight: 'bold', marginTop: 15, marginBottom: 5, fontSize: 15, color: "#666" }}>Upload Avatar:</Text>
                                 </View>
                                 <View style={{ flex: 2, marginLeft: 10 }}>
                                     <Button buttonStyle={{
@@ -474,9 +471,9 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         <Input
                             containerStyle={{ marginBottom: 20 }}
-                            inputStyle={{ backgroundColor: '#f2f2f2',marginTop:15 , borderRadius: 5, color: "#666", fontSize:18,textAlignVertical: 'top' }}
+                            inputStyle={{ backgroundColor: '#f2f2f2', marginTop: 15, borderRadius: 5, color: "#666", fontSize: 18, textAlignVertical: 'top' }}
                             label='Service Description:'
-                            labelStyle={{ fontSize: 18, color: "#666", textAlignVertical: 'top'}}
+                            labelStyle={{ fontSize: 18, color: "#666", textAlignVertical: 'top' }}
                             onChangeText={(serverDesription) => this.setState({ serverDesription })}
                             placeholder={'Enter Service Description...'}
                             multiline={true}
