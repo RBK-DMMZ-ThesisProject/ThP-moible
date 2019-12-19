@@ -360,13 +360,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
   ratingCompleted(rating: any) {
     this.setState({rating: rating});
   }
+
   render() {
-    const {navigation} = this.props;
     const {profile, ratingGiven, reviews} = this.state;
-    var dateOfBirth = this.state.profile.dateOfBirth;
-    if (profile.dateOfBirth) {
-      dateOfBirth = new Date(profile.dateOfBirth).toDateString();
-    }
+    var dateOfBirth = profile.dateOfBirth;
+    let yearBirth = parseInt(dateOfBirth.toString().substring(0, 4));
+    let currentYear = new Date().getFullYear();
+    var age = currentYear - yearBirth;
+    const {navigation} = this.props;
 
     console.log('profile', profile.userWorkImg[0]);
     return (
@@ -451,8 +452,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
               />
               <ListItem
                 containerStyle={{marginTop: -15}}
-                title="Birth Date"
-                subtitle={dateOfBirth}
+                title="Age"
+                subtitle={age}
                 leftIcon={{
                   name: 'book',
                 }}
