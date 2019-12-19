@@ -9,7 +9,6 @@ import {
 import HandyHeader from './HandyHeader';
 import NavigationService from './NavigationService.js';
 
-
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
@@ -76,8 +75,7 @@ class ProfilesScreen extends React.Component<Props, object> {
         {profiles.map((user: any, i: any) => {
           return (
             <Card containerStyle={{ padding: 5 }} key={i}>
-
-              <View >
+              <View>
                 <TouchableOpacity
                   onPress={() =>
                     NavigationService.navigate('ProviderProfile', {
@@ -85,13 +83,11 @@ class ProfilesScreen extends React.Component<Props, object> {
                     })
                   }>
                   <ListItem
-
                     leftAvatar={{
-                      title: "SP",
+                      title: 'SP',
                       source: { uri: user['userImg'] },
                     }}
-
-                    titleStyle={{ position: "absolute", top: -20, left: -4 }}
+                    titleStyle={{ position: 'absolute', top: -20, left: -4 }}
                     title={user['userName']}
                     chevron></ListItem>
                 </TouchableOpacity>
@@ -106,7 +102,6 @@ class ProfilesScreen extends React.Component<Props, object> {
                   />
                 </View>
               </View>
-
             </Card>
           );
         })}
