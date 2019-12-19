@@ -76,10 +76,49 @@ class AddProfileScreen extends React.Component<Props, object> {
         // activity indicator
         saveLoading: false,
         // form validation 
-        isSbumitted: false
+        isSbumitted: false,
+        userInfo:[]
 
 
     }
+
+    componentDidMount(){
+        var that = this;
+    var SharedPreferences = require('react-native-shared-preferences');
+    SharedPreferences.setName('handyInfo');
+    SharedPreferences.getItem('handyToken', function(value: any) {
+      if (value === null) {
+        console.log('no token');
+        that.props.navigation.navigate('SignIn');
+      } else {
+        fetch(
+          'https://salty-garden-58258.herokuapp.com/mobileApi/getUser',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({customerID: value}),
+          },
+        )
+          .then(res => res.json())
+          .then(resJson => {
+              var name = resJson[0].userName.split(" ")
+              console.log(name)
+            that.setState({
+                firstName: name[0],
+                familyName: name[1],
+                phoneNum: resJson[0].email,
+                email: resJson[0].mobileNO,
+            });
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    });
+  }
 
     setDate = (event: SyntheticEvent<Readonly<{ timestamp: number; }>, Event>, birthdate?: Date) => {
         birthdate = birthdate || this.state.birthdate;
@@ -220,7 +259,7 @@ class AddProfileScreen extends React.Component<Props, object> {
     // @description: Save profile info to the databae
     // 
     async saveProfile() {
-        // console.log(this.state)
+         console.log(this.state)
         if (this.state.emailError === undefined && this.state.firstNameError === undefined && this.state.familyNameError === undefined && this.state.phoneNumError === undefined) {
             this.setState({
                 saveLoading: true,
@@ -310,6 +349,7 @@ class AddProfileScreen extends React.Component<Props, object> {
         return;
     }
     render() {
+        const {userInfo} = this.state;
         const { navigation } = this.props;
         const { firstName, firstNameError, familyName, familyNameError, phoneNum, phoneNumError, email, emailError, birthdate, showDate, showAvatar, showSampleWorkImg, isSbumitted, saveLoading, avatarError, wsError } = this.state;
         return (
