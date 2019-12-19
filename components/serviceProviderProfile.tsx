@@ -55,7 +55,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       ServiceDescription: '',
       email: '',
       userWorkImg: ['WS'],
-      dateOfBirth: '',
+      dateOfBirth: new Date(),
       ServiceCategory: ''
 
     },
@@ -341,7 +341,11 @@ class serviceProviderProfile extends React.Component<Props, object> {
   render() {
     const { navigation } = this.props;
     const { profile, ratingGiven, reviews } = this.state;
-    const dateOfBirth = (new Date(profile.dateOfBirth)).toDateString();
+    var dateOfBirth = this.state.profile.dateOfBirth;
+    if (profile.dateOfBirth) {
+      dateOfBirth = (new Date(profile.dateOfBirth)).toDateString();
+    }
+
     console.log('profile', profile.userWorkImg[0]);
     return (
       <>
