@@ -9,6 +9,7 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
+import NavigationService from './NavigationService.js';
 import {
   NavigationParams,
   NavigationScreenProp,
@@ -52,8 +53,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       email: '',
       userWorkImg: ['WS'],
       dateOfBirth: new Date(),
-      ServiceCategory: ''
-
+      ServiceCategory: '',
     },
     token: '',
     reviews: [],
@@ -78,17 +78,20 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
       SharedPreferences.getItem('handyToken', async function (value: any) {
         if (value !== null) {
-          await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
+          await fetch(
+            'https://salty-garden-58258.herokuapp.com/mobileApi/profil',
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                serviceproviderid: userId,
+                token: value,
+              }),
             },
-            body: JSON.stringify({
-              serviceproviderid: userId,
-              token: value,
-            }),
-          })
+          )
             .then(res => res.json())
             .then(resJson => {
               context.setState({
@@ -103,36 +106,35 @@ class serviceProviderProfile extends React.Component<Props, object> {
               console.error(error);
             });
           context.fetchReviews(context);
-
         } else {
-          await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
+          await fetch(
+            'https://salty-garden-58258.herokuapp.com/mobileApi/profil',
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                serviceproviderid: userId,
+              }),
             },
-            body: JSON.stringify({
-              serviceproviderid: userId,
-            }),
-          })
+          )
             .then(res => res.json())
             .then(resJson => {
               console.log('response from server', resJson);
               context.setState({
                 profile: resJson.profile,
               });
-
             })
             .catch(error => {
-              console.log('hello from error')
+              console.log('hello from error');
               console.error(error);
             });
           context.fetchReviews(context);
-
         }
       });
     }
-
   }
   componentDidUpdate(prevProps: Props, prevState: any) {
 
@@ -207,14 +209,17 @@ class serviceProviderProfile extends React.Component<Props, object> {
   //@Description:  fetch the reviews of the service provider
   async fetchReviews(context: object) {
     const userId = this.props.navigation.getParam('userId');
-    await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getReviews', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    await fetch(
+      'https://salty-garden-58258.herokuapp.com/mobileApi/getReviews',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ serviceproviderid: userId }),
       },
-      body: JSON.stringify({ serviceproviderid: userId }),
-    })
+    )
       .then(res => res.json())
       .then(resJson => {
         context.setState({
@@ -230,8 +235,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
   saveReview(values: any) {
     if (values.review === '' || this.state.ratingGiven === 0) {
       this.setState({
-        errorMsg: 'Please make sure to fill the rating and the review...'
-      })
+        errorMsg: 'Please make sure to fill the rating and the review...',
+      });
     } else {
       var SharedPreferences = require('react-native-shared-preferences');
       SharedPreferences.setName('handyInfo');
@@ -320,7 +325,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
           )
             .then(res => {
               return res.json();
-
             })
             .then(resJson => {
               that.setState({
@@ -337,7 +341,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
           userId: userId,
         });
       }
-
     });
   }
 
@@ -383,7 +386,20 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
   //@Description: open modal for adding review 
   setModalVisible(visible: any) {
-    this.setState({ modalVisible: visible });
+    var that = this;
+    const userId = this.props.navigation.getParam('userId');
+    var SharedPreferences = require('react-native-shared-preferences');
+    SharedPreferences.setName('handyInfo');
+    SharedPreferences.getItem('handyToken', function (value: any) {
+      if (value === null) {
+        NavigationService.navigate('SignIn', {
+          nextPage: 'ProviderProfile',
+          userId: userId,
+        });
+      } else {
+        that.setState({ modalVisible: visible });
+      }
+    });
   }
   //@Description: change the state of the favorite star 
   isFave() {
@@ -412,9 +428,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
   render() {
     const { navigation } = this.props;
     const { profile, ratingGiven, reviews } = this.state;
-    var dateOfBirth = '';
+    var dateOfBirth = new Date();
+    let age = 0;
     if (profile.dateOfBirth) {
-      dateOfBirth = (new Date(this.state.profile.dateOfBirth)).toDateString();
+      // dateOfBirth = (new Date(this.state.profile.dateOfBirth)).toDateString();
+      dateOfBirth = profile.dateOfBirth;
+      let yearBirth = parseInt(dateOfBirth.toString().substring(0, 4));
+      let currentYear = (new Date()).getFullYear();
+      age = currentYear - yearBirth;
     }
 
     return (
@@ -433,7 +454,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 title="pic"
               />
               <Text
-                style={{ fontSize: 18, fontWeight: 'bold', color: '#666', marginTop: 10, marginBottom: 10 }}>
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: '#666',
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}>
                 {/* {profile.firstName + ' ' + profile.familyName} */}
                 {profile.userName}
               </Text>
@@ -493,8 +520,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
               />
               <ListItem
                 containerStyle={{ marginTop: -15 }}
-                title="Birth Date"
-                subtitle={dateOfBirth}
+                title="Age"
+                subtitle={age + ""}
                 leftIcon={{
                   name: 'book',
                 }}
@@ -508,10 +535,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }}
               />
             </Card>
-            <Card
-              title="Service Description"
-
-            >
+            <Card title="Service Description">
               <View>
                 <Image
                   style={{ width: 300, height: 300, borderRadius: 8 }}
@@ -558,8 +582,9 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: 'space-between' }}>
                         <View style={{}}>
-
-                          <Text style={{ color: '#078ca9', fontSize: 15 }}>{rev.name}</Text>
+                          <Text style={{ color: '#078ca9', fontSize: 15 }}>
+                            {rev.name}
+                          </Text>
                         </View>
                         <View style={{}}>
                           <Rating
@@ -572,10 +597,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
                           />
                         </View>
                       </View>
-                      <Text style={{ color: '#999', fontSize: 11, paddingLeft: 10 }}>{dateAdded}</Text>
                       <Text
-                        style={{ color: '#333', fontSize: 15, paddingLeft: 10 }}
-                      >{rev.review['review']}</Text>
+                        style={{ color: '#999', fontSize: 11, paddingLeft: 10 }}>
+                        {dateAdded}
+                      </Text>
+                      <Text
+                        style={{ color: '#333', fontSize: 15, paddingLeft: 10 }}>
+                        {rev.review['review']}
+                      </Text>
                     </View>
                   );
                 })}
@@ -601,7 +630,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 />
               </View>
 
-
               <Modal
                 animationType="slide"
                 visible={this.state.modalVisible}
@@ -609,7 +637,11 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   Alert.alert('Make sure to send the review or close ...');
                 }}>
                 <Card title="Give A Review">
-                  <View><Text style={{ color: '#F44324', fontSize: 15 }}>{this.state.errorMsg}</Text></View>
+                  <View>
+                    <Text style={{ color: '#F44324', fontSize: 15 }}>
+                      {this.state.errorMsg}
+                    </Text>
+                  </View>
                   <AirbnbRating
                     count={5}
                     defaultRating={0}
@@ -662,7 +694,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     )}
                   </Formik>
 
-
                   <Button
                     buttonStyle={{
                       position: 'absolute',
@@ -675,10 +706,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     title="CLOSE"
                     onPress={() => {
                       this.setState({ modalVisible: false });
-
                     }}
                   />
-
                 </Card>
               </Modal>
             </Card>
