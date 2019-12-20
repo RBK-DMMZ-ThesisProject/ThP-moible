@@ -1,16 +1,6 @@
 import React, {Component} from 'react';
-import {
-  ScrollView,
-  Text,
-  View,
-  Image,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
-import {NavigationActions} from 'react-navigation';
+import {Text, View, StyleSheet, ActivityIndicator} from 'react-native';
 import {connect} from 'react-redux';
-import {menuList} from '../state/reducer';
-import * as types from '../state/types';
 import NavigationService from './NavigationService.js';
 import {Dispatch} from 'react-redux';
 import {
@@ -228,7 +218,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
               }
               if (item.id === 20) {
                 return (
-                  <>
+                  <View key={index}>
                     <Text
                       key={index}
                       style={{
@@ -247,7 +237,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                       {item.itemtxt}
                     </Text>
                     <Divider></Divider>
-                  </>
+                  </View>
                 );
               }
               var nextPage =
@@ -255,9 +245,8 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                   ? 'Home'
                   : '';
               return (
-                <>
+                <View key={index}>
                   <Text
-                    key={index}
                     style={{
                       fontSize: 15,
                       textAlignVertical: 'center',
@@ -271,7 +260,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                     {item.itemtxt}
                   </Text>
                   <Divider></Divider>
-                </>
+                </View>
               );
             }
             return;
@@ -290,12 +279,11 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
   }
 }
 
+//@Description: pass propereties as props of the component
 const mapStateToProps = (
   appstate: any,
   navigation: NavigationScreenProp<NavigationState, NavigationParams>,
 ) => {
-  console.log('from state 1', appstate);
-
   return {
     items: appstate.menuList,
     login: appstate.changeGeneralState.login,
@@ -305,6 +293,8 @@ const mapStateToProps = (
     navigation: navigation,
   };
 };
+
+//@Description: pass functions as props of the component
 const mapDsipatchToProps = (dispatch: Dispatch) => ({
   changeState: (id: number, state: number) => {
     dispatch(changeStateItem(id, state));
@@ -324,8 +314,9 @@ const mapDsipatchToProps = (dispatch: Dispatch) => ({
   setProfileId: (profileId: string) => {
     dispatch(setProfileId(profileId));
   },
-  // other callbacks go here...
 });
+
+//@Description: style the activity indicator
 const styles = StyleSheet.create({
   loading: {
     position: 'absolute',

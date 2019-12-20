@@ -72,7 +72,6 @@ class SignUp extends React.Component<Props, object> {
 
             }).then(res => res.json())
                 .then((resJson) => {
-                    console.log('response: ', resJson);
                     if (resJson.token !== undefined) {
                         var SharedPreferences = require('react-native-shared-preferences');
                         SharedPreferences.setName("handyInfo");
@@ -95,14 +94,10 @@ class SignUp extends React.Component<Props, object> {
                 })
                 .catch((error) => {
                     console.error(error);
-                    // this.setState({
-                    //     userName: '',
-                    //     email: '',
-                    //     password: '',
-                    //     mobileNO: null,
-                    //     signUpLoading: false
-                    // });
-                    // process erro messages
+                    this.setState({
+                        signUpLoading: false
+                    });
+
                 });
         }
         return;
@@ -123,9 +118,8 @@ class SignUp extends React.Component<Props, object> {
                             <Image source={require('./../assets/Handy.png')} style={{ flex: 2, width: 150, height: 190, marginBottom: 20 }} />
                         </View>
                         <Input
-                            containerStyle={{
-                                marginTop: 15
-                            }}
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 300 }}
+
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Name:'
                             labelStyle={{ fontSize: 18, color: "#666" }}
@@ -138,9 +132,8 @@ class SignUp extends React.Component<Props, object> {
                             placeholderTextColor="#999"
                         >{userName}</Input>
                         <Input
-                            containerStyle={{
-                                marginTop: 15
-                            }}
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 300 }}
+
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Email:'
                             labelStyle={{ fontSize: 18, color: "#666" }}
@@ -153,9 +146,8 @@ class SignUp extends React.Component<Props, object> {
                             placeholderTextColor="#999"
                         >{email}</Input>
                         <Input
-                            containerStyle={{
-                                marginTop: 15
-                            }}
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 300 }}
+
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Mobile No.:'
                             keyboardType="number-pad"
@@ -169,9 +161,8 @@ class SignUp extends React.Component<Props, object> {
                             errorMessage={Array.isArray(mobileNOError) ? mobileNOError[0] : mobileNOError}
                         >{mobileNO}</Input>
                         <Input
-                            containerStyle={{
-                                marginTop: 15
-                            }}
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 300 }}
+
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='Password:'
                             secureTextEntry={true}
@@ -189,7 +180,10 @@ class SignUp extends React.Component<Props, object> {
                         <View style={{ flex: 1, margin: 10 }}>
                             <Button buttonStyle={{
                                 backgroundColor: '#078ca9',
-                                width: 100 + "%",
+                                flex: 1, marginTop: 15,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                width: 280
                             }}
                                 titleStyle={{
                                     color: '#f2f2f2'

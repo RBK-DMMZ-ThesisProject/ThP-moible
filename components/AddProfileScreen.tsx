@@ -256,14 +256,12 @@ class AddProfileScreen extends React.Component<Props, object> {
     // @function: saveProfile  
     // @description: Save profile info to the databae
     async saveProfile() {
-        console.log(this.state)
         if (this.state.emailError === '' && this.state.firstNameError === '' && this.state.familyNameError === '' && this.state.phoneNumError === '') {
             this.setState({
                 saveLoading: true,
                 isSbumitted: true,
             })
             const { avatarUri, sampleWorkImgUri, avatarFileName, sampleWorkImgFileName } = this.state;
-            const { navigation } = this.props;
             if (avatarUri !== '') {
                 await this.uploadPicture(avatarUri, avatarFileName, 'avatars/', 1);
             } else {
@@ -358,9 +356,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <HandyHeader navigation={navigation} title="Add Profile" />
                         <Input
+                            containerStyle={{ flex: 1, alignSelf: 'center', justifyContent: 'center', width: 350 }}
                             inputStyle={{ backgroundColor: '#f2f2f2', fontSize: 15, borderRadius: 5, marginTop: 5, color: "#666" }}
                             label='First Name:'
-                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
+                            labelStyle={{ fontSize: 18, marginTop: 5, color: "#666" }}
                             onChangeText={(firstName) => this.setState({ firstName })}
                             onBlur={() => {
                                 this.setState({ firstNameError: validate({ firstName: firstName }, { firstName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
@@ -372,10 +371,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                         {/* {this.validator.message('firstName', firstName, 'required')} */}
 
                         <Input
-                            containerStyle={{ marginTop: 15 }}
+                            containerStyle={{ flex: 1, marginTop: 10, alignSelf: 'center', justifyContent: 'center', width: 350 }}
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Family Name:'
-                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
+                            labelStyle={{ fontSize: 18, marginTop: 5, color: "#666" }}
                             onChangeText={(familyName) => this.setState({ familyName })}
                             onBlur={() => {
                                 this.setState({ familyNameError: validate({ familyName: familyName }, { familyName: { presence: true, type: 'string', length: { minimum: 1 } } }, { format: "flat" }) })
@@ -386,9 +385,10 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         >{familyName}</Input>
                         <Input
+                            containerStyle={{ flex: 1, marginTop: 10, alignSelf: 'center', justifyContent: 'center', width: 350 }}
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Phone No.:'
-                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
+                            labelStyle={{ fontSize: 18, marginTop: 5, color: "#666" }}
                             keyboardType="number-pad"
                             onChangeText={(phoneNum) => this.setState({ phoneNum })}
                             onBlur={() => {
@@ -400,9 +400,10 @@ class AddProfileScreen extends React.Component<Props, object> {
 
                         >{phoneNum}</Input>
                         <Input
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 350 }}
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Email:'
-                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
+                            labelStyle={{ fontSize: 18, marginTop: 5, color: "#666" }}
                             onChangeText={(email) => this.setState({ email })}
                             onBlur={() => {
                                 this.setState({ emailError: validate({ email: email.trim() }, { email: { presence: true, email: true } }, { format: "flat" }) })
@@ -413,9 +414,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                         >{email}</Input>
                         {/* Begin: date input */}
                         <Input
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 350 }}
                             inputStyle={{ backgroundColor: '#f2f2f2', borderRadius: 5, fontSize: 15, marginTop: 5, color: "#666" }}
                             label='Birth Date:'
-                            labelStyle={{ fontSize: 20, marginTop: 5, color: "#666" }}
+                            labelStyle={{ fontSize: 18, marginTop: 5, color: "#666" }}
                             placeholder={'Enter your birthDate...'}
                             placeholderTextColor="#999"
                             onChangeText={(birthdate) => this.setState({ birthdate })}
@@ -424,10 +426,10 @@ class AddProfileScreen extends React.Component<Props, object> {
                         {showDate && <RNDateTimePicker mode="date" value={birthdate} onChange={this.setDate} />}
                         {/* end date input */}
                         {/* upload avatar input */}
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center', marginTop: 20, width: 350 }}>
                             <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={{ fontWeight: 'bold', marginTop: 15, marginBottom: 5, fontSize: 15, color: "#666" }}>Upload Avatar:</Text>
+                                    <Text style={{ fontWeight: 'bold', marginBottom: 5, fontSize: 18, color: "#666" }}>Upload Avatar:</Text>
                                 </View>
                                 <View style={{ flex: 2, marginLeft: 10 }}>
                                     <Button buttonStyle={{
@@ -446,34 +448,30 @@ class AddProfileScreen extends React.Component<Props, object> {
                                 {showAvatar && <Avatar rounded source={this.state.avatarSource} activeOpacity={0.7} containerStyle={{ width: 150, height: 150, backgroundColor: '#078ca9' }} />}
                             </View>
                         </View>
-                        <Text style={{ fontSize: 16, lineHeight: 20, color: 'red', textAlign: 'center' }} > {avatarError}</Text>
-
+                        <Text style={{ fontSize: 15, lineHeight: 20, color: 'red', textAlign: 'center', alignSelf: 'center', width: 350 }} > {avatarError}</Text>
                         {/* end of upload avatar input */}
                         {/* Service Info */}
-                        <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10, marginBottom: 20 }}>
+                        <View style={{ flex: 2, alignItems: 'flex-start', marginLeft: 10, marginBottom: 20, alignSelf: 'center', marginTop: 20, width: 350 }}>
                             <View style={{ flex: 1 }}>
                                 <Text style={{ fontWeight: 'bold', color: "#666", fontSize: 18 }}>Service Category:</Text>
                             </View>
                             <Picker
                                 selectedValue={this.state.category}
                                 style={{ flex: 2, height: 50, width: 100 + "%" }}
-                                itemStyle={{ backgroundColor: '#fff', color: '#078ca9', fontSize: 20 }}
+                                itemStyle={{ backgroundColor: '#999', color: '#078ca9', fontSize: 20 }}
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.setState({ category: itemValue })
                                 }>
                                 {
                                     categories.map(category => {
-
                                         return <Picker.Item label={category.name} value={category.name} key={category.id} />
                                     })}
-
-
                             </Picker>
                         </View>
 
                         <Input
-                            containerStyle={{ marginBottom: 20 }}
-                            inputStyle={{ backgroundColor: '#f2f2f2', marginTop: 15, borderRadius: 5, color: "#666", fontSize: 18, textAlignVertical: 'top' }}
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 350 }}
+                            inputStyle={{ marginTop: 5, backgroundColor: '#f2f2f2', borderRadius: 5, color: "#666", fontSize: 18, textAlignVertical: 'top' }}
                             label='Service Description:'
                             labelStyle={{ fontSize: 18, color: "#666", textAlignVertical: 'top' }}
                             onChangeText={(serverDesription) => this.setState({ serverDesription })}
@@ -490,14 +488,16 @@ class AddProfileScreen extends React.Component<Props, object> {
                                     <Text style={{ fontWeight: 'bold', color: "#666", fontSize: 18 }}>Upload Sample Work:</Text>
                                 </View>
                                 <View style={{ flex: 2, marginLeft: 10 }}>
-                                    <Button buttonStyle={{
-                                        backgroundColor: '#F44324',
-                                        width: 100 + "%",
-                                    }}
+                                    <Button
+                                        buttonStyle={{
+                                            backgroundColor: '#F44324',
+                                            width: 100 + "%",
+                                        }}
                                         titleStyle={{
                                             color: '#f2f2f2'
                                         }}
-                                        title="Upload" onPress={this.showSampleImagePicker} ></Button>
+                                        title="Upload" onPress={this.showSampleImagePicker} >
+                                    </Button>
                                 </View>
                             </View>
                             <View style={{ flex: 2, alignItems: 'center' }}>
@@ -506,12 +506,14 @@ class AddProfileScreen extends React.Component<Props, object> {
                             </View>
                         </View>
                         <Text style={{ fontSize: 16, lineHeight: 20, color: 'red', textAlign: 'center' }} > {wsError}</Text>
-
                         {/* End of service Info */}
                         <View style={{ flex: 1, margin: 10 }}>
                             <Button buttonStyle={{
                                 backgroundColor: '#078ca9',
-                                width: 100 + "%",
+                                flex: 1,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                width: 280
                             }}
                                 titleStyle={{
                                     color: '#f2f2f2'
@@ -544,11 +546,10 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
 
     // other callbacks go here...
 });
-const mapStateToProps = (appstate: any, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => ({
+const mapStateToProps = (appstate: any) => ({
     items: appstate,
     hasProfile: appstate.changeGeneralState.hasProfile,
     profileId: appstate.changeGeneralState.profileId,
-    navigation: navigation
 });
 
 export default connect(mapStateToProps, mapDipatchToProps)(AddProfileScreen);
