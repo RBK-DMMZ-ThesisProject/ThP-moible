@@ -35,10 +35,6 @@ import HandyHeader from './HandyHeader';
 import { any } from 'prop-types';
 import { Linking } from 'react-native';
 import stripe from 'tipsi-stripe';
-import axios from 'axios';
-import { throwStatement } from '@babel/types';
-import Favorites from './Favorites';
-import { Context } from 'jest-runtime/build/types';
 stripe.setOptions({
   publishableKey: 'pk_test_M0LfaNyjOIqs4RL9bqklDbb500YZpiXM1H',
 });
@@ -67,10 +63,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
     ratingGiven: 0,
     reviewAdded: false,
     errorMsg: '',
+    profileId: ''
   };
-
+  //@Description:  fetch initial data of the service provider
   componentDidMount() {
     const userId = this.props.navigation.getParam('userId');
+    this.setState({
+      profileId: userId
+    })
     fetchProfileData(this);
     async function fetchProfileData(context: Object) {
       var SharedPreferences = require('react-native-shared-preferences');
@@ -91,16 +91,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
           })
             .then(res => res.json())
             .then(resJson => {
-              console.log('response from server', resJson);
               context.setState({
                 profile: resJson.profile,
               });
+              console.log('/////////////////', resJson.favs);
               if (resJson.favs) {
                 context.setState({ isfavorite: true });
               }
             })
             .catch(error => {
-              console.log('hello from error')
               console.error(error);
             });
           context.fetchReviews(context);
@@ -135,9 +134,79 @@ class serviceProviderProfile extends React.Component<Props, object> {
     }
 
   }
+  componentDidUpdate(prevProps: Props, prevState: any) {
+
+
+    if (prevProps.navigation.getParam('userId') !== this.props.navigation.getParam('userId')) {
+      const userId = this.props.navigation.getParam('userId');
+
+      fetchProfileData(this);
+      async function fetchProfileData(context: Object) {
+        var SharedPreferences = require('react-native-shared-preferences');
+        SharedPreferences.setName('handyInfo');
+
+        SharedPreferences.getItem('handyToken', async function (value: any) {
+          if (value !== null) {
+            await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                serviceproviderid: userId,
+                token: value,
+              }),
+            })
+              .then(res => res.json())
+              .then(resJson => {
+                context.setState({
+                  profile: resJson.profile,
+                });
+                console.log('/////////////////', resJson.favs);
+                if (resJson.favs) {
+                  context.setState({ isfavorite: true });
+                }
+              })
+              .catch(error => {
+                console.error(error);
+              });
+            context.fetchReviews(context);
+
+          } else {
+            await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                serviceproviderid: userId,
+              }),
+            })
+              .then(res => res.json())
+              .then(resJson => {
+                console.log('response from server', resJson);
+                context.setState({
+                  profile: resJson.profile,
+                });
+
+              })
+              .catch(error => {
+                console.log('hello from error')
+                console.error(error);
+              });
+            context.fetchReviews(context);
+
+          }
+        });
+      }
+    }
+
+  }
+  //@Description:  fetch the reviews of the service provider
   async fetchReviews(context: object) {
     const userId = this.props.navigation.getParam('userId');
-    console.log('helooooooooooooooo', userId);
     await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getReviews', {
       method: 'POST',
       headers: {
@@ -148,7 +217,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
     })
       .then(res => res.json())
       .then(resJson => {
-        console.log('helow after fetching reveis', resJson);
         context.setState({
           reviews: resJson,
         });
@@ -157,6 +225,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
         console.error(error);
       });
   }
+
+  //@Description:  save a review for the service provider
   saveReview(values: any) {
     if (values.review === '' || this.state.ratingGiven === 0) {
       this.setState({
@@ -170,7 +240,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
       SharedPreferences.getItem('handyToken', async function (value: any) {
         if (value !== null) {
-          console.log('save reveiwsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd', { review: values.review, token: value, rate: that.state.ratingGiven, serviceproviderid: userId });
 
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addReviews',
@@ -203,6 +272,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
       });
     }
   }
+
+  //@Description: add a favorite or remove it 
   addFav() {
     const userId = this.props.navigation.getParam('userId');
     console.log('userId::::::', userId);
@@ -212,7 +283,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
     SharedPreferences.getItem('handyToken', async function (value: any) {
       if (value !== null) {
         const x = value;
-        console.log(value);
         if (!that.state.isfavorite) {
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addfavorite',
@@ -226,14 +296,9 @@ class serviceProviderProfile extends React.Component<Props, object> {
             },
           )
             .then(res => {
-              console.log('**************************', res)
-
               return res.json();
-
             })
             .then(resJson => {
-              console.log('**************************', resJson)
-
               that.setState({
                 isfavorite: resJson.msg,
               });
@@ -242,7 +307,6 @@ class serviceProviderProfile extends React.Component<Props, object> {
               console.error(error);
             });
         } else {
-
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/deletefavorite',
             {
@@ -255,12 +319,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
             },
           )
             .then(res => {
-              console.log('**************************', res)
               return res.json();
 
             })
             .then(resJson => {
-              console.log('**************************', resJson)
               that.setState({
                 isfavorite: resJson.msg,
               });
@@ -278,48 +340,52 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
     });
   }
-  hireSP() {
-    var SharedPreferences = require('react-native-shared-preferences');
-    SharedPreferences.setName('handyInfo');
-    var that = this;
-    SharedPreferences.getItem('handyToken', async function (value: any) {
-      console.log('our tocken', value);
-      if (value !== null) {
-        const x = value;
-        const userId = that.props.navigation.getParam('userId');
-        console.log('user id', userId);
-        console.log('token: ', x);
-        await fetch(
-          'https://salty-garden-58258.herokuapp.com/mobileApi/addHiers',
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
-          },
-        )
-          .then(res => {
-            return res.json();
-          })
-          .then(resJson => {
-            console.log('Hired');
-            that.setState({
-              isVisible: true,
-            });
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-    });
-  }
 
+  //@Description: add a hire 
+
+  // hireSP() {
+  //   var SharedPreferences = require('react-native-shared-preferences');
+  //   SharedPreferences.setName('handyInfo');
+  //   var that = this;
+  //   SharedPreferences.getItem('handyToken', async function (value: any) {
+  //     console.log('our tocken', value);
+  //     if (value !== null) {
+  //       const x = value;
+  //       const userId = that.props.navigation.getParam('userId');
+  //       console.log('user id', userId);
+  //       console.log('token: ', x);
+  //       await fetch(
+  //         'https://salty-garden-58258.herokuapp.com/mobileApi/addHiers',
+  //         {
+  //           method: 'POST',
+  //           headers: {
+  //             Accept: 'application/json',
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
+  //         },
+  //       )
+  //         .then(res => {
+  //           return res.json();
+  //         })
+  //         .then(resJson => {
+  //           console.log('Hired');
+  //           that.setState({
+  //             isVisible: true,
+  //           });
+  //         })
+  //         .catch(error => {
+  //           console.error(error);
+  //         });
+  //     }
+  //   });
+  // }
+
+  //@Description: open modal for adding review 
   setModalVisible(visible: any) {
     this.setState({ modalVisible: visible });
   }
-
+  //@Description: change the state of the favorite star 
   isFave() {
     if (this.state.isfavorite) {
       return '#078ca9';
@@ -328,6 +394,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     }
   }
 
+  //@Description:  adding review 
   addReview() {
     return (
       <Overlay
@@ -337,19 +404,19 @@ class serviceProviderProfile extends React.Component<Props, object> {
       </Overlay>
     );
   }
-
+  //@Description: set rateing state 
   ratingCompleted(rating: any) {
     this.setState({ rating: rating });
   }
+
   render() {
     const { navigation } = this.props;
     const { profile, ratingGiven, reviews } = this.state;
-    var dateOfBirth = this.state.profile.dateOfBirth;
+    var dateOfBirth = '';
     if (profile.dateOfBirth) {
-      dateOfBirth = (new Date(profile.dateOfBirth)).toDateString();
+      dateOfBirth = (new Date(this.state.profile.dateOfBirth)).toDateString();
     }
 
-    console.log('profile', profile.userWorkImg[0]);
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -484,11 +551,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
             <Card title="REVIEWS">
               <View>
                 {reviews.map((rev, i) => {
-                  console.log('rev***********', rev);
                   var dateAdded = (new Date(rev.review['dataAdded'])).toDateString();
                   return (
 
-                    <View style={{ marginBottom: 20 }}>
+                    <View style={{ marginBottom: 20 }} key={i}>
 
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: 'space-between' }}>
                         <View style={{}}>

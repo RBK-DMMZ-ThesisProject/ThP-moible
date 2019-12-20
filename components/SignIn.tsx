@@ -107,6 +107,11 @@ class SignIn extends React.Component<Props, object> {
                             this.props.changeState(20, 1); // view profile
                         }
                         navigation.navigate(navigation.getParam('nextPage'));
+                        this.setState({
+                            email: '',
+                            password: '',
+
+                        });
                     } else {
                         this.setState({
                             loginError: resJson.msg,
@@ -114,8 +119,7 @@ class SignIn extends React.Component<Props, object> {
                         // check if a user is a service provider to add also 20
                     }
                     this.setState({
-                        email: '',
-                        password: '',
+
                         signInLoading: false,
                     });
                 })
@@ -159,12 +163,13 @@ class SignIn extends React.Component<Props, object> {
                         </View>
 
                         <Input
+                            containerStyle={{ flex: 1, alignSelf: 'center', justifyContent: 'center', width: 300 }}
                             inputStyle={{
                                 backgroundColor: '#f2f2f2',
                                 borderRadius: 5,
                                 color: '#666',
                                 marginTop: 5,
-
+                                width: 200
                             }}
                             label="Email:"
                             labelStyle={{ fontSize: 18, color: '#666' }}
@@ -188,14 +193,13 @@ class SignIn extends React.Component<Props, object> {
                         </Input>
 
                         <Input
-                            containerStyle={{
-                                marginTop: 15
-                            }}
+                            containerStyle={{ flex: 1, marginTop: 15, alignSelf: 'center', justifyContent: 'center', width: 300 }}
                             inputStyle={{
                                 backgroundColor: '#f2f2f2',
                                 borderRadius: 5,
                                 color: '#666',
-                                marginTop: 5
+                                marginTop: 5,
+                                padding: 5,
 
                             }}
                             label="Password:"
@@ -221,6 +225,7 @@ class SignIn extends React.Component<Props, object> {
 
                         <Text
                             style={{
+                                marginTop: 10,
                                 fontSize: 16,
                                 lineHeight: 20,
                                 color: '#F44324',
@@ -234,7 +239,10 @@ class SignIn extends React.Component<Props, object> {
                             <Button
                                 buttonStyle={{
                                     backgroundColor: '#078ca9',
-                                    width: 100 + '%',
+                                    flex: 1,
+                                    alignSelf: 'center',
+                                    justifyContent: 'center',
+                                    width: 280
                                 }}
                                 titleStyle={{
                                     color: '#f2f2f2',
@@ -245,6 +253,7 @@ class SignIn extends React.Component<Props, object> {
                         </View>
                         <Text
                             style={{
+                                marginTop: 15,
                                 fontSize: 16,
                                 lineHeight: 20,
                                 color: '#999',
@@ -256,7 +265,10 @@ class SignIn extends React.Component<Props, object> {
                             <Button
                                 buttonStyle={{
                                     backgroundColor: '#078ca9',
-                                    width: 100 + '%',
+                                    flex: 1, marginTop: 15,
+                                    alignSelf: 'center',
+                                    justifyContent: 'center',
+                                    width: 280
                                 }}
                                 titleStyle={{
                                     color: '#f2f2f2',

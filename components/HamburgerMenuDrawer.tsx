@@ -1,13 +1,10 @@
 
 import React, { Component } from 'react';
 import {
-    ScrollView, Text, View, Image, StyleSheet,
+    Text, View, StyleSheet,
     ActivityIndicator
 } from 'react-native';
-import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import { menuList } from '../state/reducer';
-import * as types from '../state/types';
 import NavigationService from './NavigationService.js';
 import { Dispatch } from 'react-redux';
 import { changeStateItem, changeStateSignedIn, changeHasProfileState, changeActivityIndicatorState, setUserId, setProfileId } from '../state/actions';
@@ -36,14 +33,15 @@ export interface Props {
 
 class CustomHamburgerMenuDrawer extends Component<Props> {
 
-    // only update chart if the data has changed
     constructor(props: Props) {
         super(props);
+    }
+
+    componentDidMount() {
         var SharedPreferences = require('react-native-shared-preferences');
         SharedPreferences.setName("handyInfo");
         var that = this;
         SharedPreferences.getItem("handyToken", function (value: any) {
-            console.log(value);
             if (value !== null) {
                 that.props.changeSignedInState(1);
                 // check if the user has profile
@@ -53,7 +51,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
             }
         });
     }
-
+    //@Description: check tha menu items depending on the state
     componentDidUpdate(prevProps: Props, prevState: Props) {
         if (prevProps.hasProfile !== this.props.hasProfile && this.props.hasProfile === 1) {
             if (!!this.props.hasProfile) {
@@ -74,6 +72,8 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
             }
         }
     }
+
+    //@Description: check if a user has profile
     async getUserHasProfile(token: string) {
         var response = await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile', {
             method: 'POST',
@@ -96,14 +96,14 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         // });
 
     }
-    navigateToScreen(page: string, params: object) {
-        console.log('hello from view profile', page)
 
+    //@Description: navigate from screen to another with specific parameters
+    navigateToScreen(page: string, params: object) {
         NavigationService.navigate(page, params);
     }
-    logout() {
-        // change state login ??????????
 
+    //@Description: logout of the application
+    logout() {
         var SharedPreferences = require('react-native-shared-preferences');
         SharedPreferences.setName("handyInfo");
         SharedPreferences.removeItem("handyToken");
@@ -122,8 +122,9 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
         NavigationService.navigate('Home');
 
     }
-    render() {
 
+    //@Description: render the application
+    render() {
         return (
             <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', margin: 0, padding: 0 }}>
                 <View style={{ width: 100 + "%", height: 60, backgroundColor: '#078ca9', padding: 10, marginBottom: 10 }}>
@@ -132,7 +133,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
 
                 <View style={{ height: 500 }}>
                     {this.props.items.map((item: any, index: number) => {
-                        console.log('index', index);
+
                         if (item.show === 1) {
                             if (item.itemtxt === "Log out") {
                                 return <Text
@@ -145,30 +146,30 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                             }
                             if (item.id === 20) {
                                 return (
-                                    <>
+                                    <View key={index}>
                                         <Text
-                                            key={index}
+
                                             style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#333' }}
                                             onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage, userId: this.props.profileId })}
                                         >
                                             {item.itemtxt}
                                         </Text>
                                         <Divider></Divider>
-                                    </>
+                                    </View>
                                 )
                             }
                             var nextPage = (item.itemtxt === 'Sign in' || item.itemtxt === 'Sign Up') ? 'Home' : '';
                             return (
-                                <>
+                                <View key={index}>
                                     <Text
-                                        key={index}
+
                                         style={{ fontSize: 15, textAlignVertical: 'center', lineHeight: 40, marginLeft: 20, color: '#333' }}
                                         onPress={() => this.navigateToScreen(item.toPage, { nextPage: nextPage })}
                                     >
                                         {item.itemtxt}
                                     </Text>
                                     <Divider></Divider>
-                                </>
+                                </View>
                             )
                         }
                         return;
@@ -189,9 +190,8 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
     }
 }
 
+//@Description: pass propereties as props of the component
 const mapStateToProps = (appstate: any, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => {
-    console.log('from state 1', appstate)
-
     return ({
         items: appstate.menuList,
         login: appstate.changeGeneralState.login,
@@ -201,6 +201,8 @@ const mapStateToProps = (appstate: any, navigation: NavigationScreenProp<Navigat
         navigation: navigation
     })
 };
+
+//@Description: pass functions as props of the component
 const mapDsipatchToProps = (dispatch: Dispatch) => ({
     changeState: (id: number, state: number) => {
         dispatch(changeStateItem(id, state));
@@ -220,8 +222,9 @@ const mapDsipatchToProps = (dispatch: Dispatch) => ({
     setProfileId: (profileId: string) => {
         dispatch(setProfileId(profileId));
     },
-    // other callbacks go here...
 });
+
+//@Description: style the activity indicator
 const styles = StyleSheet.create({
     loading: {
         position: 'absolute',
@@ -233,6 +236,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
-
 
 export default connect(mapStateToProps, mapDsipatchToProps)(CustomHamburgerMenuDrawer);

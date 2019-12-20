@@ -25,7 +25,6 @@ class Favorites extends React.Component<Props, object> {
     favorites: [],
   };
   componentDidMount() {
-    console.log('ffffffffffffffff')
     var that = this;
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
@@ -44,13 +43,11 @@ class Favorites extends React.Component<Props, object> {
         })
           .then(res => res.json())
           .then(resJson => {
-            console.log('favsssssssssssssssssssssss', resJson);
             that.setState({
               favorites: resJson.favorites,
             });
           })
           .catch(error => {
-            console.log('favssssssssssssseeeewwwwssssssssss', error);
             console.error(error);
           });
       }
@@ -64,13 +61,14 @@ class Favorites extends React.Component<Props, object> {
       <>
         <HandyHeader navigation={navigation} title={'Favorites'} />
         {favorites.map((provider, i) => {
+          console.log('prodived id in favs**********', provider)
           return (
-            <Card containerStyle={{ padding: 5 }}>
-              <View key={i}>
+            <Card containerStyle={{ padding: 5 }} key={i}>
+              <View >
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate('ProviderProfile', {
-                      userId: provider['_id'],
+                      userId: provider['id'],
                     })
                   }>
                   <ListItem
