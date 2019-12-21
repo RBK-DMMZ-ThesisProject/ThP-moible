@@ -22,6 +22,8 @@ import { Dispatch } from 'react-redux';
 import {
   changeActivityIndicatorState,
 } from '../state/actions';
+import { openInbox } from 'react-native-email-link';
+
 import {
   Input,
   Avatar,
@@ -36,7 +38,6 @@ import {
   Rating,
   AirbnbRating,
 } from 'react-native-elements';
-
 import HandyHeader from './HandyHeader';
 import { any } from 'prop-types';
 import { Linking } from 'react-native';
@@ -72,7 +73,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     ratingGiven: 0,
     reviewAdded: false,
     errorMsg: '',
-    profileId: ''
+    profileId: '',
   };
   constructor(props: Props) {
     super(props);
@@ -82,8 +83,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
   componentDidMount() {
     const userId = this.props.navigation.getParam('userId');
     this.setState({
-      profileId: userId
-    })
+      profileId: userId,
+    });
     fetchProfileData(this);
     async function fetchProfileData(context: any) {
       context.props.changeActivityIndicatorState(true);
@@ -169,17 +170,20 @@ class serviceProviderProfile extends React.Component<Props, object> {
         SharedPreferences.setName('handyInfo');
         SharedPreferences.getItem('handyToken', async function (value: any) {
           if (value !== null) {
-            await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
+            await fetch(
+              'https://salty-garden-58258.herokuapp.com/mobileApi/profil',
+              {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  serviceproviderid: userId,
+                  token: value,
+                }),
               },
-              body: JSON.stringify({
-                serviceproviderid: userId,
-                token: value,
-              }),
-            })
+            )
               .then(res => res.json())
               .then(resJson => {
                 context.props.changeActivityIndicatorState(false);
@@ -196,25 +200,26 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 console.error(error);
               });
             context.fetchReviews(context);
-
           } else {
-            await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
+            await fetch(
+              'https://salty-garden-58258.herokuapp.com/mobileApi/profil',
+              {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  serviceproviderid: userId,
+                }),
               },
-              body: JSON.stringify({
-                serviceproviderid: userId,
-              }),
-            })
+            )
               .then(res => res.json())
               .then(resJson => {
                 context.props.changeActivityIndicatorState(false);
                 context.setState({
                   profile: resJson.profile,
                 });
-
               })
               .catch(error => {
                 context.props.changeActivityIndicatorState(false);
@@ -223,12 +228,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 console.error(error);
               });
             context.fetchReviews(context);
-
           }
         });
       }
     }
-
   }
   //@Description:  fetch the reviews of the service provider
   async fetchReviews(context: any) {
@@ -311,7 +314,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     }
   }
 
-  //@Description: add a favorite or remove it 
+  //@Description: add a favorite or remove it
   addFav() {
     const userId = this.props.navigation.getParam('userId');
     console.log('userId::::::', userId);
@@ -387,7 +390,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     });
   }
 
-  //@Description: add a hire 
+  //@Description: add a hire
 
   // hireSP() {
   //   var SharedPreferences = require('react-native-shared-preferences');
@@ -427,7 +430,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
   //   });
   // }
 
-  //@Description: open modal for adding review 
+  //@Description: open modal for adding review
   setModalVisible(visible: any) {
     var that = this;
     const userId = this.props.navigation.getParam('userId');
@@ -444,7 +447,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       }
     });
   }
-  //@Description: change the state of the favorite star 
+  //@Description: change the state of the favorite star
   isFave() {
     if (this.state.isfavorite) {
       return '#078ca9';
@@ -453,7 +456,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
     }
   }
 
-  //@Description:  adding review 
+  //@Description:  adding review
   addReview() {
     return (
       <Overlay
@@ -463,7 +466,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       </Overlay>
     );
   }
-  //@Description: set rateing state 
+  //@Description: set rateing state
   ratingCompleted(rating: any) {
     this.setState({ rating: rating });
   }
@@ -471,6 +474,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
   render() {
     const { navigation } = this.props;
     const { profile, ratingGiven, reviews } = this.state;
+    var email = profile.email;
     var dateOfBirth = new Date();
     let age = 0;
     console.log("00000000000000", this.props.navigation.getParam('userId'));
@@ -480,7 +484,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
       // dateOfBirth = (new Date(this.state.profile.dateOfBirth)).toDateString();
       dateOfBirth = profile.dateOfBirth;
       let yearBirth = parseInt(dateOfBirth.toString().substring(0, 4));
-      let currentYear = (new Date()).getFullYear();
+      let currentYear = new Date().getFullYear();
       age = currentYear - yearBirth;
     }
 
@@ -572,11 +576,16 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 leftIcon={{
                   name: 'email',
                 }}
+                onPress={() =>
+                  Linking.openURL(
+                    'mailto:' + email + '?subject=SendMail&body=Description',
+                  )
+                }
               />
               <ListItem
                 containerStyle={{ marginTop: -15 }}
                 title="Age"
-                subtitle={age + ""}
+                subtitle={age + ''}
                 leftIcon={{
                   name: 'book',
                 }}
@@ -630,12 +639,17 @@ class serviceProviderProfile extends React.Component<Props, object> {
             <Card title="REVIEWS">
               <View>
                 {reviews.map((rev, i) => {
-                  var dateAdded = (new Date(rev.review['dataAdded'])).toDateString();
+                  var dateAdded = new Date(
+                    rev.review['dataAdded'],
+                  ).toDateString();
                   return (
-
                     <View style={{ marginBottom: 20 }} key={i}>
-
-                      <View style={{ flex: 1, flexDirection: "row", justifyContent: 'space-between' }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
                         <View style={{}}>
                           <Text style={{ color: '#078ca9', fontSize: 15 }}>
                             {rev.name}
