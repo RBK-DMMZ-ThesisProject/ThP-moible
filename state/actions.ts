@@ -47,6 +47,13 @@ export const setProfileId = (profileId: string): actionTypes.SetProfileId => {
         profileId: profileId
     });
 }
+export const setUserName = (userName: string): actionTypes.SetUserName => {
+
+    return ({
+        type: actionTypes.SET_USER_NAME,
+        userName: userName
+    });
+}
 
 // export const navigateTo = (current: string, next: string, previous: string): actionTypes.NavigateToAction => {
 //     return {

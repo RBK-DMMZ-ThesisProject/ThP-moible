@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
   Alert,
   TextInput,
+  StyleSheet, ActivityIndicator
 } from 'react-native';
 import NavigationService from './NavigationService.js';
 import {
@@ -16,7 +17,11 @@ import {
   NavigationState,
 } from 'react-navigation';
 import { Formik } from 'formik';
-
+import { connect } from 'react-redux';
+import { Dispatch } from 'react-redux';
+import {
+  changeActivityIndicatorState,
+} from '../state/actions';
 import {
   Input,
   Avatar,
@@ -41,6 +46,10 @@ stripe.setOptions({
 });
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+  activityIndicatorState: boolean;
+  changeActivityIndicatorState: any;
+  profileId: string;
+  hasProfile: boolean;
 }
 
 class serviceProviderProfile extends React.Component<Props, object> {
@@ -65,6 +74,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
     errorMsg: '',
     profileId: ''
   };
+  constructor(props: Props) {
+    super(props);
+    this.props.changeActivityIndicatorState(true);
+  }
   //@Description:  fetch initial data of the service provider
   componentDidMount() {
     const userId = this.props.navigation.getParam('userId');
@@ -72,10 +85,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
       profileId: userId
     })
     fetchProfileData(this);
-    async function fetchProfileData(context: Object) {
+    async function fetchProfileData(context: any) {
+      context.props.changeActivityIndicatorState(true);
       var SharedPreferences = require('react-native-shared-preferences');
       SharedPreferences.setName('handyInfo');
-
       SharedPreferences.getItem('handyToken', async function (value: any) {
         if (value !== null) {
           await fetch(
@@ -94,7 +107,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
           )
             .then(res => res.json())
             .then(resJson => {
+              context.props.changeActivityIndicatorState(false);
+
               context.setState({
+
                 profile: resJson.profile,
               });
               console.log('/////////////////', resJson.favs);
@@ -103,6 +119,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
               }
             })
             .catch(error => {
+              context.props.changeActivityIndicatorState(false);
               console.error(error);
             });
           context.fetchReviews(context);
@@ -123,11 +140,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
             .then(res => res.json())
             .then(resJson => {
               console.log('response from server', resJson);
+              context.props.changeActivityIndicatorState(false);
+
               context.setState({
                 profile: resJson.profile,
               });
             })
             .catch(error => {
+              context.props.changeActivityIndicatorState(false);
+
               console.log('hello from error');
               console.error(error);
             });
@@ -136,17 +157,16 @@ class serviceProviderProfile extends React.Component<Props, object> {
       });
     }
   }
+
   componentDidUpdate(prevProps: Props, prevState: any) {
-
-
     if (prevProps.navigation.getParam('userId') !== this.props.navigation.getParam('userId')) {
       const userId = this.props.navigation.getParam('userId');
-
       fetchProfileData(this);
-      async function fetchProfileData(context: Object) {
+      this.props.changeActivityIndicatorState(true);
+      async function fetchProfileData(context: any) {
+        context.props.changeActivityIndicatorState(true);
         var SharedPreferences = require('react-native-shared-preferences');
         SharedPreferences.setName('handyInfo');
-
         SharedPreferences.getItem('handyToken', async function (value: any) {
           if (value !== null) {
             await fetch('https://salty-garden-58258.herokuapp.com/mobileApi/profil', {
@@ -162,6 +182,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
             })
               .then(res => res.json())
               .then(resJson => {
+                context.props.changeActivityIndicatorState(false);
                 context.setState({
                   profile: resJson.profile,
                 });
@@ -171,6 +192,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }
               })
               .catch(error => {
+                context.props.changeActivityIndicatorState(false);
                 console.error(error);
               });
             context.fetchReviews(context);
@@ -188,13 +210,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
             })
               .then(res => res.json())
               .then(resJson => {
-                console.log('response from server', resJson);
+                context.props.changeActivityIndicatorState(false);
                 context.setState({
                   profile: resJson.profile,
                 });
 
               })
               .catch(error => {
+                context.props.changeActivityIndicatorState(false);
+
                 console.log('hello from error')
                 console.error(error);
               });
@@ -207,8 +231,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
   }
   //@Description:  fetch the reviews of the service provider
-  async fetchReviews(context: object) {
+  async fetchReviews(context: any) {
     const userId = this.props.navigation.getParam('userId');
+    context.props.changeActivityIndicatorState(true);
+
     await fetch(
       'https://salty-garden-58258.herokuapp.com/mobileApi/getReviews',
       {
@@ -222,11 +248,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
     )
       .then(res => res.json())
       .then(resJson => {
+        context.props.changeActivityIndicatorState(false);
         context.setState({
           reviews: resJson,
         });
       })
       .catch(error => {
+        context.props.changeActivityIndicatorState(false);
         console.error(error);
       });
   }
@@ -245,6 +273,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
 
       SharedPreferences.getItem('handyToken', async function (value: any) {
         if (value !== null) {
+          that.props.changeActivityIndicatorState(true);
 
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addReviews',
@@ -266,11 +295,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
               return res.json();
             })
             .then(resJson => {
+              that.props.changeActivityIndicatorState(false);
+
               console.log('reveis response', resJson);
               that.setModalVisible(!that.state.modalVisible);
               that.fetchReviews(that);
             })
             .catch(error => {
+              that.props.changeActivityIndicatorState(false);
+
               console.error(error);
             });
         }
@@ -285,10 +318,14 @@ class serviceProviderProfile extends React.Component<Props, object> {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
+    this.props.changeActivityIndicatorState(true);
     SharedPreferences.getItem('handyToken', async function (value: any) {
       if (value !== null) {
         const x = value;
+        that.props.changeActivityIndicatorState(true);
+
         if (!that.state.isfavorite) {
+
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addfavorite',
             {
@@ -304,11 +341,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
               return res.json();
             })
             .then(resJson => {
+              that.props.changeActivityIndicatorState(false);
               that.setState({
                 isfavorite: resJson.msg,
               });
             })
             .catch(error => {
+              that.props.changeActivityIndicatorState(false);
               console.error(error);
             });
         } else {
@@ -327,11 +366,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
               return res.json();
             })
             .then(resJson => {
+              that.props.changeActivityIndicatorState(false);
+
               that.setState({
                 isfavorite: resJson.msg,
               });
             })
             .catch(error => {
+              that.props.changeActivityIndicatorState(false);
+
               console.error(error);
             });
         }
@@ -430,6 +473,9 @@ class serviceProviderProfile extends React.Component<Props, object> {
     const { profile, ratingGiven, reviews } = this.state;
     var dateOfBirth = new Date();
     let age = 0;
+    console.log("00000000000000", this.props.navigation.getParam('userId'));
+    console.log("00000000000000", this.props.profileId);
+
     if (profile.dateOfBirth) {
       // dateOfBirth = (new Date(this.state.profile.dateOfBirth)).toDateString();
       dateOfBirth = profile.dateOfBirth;
@@ -444,6 +490,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
         <SafeAreaView style={{ flex: 1 }}>
           <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
             <HandyHeader navigation={navigation} title="Profile" />
+            {this.props.activityIndicatorState ? (
+              <View style={[styles.loading]}>
+                <ActivityIndicator size="large" color="#c5df16" />
+              </View>
+            ) : (
+                null
+              )}
             <View style={{ flex: 3, alignItems: 'center' }}>
               <Avatar
                 size="xlarge"
@@ -465,35 +518,37 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 {profile.userName}
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
-              <Icon
-                raised
-                name="phone"
-                color="#078ca9"
-                onPress={() => {
-                  Linking.openURL(`tel:${profile.userMobileNum}`);
-                }}
-              />
+            {this.props.hasProfile && this.props.navigation.getParam('userId') === this.props.profileId ? null :
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-around',
+                }}>
+                <Icon
+                  raised
+                  name="phone"
+                  color="#078ca9"
+                  onPress={() => {
+                    Linking.openURL(`tel:${profile.userMobileNum}`);
+                  }}
+                />
 
-              <Icon
-                raised
-                name="message"
-                color="#078ca9"
-                onPress={() => navigation.navigate('chattScreen')}
-              />
-              <Icon
-                raised
-                color={this.isFave()}
-                name="star"
-                onPress={() => this.addFav()}
-              />
-            </View>
+                <Icon
+                  raised
+                  name="message"
+                  color="#078ca9"
+                  onPress={() => navigation.navigate('chattScreen')}
+                />
+                <Icon
+                  raised
+                  color={this.isFave()}
+                  name="star"
+                  onPress={() => this.addFav()}
 
+                />
+              </View>
+            }
             {/* <View
               style={{
                 flex: 1,
@@ -609,27 +664,28 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   );
                 })}
               </View>
+              {this.props.hasProfile && this.props.navigation.getParam('userId') === this.props.profileId ? null :
 
-              <View style={{ alignContent: 'center' }}>
-                <Button
-                  icon={<Icon name="check" color="#f2f2f2" />}
-                  buttonStyle={{
-                    borderRadius: 8,
-                    marginLeft: 0,
-                    marginRight: 0,
-                    marginBottom: 0,
-                    marginTop: 20,
-                    width: 150,
-                    alignSelf: 'center',
-                    backgroundColor: '#078ca9',
-                  }}
-                  title="ADD REVIEW"
-                  onPress={() => {
-                    this.setModalVisible(true);
-                  }}
-                />
-              </View>
-
+                <View style={{ alignContent: 'center' }}>
+                  <Button
+                    icon={<Icon name="check" color="#f2f2f2" />}
+                    buttonStyle={{
+                      borderRadius: 8,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      marginBottom: 0,
+                      marginTop: 20,
+                      width: 150,
+                      alignSelf: 'center',
+                      backgroundColor: '#078ca9',
+                    }}
+                    title="ADD REVIEW"
+                    onPress={() => {
+                      this.setModalVisible(true);
+                    }}
+                  />
+                </View>
+              }
               <Modal
                 animationType="slide"
                 visible={this.state.modalVisible}
@@ -642,6 +698,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
                       {this.state.errorMsg}
                     </Text>
                   </View>
+                  {this.props.activityIndicatorState ? (
+                    <View style={[styles.loading]}>
+                      <ActivityIndicator size="large" color="#c5df16" />
+                    </View>
+                  ) : (
+                      null
+                    )}
                   <AirbnbRating
                     count={5}
                     defaultRating={0}
@@ -711,10 +774,49 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 </Card>
               </Modal>
             </Card>
+
           </ScrollView>
         </SafeAreaView>
       </>
     );
   }
 }
-export default serviceProviderProfile;
+
+
+//@Description: pass functions as props of the component
+const mapDsipatchToProps = (dispatch: Dispatch) => ({
+
+  changeActivityIndicatorState: (state: boolean) => {
+    dispatch(changeActivityIndicatorState(state));
+  },
+});
+
+//@Description: pass propereties as props of the component
+const mapStateToProps = (
+  appstate: any,
+) => {
+  return {
+    activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
+    hasProfile: appstate.changeGeneralState.hasProfile,
+    profileId: appstate.changeGeneralState.profileId,
+  };
+};
+//@Description: style the activity indicator
+const styles = StyleSheet.create({
+  loading: {
+    position: 'relative',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 99999999999
+  },
+});
+export default connect(
+  mapStateToProps,
+  mapDsipatchToProps,
+)(serviceProviderProfile);
+

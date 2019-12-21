@@ -29,6 +29,8 @@ import {
     setProfileId,
     changeHasProfileState,
     setUserId,
+    setUserName
+
 } from '../state/actions';
 import validate from 'validate.js';
 export interface Props {
@@ -38,6 +40,7 @@ export interface Props {
     changeHasProfileState: any;
     changeSignedInState: any;
     setProfileId: any;
+    setUserName: any;
 }
 class SignIn extends React.Component<Props, object> {
     state = {
@@ -49,7 +52,25 @@ class SignIn extends React.Component<Props, object> {
         signInLoading: false,
         loginError: '',
     };
-
+    //@Description: get the user name
+    async getUsername(value: any) {
+        var response = await fetch(
+            'https://salty-garden-58258.herokuapp.com/mobileApi/getUser',
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ customerID: value }),
+            },
+        );
+        var resJson = await response.json();
+        if (resJson[0].userName) {
+            // context.setState({ userName: resJson[0].userName });
+            this.props.setUserName(resJson[0].userName);
+        }
+    }
     //@Description: check user has a profile
     async getUserHasProfile(token: string) {
         var response = await fetch(
@@ -103,6 +124,7 @@ class SignIn extends React.Component<Props, object> {
                         SharedPreferences.setItem('handyToken', resJson.token);
                         this.props.changeSignedInState(1);
                         this.getUserHasProfile(resJson.token);
+                        this.getUsername(resJson.token);
                         if (this.props.hasProfile) {
                             this.props.changeState(20, 1); // view profile
                         }
@@ -301,6 +323,9 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
     },
     setProfileId: (profileId: string) => {
         dispatch(setProfileId(profileId));
+    },
+    setUserName: (userName: string) => {
+        dispatch(setUserName(userName));
     },
 
 });

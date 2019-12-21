@@ -1,6 +1,13 @@
 import React from 'react';
-import { View, TouchableOpacity, Alert } from 'react-native';
+import { View, TouchableOpacity, Alert, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { Card, ListItem, Button, Icon, Rating } from 'react-native-elements';
+
+import { connect } from 'react-redux';
+import { Dispatch } from 'react-redux';
+import {
+  changeActivityIndicatorState,
+} from '../state/actions';
+
 import {
   NavigationParams,
   NavigationScreenProp,
@@ -11,16 +18,25 @@ import NavigationService from './NavigationService.js';
 
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+
+  activityIndicatorState: boolean;
+  changeActivityIndicatorState: any;
 }
+
 class ProfilesScreen extends React.Component<Props, object> {
   state = {
     profiles: [],
     rating: [],
   };
-
+  constructor(props) {
+    super(props);
+    this.props.changeActivityIndicatorState(true);
+  }
   componentDidMount() {
     const categoryName = this.props.navigation.getParam('categoryName');
     const { profiles } = this.state;
+    this.props.changeActivityIndicatorState(true);
+    var that = this;
     fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getProfiles', {
       method: 'POST',
       headers: {
@@ -37,9 +53,11 @@ class ProfilesScreen extends React.Component<Props, object> {
           profiles: resJson.profil,
           rating: resJson.rates,
         });
+        that.props.changeActivityIndicatorState(false);
       })
       .catch(error => {
         console.error(error);
+        that.props.changeActivityIndicatorState(false);
       });
     // fetch('https://salty-garden-58258.herokuapp.com/mobileApi/getRate', {
     //   method: 'POST',
@@ -105,9 +123,51 @@ class ProfilesScreen extends React.Component<Props, object> {
             </Card>
           );
         })}
+
+        {this.props.activityIndicatorState ? (
+          <View style={[styles.loading]}>
+            <ActivityIndicator size="large" color="#c5df16" />
+          </View>
+        ) : (
+            <Text></Text>
+          )}
       </>
     );
   }
 }
 
-export default ProfilesScreen;
+
+//@Description: pass functions as props of the component
+const mapDsipatchToProps = (dispatch: Dispatch) => ({
+
+  changeActivityIndicatorState: (state: boolean) => {
+    dispatch(changeActivityIndicatorState(state));
+  },
+});
+
+//@Description: pass propereties as props of the component
+const mapStateToProps = (
+  appstate: any,
+) => {
+  return {
+
+    activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
+
+  };
+};
+//@Description: style the activity indicator
+const styles = StyleSheet.create({
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+export default connect(
+  mapStateToProps,
+  mapDsipatchToProps,
+)(ProfilesScreen);

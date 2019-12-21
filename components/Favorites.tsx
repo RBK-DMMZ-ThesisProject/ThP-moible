@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Alert } from 'react-native';
+import { View, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import {
   Card,
   ListItem,
@@ -13,19 +13,31 @@ import {
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
+import { connect } from 'react-redux';
+import { Dispatch } from 'react-redux';
+import {
+  changeActivityIndicatorState,
+} from '../state/actions';
 import HandyHeader from './HandyHeader';
 // import {connect} from 'react-redux';
 // import * as types from '../state/types';
 // import {Dispatch} from 'react-redux';
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+  activityIndicatorState: boolean;
+  changeActivityIndicatorState: any;
 }
 class Favorites extends React.Component<Props, object> {
   state = {
     favorites: [],
   };
+  constructor(props) {
+    super(props);
+    this.props.changeActivityIndicatorState(true);
+  }
   componentDidMount() {
     var that = this;
+    this.props.changeActivityIndicatorState(true);
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     SharedPreferences.getItem('handyToken', async function (value: any) {
@@ -43,11 +55,13 @@ class Favorites extends React.Component<Props, object> {
         })
           .then(res => res.json())
           .then(resJson => {
+            that.props.changeActivityIndicatorState(false);
             that.setState({
               favorites: resJson.favorites,
             });
           })
           .catch(error => {
+            that.props.changeActivityIndicatorState(false);
             console.error(error);
           });
       }
@@ -84,9 +98,48 @@ class Favorites extends React.Component<Props, object> {
             </Card>
           );
         })}
+        {this.props.activityIndicatorState ? (
+          <View style={[styles.loading]}>
+            <ActivityIndicator size="large" color="#c5df16" />
+          </View>
+        ) : (
+            <Text></Text>
+          )}
       </>
     );
   }
 }
+//@Description: pass functions as props of the component
+const mapDsipatchToProps = (dispatch: Dispatch) => ({
 
-export default Favorites;
+  changeActivityIndicatorState: (state: boolean) => {
+    dispatch(changeActivityIndicatorState(state));
+  },
+});
+
+//@Description: pass propereties as props of the component
+const mapStateToProps = (
+  appstate: any,
+) => {
+  return {
+
+    activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
+
+  };
+};
+//@Description: style the activity indicator
+const styles = StyleSheet.create({
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+export default connect(
+  mapStateToProps,
+  mapDsipatchToProps,
+)(Favorites);

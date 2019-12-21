@@ -69,8 +69,8 @@ export default categories = [
   },
   {
     id: 15,
-    name: 'Aluminum Services',
-    img: require('./../assets/AluminumServices.png'),
+    name: 'Cleanning Services',
+    img: require('./../assets/CleanningServices.png'),
   },
   {
     id: 2,

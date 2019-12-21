@@ -22,13 +22,14 @@ import { any } from 'prop-types';
 import { connect } from 'react-redux';
 import * as types from '../state/types';
 import { Dispatch } from 'react-redux';
-import { changeStateItem, changeStateSignedIn } from '../state/actions';
+import { changeStateItem, changeStateSignedIn, setUserName } from '../state/actions';
 import validate from 'validate.js';
 
 export interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
     changeState: any,
-    changeSignedInState: any
+    changeSignedInState: any,
+    setUserName: any
 }
 class SignUp extends React.Component<Props, object> {
 
@@ -45,8 +46,6 @@ class SignUp extends React.Component<Props, object> {
         loginError: '',
         signUpLoading: false
     }
-
-
     // @description: Save profile info to the databae
     async signUp() {
         if (this.state.emailError === undefined && this.state.passwordError === undefined && this.state.userNameError === undefined && this.state.mobileNOError === undefined) {
@@ -77,6 +76,8 @@ class SignUp extends React.Component<Props, object> {
                         SharedPreferences.setName("handyInfo");
                         SharedPreferences.setItem("handyToken", resJson.token);
                         this.props.changeSignedInState(1);
+                        this.props.setUserName(this.state.userName.trim());
+
                         this.setState({
                             userName: '',
                             email: '',
@@ -205,6 +206,9 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
     },
     changeSignedInState: (state: number) => {
         dispatch(changeStateSignedIn(state));
+    },
+    setUserName: (userName: string) => {
+        dispatch(setUserName(userName));
     }
 });
 const mapStateToProps = (state: types.MenuItemsListState, navigation: NavigationScreenProp<NavigationState, NavigationParams>) => ({

@@ -1,4 +1,5 @@
 import * as types from './types'
+import { setUserName } from './actions';
 export const initialItemState: types.MenuItemsListState = [{
     id: 1,
     itemtxt: 'Home Page',
@@ -114,13 +115,16 @@ export const hasProfile: types.HasProfileState = 0
 export const activityIndicatorState: types.ActivityIndicatorState = false
 export const userId: types.UserId = 0
 export const profileId: types.profileId = ''
+export const userName: types.userName = ''
+
 export const initialState: types.AppState = {
     menuList: initialItemState,
     login: login,
     hasProfile: hasProfile,
     activityIndicatorState: activityIndicatorState,
     userId: userId,
-    profileId: profileId
+    profileId: profileId,
+    userName: userName,
 }
 
 
@@ -130,33 +134,34 @@ export const changeGeneralState = (
 ) => {
     switch (action.type) {
         case types.LOGIN_STATE:
-            console.log('reached login ', state)
             const { login } = <types.ChangeStateSignedIn>action
             return Object.assign({}, state, {
                 login: login
             });
 
         case types.HAS_PROFILE_STATE:
-            console.log('reached HAS PROFILE  ', state)
             const { hasProfile } = <types.ChangeHasProfileState>action
 
             return Object.assign({}, state, {
                 hasProfile: hasProfile
             })
         case types.ACTIVITY_INDICATOR_STATE:
-            console.log('reached HAS indicator  ', state)
             const { activityIndicatorState } = <types.ChangeActivityIndicatorState>action
             return Object.assign({}, state, {
                 activityIndicatorState: activityIndicatorState
             })
         case types.SET_USER_ID:
-            console.log('reached id  ', state)
             const { userId } = <types.SetUserId>action
             return Object.assign({}, state, {
                 userId: userId
             })
+        case types.SET_USER_NAME:
+            const { userName } = <types.SetUserName>action
+            return Object.assign({}, state, {
+                userName: userName
+            })
+
         case types.SET_PROFILE_ID:
-            console.log('reached PROFILE ID  ', state)
             const { profileId } = <types.SetProfileId>action
             return Object.assign({}, state, {
                 profileId: profileId

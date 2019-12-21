@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Text, View, StyleSheet, ActivityIndicator} from 'react-native';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { connect } from 'react-redux';
 import NavigationService from './NavigationService.js';
-import {Dispatch} from 'react-redux';
+import { Dispatch } from 'react-redux';
 import {
   changeStateItem,
   changeStateSignedIn,
@@ -10,15 +10,14 @@ import {
   changeActivityIndicatorState,
   setUserId,
   setProfileId,
+  setUserName
 } from '../state/actions';
 import {
   NavigationParams,
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
-import {Divider, Avatar} from 'react-native-elements';
-import {stat} from 'fs';
-// import {Avatar} from 'react-native-gifted-chat';
+import { Divider, Avatar } from 'react-native-elements';
 
 export interface Props {
   items: [];
@@ -27,26 +26,26 @@ export interface Props {
   login: number;
   hasProfile: number;
   profileId: string;
+  userName: string;
   activityIndicatorState: boolean;
   changeActivityIndicatorState: any;
   changeSignedInState: any;
   changeHasProfileState: any;
   setUserId: any;
   setProfileId: any;
+  setUserName: any;
+
 }
 
 class CustomHamburgerMenuDrawer extends Component<Props> {
-  // only update chart if the data has changed
-  state = {
-    userName: '',
-  };
+
+
   constructor(props: Props) {
     super(props);
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     var that = this;
-    SharedPreferences.getItem('handyToken', function(value: any) {
-      console.log(value);
+    SharedPreferences.getItem('handyToken', function (value: any) {
       if (value !== null) {
         that.props.changeSignedInState(1);
         // check if the user has profile
@@ -58,6 +57,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
     });
   }
 
+  //@Description: update the state of the application
   componentDidUpdate(prevProps: Props, prevState: Props) {
     if (
       prevProps.hasProfile !== this.props.hasProfile &&
@@ -70,18 +70,18 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
     }
     if (prevProps.login !== this.props.login) {
       if (!!this.props.login) {
-        // check if has profile
         this.props.changeState(3, 0);
         this.props.changeState(4, 0);
         this.props.changeState(8, 1);
-        // this.props.changeState(9, 1);
-        // this.props.changeState(10, 1);
         this.props.changeState(11, 1);
         this.props.changeState(30, 1);
       }
     }
   }
+
+  //@Description: get the user name
   async getUsername(value: any, context: any) {
+    console.log('hellow from user name')
     var response = await fetch(
       'https://salty-garden-58258.herokuapp.com/mobileApi/getUser',
       {
@@ -90,15 +90,17 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({customerID: value}),
+        body: JSON.stringify({ customerID: value }),
       },
     );
     var resJson = await response.json();
     if (resJson[0].userName) {
-      context.setState({userName: resJson[0].userName});
+      // context.setState({ userName: resJson[0].userName });
+      context.props.setUserName(resJson[0].userName);
     }
   }
 
+  //@Description: check a user has profile
   async getUserHasProfile(token: string) {
     var response = await fetch(
       'https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile',
@@ -108,7 +110,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userToken: token}),
+        body: JSON.stringify({ userToken: token }),
       },
     );
     var resJson = await response.json();
@@ -117,20 +119,15 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
       this.props.setProfileId(resJson.profileId);
     }
     this.props.changeActivityIndicatorState(false);
-
-    // .catch(error => {
-    //     console.error(error);
-    //     that.props.changeActivityIndicatorState(false);
-    // });
   }
-  navigateToScreen(page: string, params: object) {
-    console.log('hello from view profile', page);
 
+  //@Description: 
+  navigateToScreen(page: string, params: object) {
     NavigationService.navigate(page, params);
   }
-  logout() {
-    // change state login ??????????
 
+  //@Description: loginng out ot the application
+  logout() {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
     SharedPreferences.removeItem('handyToken');
@@ -141,13 +138,15 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
     this.props.changeState(4, 1);
     this.props.changeState(7, 0);
     this.props.changeState(8, 0);
-    // this.props.changeState(9, 0);
-    // this.props.changeState(10, 0);
     this.props.changeState(11, 0);
     this.props.changeState(20, 0);
     this.props.changeState(30, 0);
+    this.props.setUserName('');
+
     NavigationService.navigate('Home');
   }
+
+  //@Description: render the compoenent
   render() {
     return (
       <View
@@ -166,23 +165,24 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
             padding: 10,
             marginBottom: 10,
           }}>
-          <Text style={{fontSize: 24, fontWeight: 'bold', color: '#f2f2f2'}}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#f2f2f2' }}>
             Handy
           </Text>
         </View>
-        <View
-          style={{
-            width: 100 + '%',
-            height: 60,
-            padding: 10,
-            marginBottom: 10,
-          }}>
-          {this.state.userName !== '' ? (
-            <View style={{flex: 1, flexDirection: 'row', marginLeft: 8}}>
+        {this.props.userName !== '' ? (
+          <View
+            style={{
+              width: 100 + '%',
+              height: 60,
+              padding: 10,
+              marginBottom: 10,
+            }}>
+
+            <View style={{ flex: 1, flexDirection: 'row', marginLeft: 8 }}>
               <Avatar
                 size="small"
                 rounded
-                title={this.state.userName.substring(0, 2)}
+                title={this.props.userName.substring(0, 2)}
                 activeOpacity={0.7}
               />
               <Text
@@ -191,14 +191,13 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                   textAlignVertical: 'center',
                   marginLeft: 5,
                 }}>
-                {this.state.userName.split(' ')[0]}
+                {this.props.userName.split(' ')[0]}
               </Text>
             </View>
-          ) : null}
-        </View>
-        <View style={{height: 500}}>
+
+          </View>) : null}
+        <View style={{ height: 500 }}>
           {this.props.items.map((item: any, index: number) => {
-            console.log('index', index);
             if (item.show === 1) {
               if (item.itemtxt === 'Log out') {
                 return (
@@ -255,7 +254,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                       color: '#333',
                     }}
                     onPress={() =>
-                      this.navigateToScreen(item.toPage, {nextPage: nextPage})
+                      this.navigateToScreen(item.toPage, { nextPage: nextPage })
                     }>
                     {item.itemtxt}
                   </Text>
@@ -272,8 +271,8 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
             <ActivityIndicator size="large" color="#c5df16" />
           </View>
         ) : (
-          <Text></Text>
-        )}
+            <Text></Text>
+          )}
       </View>
     );
   }
@@ -290,6 +289,7 @@ const mapStateToProps = (
     hasProfile: appstate.changeGeneralState.hasProfile,
     profileId: appstate.changeGeneralState.profileId,
     activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
+    userName: appstate.changeGeneralState.userName,
     navigation: navigation,
   };
 };
@@ -313,6 +313,10 @@ const mapDsipatchToProps = (dispatch: Dispatch) => ({
   },
   setProfileId: (profileId: string) => {
     dispatch(setProfileId(profileId));
+  },
+  setUserName: (userName: string) => {
+    console.log('username : ', userName)
+    dispatch(setUserName(userName));
   },
 });
 
