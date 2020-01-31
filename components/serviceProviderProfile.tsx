@@ -5,10 +5,9 @@ import {
   View,
   StatusBar,
   Modal,
-  TouchableHighlight,
   Alert,
-  TextInput,
-  StyleSheet, ActivityIndicator
+  StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import NavigationService from './NavigationService.js';
 import {
@@ -16,13 +15,10 @@ import {
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
-import { Formik } from 'formik';
-import { connect } from 'react-redux';
-import { Dispatch } from 'react-redux';
-import {
-  changeActivityIndicatorState,
-} from '../state/actions';
-import { openInbox } from 'react-native-email-link';
+import {Formik} from 'formik';
+import {connect, Dispatch} from 'react-redux';
+import {changeActivityIndicatorState} from '../state/actions';
+import {openInbox} from 'react-native-email-link';
 
 import {
   Input,
@@ -30,7 +26,6 @@ import {
   Button,
   Text,
   Image,
-  Divider,
   Icon,
   ListItem,
   Card,
@@ -39,12 +34,8 @@ import {
   AirbnbRating,
 } from 'react-native-elements';
 import HandyHeader from './HandyHeader';
-import { any } from 'prop-types';
-import { Linking } from 'react-native';
-import stripe from 'tipsi-stripe';
-stripe.setOptions({
-  publishableKey: 'pk_test_M0LfaNyjOIqs4RL9bqklDbb500YZpiXM1H',
-});
+import {Linking} from 'react-native';
+
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
   activityIndicatorState: boolean;
@@ -69,28 +60,32 @@ class serviceProviderProfile extends React.Component<Props, object> {
     reviews: [],
     isVisible: false,
     modalVisible: false,
-    isfavorite: false,
+    isFavorite: false,
     ratingGiven: 0,
     reviewAdded: false,
     errorMsg: '',
     profileId: '',
   };
+
   constructor(props: Props) {
     super(props);
     this.props.changeActivityIndicatorState(true);
   }
+
+  //@Function: componentDidMount
   //@Description:  fetch initial data of the service provider
   componentDidMount() {
     const userId = this.props.navigation.getParam('userId');
     this.setState({
       profileId: userId,
     });
+    // fetch the profile data
     fetchProfileData(this);
     async function fetchProfileData(context: any) {
       context.props.changeActivityIndicatorState(true);
       var SharedPreferences = require('react-native-shared-preferences');
       SharedPreferences.setName('handyInfo');
-      SharedPreferences.getItem('handyToken', async function (value: any) {
+      SharedPreferences.getItem('handyToken', async function(value: any) {
         if (value !== null) {
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/profil',
@@ -106,20 +101,17 @@ class serviceProviderProfile extends React.Component<Props, object> {
               }),
             },
           )
-            .then(res => res.json())
-            .then(resJson => {
+            .then((res: any) => res.json())
+            .then((resJson: any) => {
               context.props.changeActivityIndicatorState(false);
-
               context.setState({
-
                 profile: resJson.profile,
               });
-              console.log('/////////////////', resJson.favs);
               if (resJson.favs) {
-                context.setState({ isfavorite: true });
+                context.setState({isFavorite: true});
               }
             })
-            .catch(error => {
+            .catch((error: any) => {
               context.props.changeActivityIndicatorState(false);
               console.error(error);
             });
@@ -138,19 +130,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
               }),
             },
           )
-            .then(res => res.json())
-            .then(resJson => {
-              console.log('response from server', resJson);
+            .then((res: any) => res.json())
+            .then((resJson: any) => {
               context.props.changeActivityIndicatorState(false);
-
               context.setState({
                 profile: resJson.profile,
               });
             })
-            .catch(error => {
+            .catch((error: any) => {
               context.props.changeActivityIndicatorState(false);
-
-              console.log('hello from error');
               console.error(error);
             });
           context.fetchReviews(context);
@@ -160,7 +148,10 @@ class serviceProviderProfile extends React.Component<Props, object> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: any) {
-    if (prevProps.navigation.getParam('userId') !== this.props.navigation.getParam('userId')) {
+    if (
+      prevProps.navigation.getParam('userId') !==
+      this.props.navigation.getParam('userId')
+    ) {
       const userId = this.props.navigation.getParam('userId');
       fetchProfileData(this);
       this.props.changeActivityIndicatorState(true);
@@ -168,7 +159,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
         context.props.changeActivityIndicatorState(true);
         var SharedPreferences = require('react-native-shared-preferences');
         SharedPreferences.setName('handyInfo');
-        SharedPreferences.getItem('handyToken', async function (value: any) {
+        SharedPreferences.getItem('handyToken', async function(value: any) {
           if (value !== null) {
             await fetch(
               'https://salty-garden-58258.herokuapp.com/mobileApi/profil',
@@ -184,18 +175,17 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }),
               },
             )
-              .then(res => res.json())
-              .then(resJson => {
+              .then((res: any) => res.json())
+              .then((resJson: any) => {
                 context.props.changeActivityIndicatorState(false);
                 context.setState({
                   profile: resJson.profile,
                 });
-                console.log('/////////////////', resJson.favs);
                 if (resJson.favs) {
-                  context.setState({ isfavorite: true });
+                  context.setState({isFavorite: true});
                 }
               })
-              .catch(error => {
+              .catch((error: any) => {
                 context.props.changeActivityIndicatorState(false);
                 console.error(error);
               });
@@ -214,17 +204,15 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }),
               },
             )
-              .then(res => res.json())
-              .then(resJson => {
+              .then((res: any) => res.json())
+              .then((resJson: any) => {
                 context.props.changeActivityIndicatorState(false);
                 context.setState({
                   profile: resJson.profile,
                 });
               })
-              .catch(error => {
+              .catch((error: any) => {
                 context.props.changeActivityIndicatorState(false);
-
-                console.log('hello from error')
                 console.error(error);
               });
             context.fetchReviews(context);
@@ -233,6 +221,8 @@ class serviceProviderProfile extends React.Component<Props, object> {
       }
     }
   }
+
+  //@Function: fetchReviews
   //@Description:  fetch the reviews of the service provider
   async fetchReviews(context: any) {
     const userId = this.props.navigation.getParam('userId');
@@ -246,22 +236,23 @@ class serviceProviderProfile extends React.Component<Props, object> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ serviceproviderid: userId }),
+        body: JSON.stringify({serviceproviderid: userId}),
       },
     )
-      .then(res => res.json())
-      .then(resJson => {
+      .then((res: any) => res.json())
+      .then((resJson: any) => {
         context.props.changeActivityIndicatorState(false);
         context.setState({
           reviews: resJson,
         });
       })
-      .catch(error => {
+      .catch((error: any) => {
         context.props.changeActivityIndicatorState(false);
         console.error(error);
       });
   }
 
+  //@Function: saveReview
   //@Description:  save a review for the service provider
   saveReview(values: any) {
     if (values.review === '' || this.state.ratingGiven === 0) {
@@ -269,14 +260,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
         errorMsg: 'Please make sure to fill the rating and the review...',
       });
     } else {
+      const userId = this.props.navigation.getParam('userId');
       var SharedPreferences = require('react-native-shared-preferences');
       SharedPreferences.setName('handyInfo');
-      var that = this;
-      const userId = that.props.navigation.getParam('userId');
-
-      SharedPreferences.getItem('handyToken', async function (value: any) {
+      SharedPreferences.getItem('handyToken', async (value: any) => {
         if (value !== null) {
-          that.props.changeActivityIndicatorState(true);
+          this.props.changeActivityIndicatorState(true);
 
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addReviews',
@@ -289,24 +278,21 @@ class serviceProviderProfile extends React.Component<Props, object> {
               body: JSON.stringify({
                 review: values.review,
                 token: value,
-                rate: that.state.ratingGiven,
+                rate: this.state.ratingGiven,
                 serviceproviderid: userId,
               }),
             },
           )
-            .then(res => {
+            .then((res: any) => {
               return res.json();
             })
-            .then(resJson => {
-              that.props.changeActivityIndicatorState(false);
-
-              console.log('reveis response', resJson);
-              that.setModalVisible(!that.state.modalVisible);
-              that.fetchReviews(that);
+            .then((resJson: any) => {
+              this.props.changeActivityIndicatorState(false);
+              this.setModalVisible(!this.state.modalVisible);
+              this.fetchReviews(this);
             })
-            .catch(error => {
-              that.props.changeActivityIndicatorState(false);
-
+            .catch((error: any) => {
+              this.props.changeActivityIndicatorState(false);
               console.error(error);
             });
         }
@@ -314,21 +300,17 @@ class serviceProviderProfile extends React.Component<Props, object> {
     }
   }
 
+  //@function: addFav
   //@Description: add a favorite or remove it
   addFav() {
     const userId = this.props.navigation.getParam('userId');
-    console.log('userId::::::', userId);
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    var that = this;
     this.props.changeActivityIndicatorState(true);
-    SharedPreferences.getItem('handyToken', async function (value: any) {
+    SharedPreferences.getItem('handyToken', async (value: any) => {
       if (value !== null) {
-        const x = value;
-        that.props.changeActivityIndicatorState(true);
-
-        if (!that.state.isfavorite) {
-
+        this.props.changeActivityIndicatorState(true);
+        if (!this.state.isFavorite) {
           await fetch(
             'https://salty-garden-58258.herokuapp.com/mobileApi/addfavorite',
             {
@@ -337,20 +319,20 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
+              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
             },
           )
-            .then(res => {
+            .then((res: any) => {
               return res.json();
             })
-            .then(resJson => {
-              that.props.changeActivityIndicatorState(false);
-              that.setState({
-                isfavorite: resJson.msg,
+            .then((resJson: any) => {
+              this.props.changeActivityIndicatorState(false);
+              this.setState({
+                isFavorite: resJson.msg,
               });
             })
-            .catch(error => {
-              that.props.changeActivityIndicatorState(false);
+            .catch((error: any) => {
+              this.props.changeActivityIndicatorState(false);
               console.error(error);
             });
         } else {
@@ -362,126 +344,84 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
+              body: JSON.stringify({serviceproviderid: userId, customerID: x}),
             },
           )
-            .then(res => {
+            .then((res: any) => {
               return res.json();
             })
-            .then(resJson => {
-              that.props.changeActivityIndicatorState(false);
-
-              that.setState({
-                isfavorite: resJson.msg,
+            .then((resJson: any) => {
+              this.props.changeActivityIndicatorState(false);
+              this.setState({
+                isFavorite: resJson.msg,
               });
             })
-            .catch(error => {
-              that.props.changeActivityIndicatorState(false);
-
+            .catch((error: any) => {
+              this.props.changeActivityIndicatorState(false);
               console.error(error);
             });
         }
       } else {
-        that.props.navigation.navigate('SignIn', {
+        this.props.navigation.navigate('SignIn', {
           nextPage: 'ProviderProfile',
           userId: userId,
         });
       }
     });
   }
-
-  //@Description: add a hire
-
-  // hireSP() {
-  //   var SharedPreferences = require('react-native-shared-preferences');
-  //   SharedPreferences.setName('handyInfo');
-  //   var that = this;
-  //   SharedPreferences.getItem('handyToken', async function (value: any) {
-  //     console.log('our tocken', value);
-  //     if (value !== null) {
-  //       const x = value;
-  //       const userId = that.props.navigation.getParam('userId');
-  //       console.log('user id', userId);
-  //       console.log('token: ', x);
-  //       await fetch(
-  //         'https://salty-garden-58258.herokuapp.com/mobileApi/addHiers',
-  //         {
-  //           method: 'POST',
-  //           headers: {
-  //             Accept: 'application/json',
-  //             'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify({ serviceproviderid: userId, customerID: x }),
-  //         },
-  //       )
-  //         .then(res => {
-  //           return res.json();
-  //         })
-  //         .then(resJson => {
-  //           console.log('Hired');
-  //           that.setState({
-  //             isVisible: true,
-  //           });
-  //         })
-  //         .catch(error => {
-  //           console.error(error);
-  //         });
-  //     }
-  //   });
-  // }
-
+  //@Function: setModalVisible
   //@Description: open modal for adding review
   setModalVisible(visible: any) {
-    var that = this;
     const userId = this.props.navigation.getParam('userId');
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function (value: any) {
+    SharedPreferences.getItem('handyToken', (value: any) => {
       if (value === null) {
         NavigationService.navigate('SignIn', {
           nextPage: 'ProviderProfile',
           userId: userId,
         });
       } else {
-        that.setState({ modalVisible: visible });
+        this.setState({modalVisible: visible});
       }
     });
   }
-  //@Description: change the state of the favorite star
+  //@Function: isFave
+  //@Description: change the color of the favorite star
   isFave() {
-    if (this.state.isfavorite) {
+    if (this.state.isFavorite) {
       return '#078ca9';
     } else {
       return '#666';
     }
   }
 
+  //@Function: addReview
   //@Description:  adding review
   addReview() {
     return (
       <Overlay
         isVisible={this.state.isVisible}
-        onBackdropPress={() => this.setState({ isVisible: false })}>
+        onBackdropPress={() => this.setState({isVisible: false})}>
         <Text>Add review</Text>
       </Overlay>
     );
   }
-  //@Description: set rateing state
+
+  //@Function: ratingCompleted
+  //@Description: set rating state
   ratingCompleted(rating: any) {
-    this.setState({ rating: rating });
+    this.setState({rating: rating});
   }
 
   render() {
-    const { navigation } = this.props;
-    const { profile, ratingGiven, reviews } = this.state;
+    const {navigation} = this.props;
+    const {profile, ratingGiven, reviews} = this.state;
     var email = profile.email;
     var dateOfBirth = new Date();
     let age = 0;
-    console.log("00000000000000", this.props.navigation.getParam('userId'));
-    console.log("00000000000000", this.props.profileId);
 
     if (profile.dateOfBirth) {
-      // dateOfBirth = (new Date(this.state.profile.dateOfBirth)).toDateString();
       dateOfBirth = profile.dateOfBirth;
       let yearBirth = parseInt(dateOfBirth.toString().substring(0, 4));
       let currentYear = new Date().getFullYear();
@@ -491,19 +431,17 @@ class serviceProviderProfile extends React.Component<Props, object> {
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{flex: 1}}>
+          <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
             <HandyHeader navigation={navigation} title="Profile" />
             {this.props.activityIndicatorState ? (
               <View style={[styles.loading]}>
                 <ActivityIndicator size="large" color="#c5df16" />
               </View>
-            ) : (
-                null
-              )}
-            <View style={{ flex: 3, alignItems: 'center' }}>
+            ) : null}
+            <View style={{flex: 3, alignItems: 'center'}}>
               <Avatar
-                size="xlarge"
+                size="xLarge"
                 rounded
                 source={{
                   uri: profile.userImg,
@@ -522,7 +460,9 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 {profile.userName}
               </Text>
             </View>
-            {this.props.hasProfile && this.props.navigation.getParam('userId') === this.props.profileId ? null :
+            {this.props.hasProfile &&
+            this.props.navigation.getParam('userId') ===
+              this.props.profileId ? null : (
               <View
                 style={{
                   flexDirection: 'row',
@@ -549,20 +489,13 @@ class serviceProviderProfile extends React.Component<Props, object> {
                   color={this.isFave()}
                   name="star"
                   onPress={() => this.addFav()}
-
                 />
               </View>
-            }
-            {/* <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-                marginLeft: 10,
-              }}> */}
+            )}
+
             <Card>
               <ListItem
-                containerStyle={{ marginTop: -15 }}
+                containerStyle={{marginTop: -15}}
                 title="Phone"
                 subtitle={profile.userMobileNum}
                 leftIcon={{
@@ -570,7 +503,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }}
               />
               <ListItem
-                containerStyle={{ marginTop: -15 }}
+                containerStyle={{marginTop: -15}}
                 title="Email"
                 subtitle={profile.email}
                 leftIcon={{
@@ -583,7 +516,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }
               />
               <ListItem
-                containerStyle={{ marginTop: -15 }}
+                containerStyle={{marginTop: -15}}
                 title="Age"
                 subtitle={age + ''}
                 leftIcon={{
@@ -591,7 +524,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }}
               />
               <ListItem
-                containerStyle={{ marginTop: -15, marginBottom: -15 }}
+                containerStyle={{marginTop: -15, marginBottom: -15}}
                 title="Service Category"
                 subtitle={profile.ServiceCategory}
                 leftIcon={{
@@ -602,48 +535,28 @@ class serviceProviderProfile extends React.Component<Props, object> {
             <Card title="Service Description">
               <View>
                 <Image
-                  style={{ width: 300, height: 300, borderRadius: 8 }}
+                  style={{width: 300, height: 300, borderRadius: 8}}
                   resizeMode="cover"
-                  source={{ uri: profile.userWorkImg[0] }}
+                  source={{uri: profile.userWorkImg[0]}}
                 />
               </View>
-              <Text style={{ marginBottom: 20, marginTop: 20 }}>
+              <Text style={{marginBottom: 20, marginTop: 20}}>
                 {profile.ServiceDescription}
               </Text>
               <Overlay
                 isVisible={this.state.isVisible}
-                onBackdropPress={() => this.setState({ isVisible: false })}>
+                onBackdropPress={() => this.setState({isVisible: false})}>
                 <Text>Hello from Overlay!</Text>
               </Overlay>
-
-              {/* <Button
-                icon={<Icon name="check" color="#ffffff" />}
-                buttonStyle={{
-                  borderRadius: 10,
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginBottom: 0,
-                  backgroundColor: '#078ca9',
-                }}
-                title="HIRE NOW"
-                onPress={() => {
-                  this.hireSP();
-                }}
-              />
-              {/* <Button
-                title="Pay"
-                color="#078ca9"
-                onPress={this.requestPayment}
-              /> */}
             </Card>
             <Card title="REVIEWS">
               <View>
-                {reviews.map((rev, i) => {
+                {reviews.map((rev: any, i: number) => {
                   var dateAdded = new Date(
                     rev.review['dataAdded'],
                   ).toDateString();
                   return (
-                    <View style={{ marginBottom: 20 }} key={i}>
+                    <View style={{marginBottom: 20}} key={i}>
                       <View
                         style={{
                           flex: 1,
@@ -651,7 +564,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                           justifyContent: 'space-between',
                         }}>
                         <View style={{}}>
-                          <Text style={{ color: '#078ca9', fontSize: 15 }}>
+                          <Text style={{color: '#078ca9', fontSize: 15}}>
                             {rev.name}
                           </Text>
                         </View>
@@ -667,20 +580,21 @@ class serviceProviderProfile extends React.Component<Props, object> {
                         </View>
                       </View>
                       <Text
-                        style={{ color: '#999', fontSize: 11, paddingLeft: 10 }}>
+                        style={{color: '#999', fontSize: 11, paddingLeft: 10}}>
                         {dateAdded}
                       </Text>
                       <Text
-                        style={{ color: '#333', fontSize: 15, paddingLeft: 10 }}>
+                        style={{color: '#333', fontSize: 15, paddingLeft: 10}}>
                         {rev.review['review']}
                       </Text>
                     </View>
                   );
                 })}
               </View>
-              {this.props.hasProfile && this.props.navigation.getParam('userId') === this.props.profileId ? null :
-
-                <View style={{ alignContent: 'center' }}>
+              {this.props.hasProfile &&
+              this.props.navigation.getParam('userId') ===
+                this.props.profileId ? null : (
+                <View style={{alignContent: 'center'}}>
                   <Button
                     icon={<Icon name="check" color="#f2f2f2" />}
                     buttonStyle={{
@@ -699,7 +613,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     }}
                   />
                 </View>
-              }
+              )}
               <Modal
                 animationType="slide"
                 visible={this.state.modalVisible}
@@ -708,7 +622,7 @@ class serviceProviderProfile extends React.Component<Props, object> {
                 }}>
                 <Card title="Give A Review">
                   <View>
-                    <Text style={{ color: '#F44324', fontSize: 15 }}>
+                    <Text style={{color: '#F44324', fontSize: 15}}>
                       {this.state.errorMsg}
                     </Text>
                   </View>
@@ -716,25 +630,20 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     <View style={[styles.loading]}>
                       <ActivityIndicator size="large" color="#c5df16" />
                     </View>
-                  ) : (
-                      null
-                    )}
+                  ) : null}
                   <AirbnbRating
                     count={5}
                     defaultRating={0}
-                    onFinishRating={rating => {
-                      this.setState({ ratingGiven: rating });
-                      console.log('ratingGiven', ratingGiven);
+                    onFinishRating={(rating: any) => {
+                      this.setState({ratingGiven: rating});
                     }}
                     size={18}
-
-                  // ratingColor={'blue'}
                   />
                   <Formik
-                    initialValues={{ review: '' }}
-                    onSubmit={values => this.saveReview(values)}>
-                    {({ handleChange, handleBlur, handleSubmit, values }) => (
-                      <View style={{ marginTop: 20 }}>
+                    initialValues={{review: ''}}
+                    onSubmit={(values: any) => this.saveReview(values)}>
+                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                      <View style={{marginTop: 20}}>
                         <Text>Please Enter your Review:</Text>
                         <Input
                           onChangeText={handleChange('review')}
@@ -782,13 +691,12 @@ class serviceProviderProfile extends React.Component<Props, object> {
                     }}
                     title="CLOSE"
                     onPress={() => {
-                      this.setState({ modalVisible: false });
+                      this.setState({modalVisible: false});
                     }}
                   />
                 </Card>
               </Modal>
             </Card>
-
           </ScrollView>
         </SafeAreaView>
       </>
@@ -796,25 +704,24 @@ class serviceProviderProfile extends React.Component<Props, object> {
   }
 }
 
-
+//@Function: mapDispatchToProps
 //@Description: pass functions as props of the component
-const mapDsipatchToProps = (dispatch: Dispatch) => ({
-
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   changeActivityIndicatorState: (state: boolean) => {
     dispatch(changeActivityIndicatorState(state));
   },
 });
 
-//@Description: pass propereties as props of the component
-const mapStateToProps = (
-  appstate: any,
-) => {
+//@Function: mapStateToProps
+//@Description: pass properties as props of the component
+const mapStateToProps = (appState: any) => {
   return {
-    activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
-    hasProfile: appstate.changeGeneralState.hasProfile,
-    profileId: appstate.changeGeneralState.profileId,
+    activityIndicatorState: appState.changeGeneralState.activityIndicatorState,
+    hasProfile: appState.changeGeneralState.hasProfile,
+    profileId: appState.changeGeneralState.profileId,
   };
 };
+
 //@Description: style the activity indicator
 const styles = StyleSheet.create({
   loading: {
@@ -827,10 +734,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 99999999999
-  },
+  }
 });
+
 export default connect(
   mapStateToProps,
-  mapDsipatchToProps,
+  mapDispatchToProps,
 )(serviceProviderProfile);
-
