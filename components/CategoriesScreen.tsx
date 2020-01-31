@@ -4,13 +4,9 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
-  Image,
   StatusBar,
-  Alert,
 } from 'react-native';
-import {Card, ListItem, Button, Header} from 'react-native-elements';
-import {Left, Right, Icon} from 'native-base';
+import {Card, Button} from 'react-native-elements';
 
 import {
   NavigationParams,
@@ -19,7 +15,7 @@ import {
 } from 'react-navigation';
 import HandyHeader from './HandyHeader';
 import categories from './categories';
-import ProfilesScreen from './ProfilesScreen';
+
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }

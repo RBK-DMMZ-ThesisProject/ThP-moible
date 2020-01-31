@@ -7,7 +7,7 @@ export default categories = [
 
   {
     id: 3,
-    name: 'Plumming',
+    name: 'Plumping',
     img: require('./../assets/Plumming.png'),
   },
   {
@@ -39,7 +39,7 @@ export default categories = [
 
   {
     id: 13,
-    name: 'Tutoers',
+    name: 'Tutors',
     img: require('./../assets/Tutoers.png'),
   },
   {
@@ -69,7 +69,7 @@ export default categories = [
   },
   {
     id: 15,
-    name: 'Cleanning Services',
+    name: 'Cleaning Services',
     img: require('./../assets/CleanningServices.png'),
   },
   {
