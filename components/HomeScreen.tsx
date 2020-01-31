@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Button,
-  Text,
-  Image,
-  StatusBar,
-  SafeAreaView,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import {View, Text, Image, StatusBar, SafeAreaView, Alert} from 'react-native';
 import {
   NavigationParams,
   NavigationScreenProp,
@@ -20,31 +11,32 @@ import stripe from 'tipsi-stripe';
 stripe.setOptions({
   publishableKey: 'pk_test_M0LfaNyjOIqs4RL9bqklDbb500YZpiXM1H',
 });
+
 import axios from 'axios';
+
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
 class HomeScreen extends React.Component<Props, object> {
-
-  //@Descriptoin: Handles the click on the add profile button if signed in user or not.
+  //@Function: handleAddUserProfileBtn
+  //@Description: Handles the click on the add profile button if signed in user or not.
   handleAddUserProfileBtn = () => {
-    var that = this;
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    SharedPreferences.getItem('handyToken', function (value: any) {
-      console.log('our tocken ', value);
+    SharedPreferences.getItem('handyToken', function(value: any) {
       if (value === null) {
-        that.props.navigation.navigate('SignIn', {
+        this.props.navigation.navigate('SignIn', {
           nextPage: 'AddProfileScreen',
         });
       } else {
-        that.props.navigation.navigate('AddProfileScreen');
+        this.props.navigation.navigate('AddProfileScreen');
       }
     });
   };
 
-  //@Descripion: send payment request to stripe server
+  //@functions: requestPayment
+  //@description: Send payment request to stripe server
   requestPayment = () => {
     stripe
       .paymentRequestWithCardForm()
@@ -58,28 +50,32 @@ class HomeScreen extends React.Component<Props, object> {
           'Content-Type': 'application/json',
         };
         axios
-          .post('https://salty-garden-58258.herokuapp.com/payApi/doPayment/', body, { headers })
-          .then(({ data }) => {
-            Alert.alert('Your Payment Process has been successful')
+          .post(
+            'https://salty-garden-58258.herokuapp.com/payApi/doPayment/',
+            body,
+            {headers},
+          )
+          .then(({data}) => {
+            Alert.alert('Your Payment Process has been successful');
           })
           .catch((error: any) => {
-            Alert.alert('Error in making payment')
+            Alert.alert('Error in making payment');
             // return Promise.reject('Error in making payment', error);
           });
       })
       .catch((error: any) => {
-        Alert.alert('Payment Process Canceled')
+        Alert.alert('Payment Process Canceled');
 
         // console.warn('Payment failed', { error });
       });
   };
 
   render() {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{flex: 1}}>
           <HandyHeader navigation={navigation} title="Home" />
           <View
             style={{
@@ -88,7 +84,7 @@ class HomeScreen extends React.Component<Props, object> {
               justifyContent: 'space-around',
               alignItems: 'center',
             }}>
-            <View style={{ flex: 4, alignContent: 'flex-end' }}>
+            <View style={{flex: 4, alignContent: 'flex-end'}}>
               {/* <Text style={{ fontSize: 50, fontWeight: "bold", color: '#c5df16', padding: 20 }} onPress={() => navigation.navigate('Categories')}>Welcome</Text> */}
               <Image
                 source={require('./../assets/Handy.png')}
@@ -101,17 +97,7 @@ class HomeScreen extends React.Component<Props, object> {
               />
             </View>
 
-            {/* <Text
-              style={{
-                flex: 1,
-                color: '#91cde0',
-                fontFamily: 'Cochin',
-                fontSize: 36,
-                fontWeight: 'bold',
-              }}>
-              Handy
-            </Text> */}
-            <View style={{ flex: 1, alignContent: 'flex-end' }}>
+            <View style={{flex: 1, alignContent: 'flex-end'}}>
               <Text
                 style={{
                   width: 180,
@@ -121,19 +107,13 @@ class HomeScreen extends React.Component<Props, object> {
                   color: '#f2f2f2',
                   borderRadius: 8,
                   textAlign: 'center',
-                  textAlignVertical: 'center'
+                  textAlignVertical: 'center',
                 }}
                 onPress={() => navigation.navigate('Categories')}>
                 Find A Handyman
               </Text>
-              {/* <Button
-                title="Find a Handyman"
-                color="#63b8d4"
-                onPress={() => navigation.navigate('Categories')}
-
-              /> */}
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={{flex: 1}}>
               <Text
                 style={{
                   width: 180,
@@ -143,20 +123,13 @@ class HomeScreen extends React.Component<Props, object> {
                   color: '#f2f2f2',
                   borderRadius: 8,
                   textAlign: 'center',
-                  textAlignVertical: 'center'
-
+                  textAlignVertical: 'center',
                 }}
                 onPress={this.handleAddUserProfileBtn}>
                 Add Your Profile
               </Text>
-
-              {/* <Button
-                title="Add User Profile"
-                color="#63b8d4"
-                onPress={this.handleAddUserProfileBtn}
-              /> */}
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={{flex: 1}}>
               <Text
                 style={{
                   width: 180,
@@ -166,7 +139,7 @@ class HomeScreen extends React.Component<Props, object> {
                   color: '#f2f2f2',
                   borderRadius: 8,
                   textAlign: 'center',
-                  textAlignVertical: 'center'
+                  textAlignVertical: 'center',
                 }}
                 onPress={this.requestPayment}>
                 Donate
