@@ -154,7 +154,7 @@ class SignIn extends React.Component<Props, object> {
       signInLoading,
       emailError,
       passwordError,
-      loginError
+      loginError,
     } = this.state;
     return (
       <>
@@ -195,7 +195,7 @@ class SignIn extends React.Component<Props, object> {
               blurOnSubmit={false}
               label="Email:"
               labelStyle={{fontSize: 18, color: '#666'}}
-              onChangeText={(email:string) => this.setState({email})}
+              onChangeText={(email: string) => this.setState({email})}
               keyboardType="email-address"
               onBlur={() => {
                 this.setState({
@@ -229,13 +229,13 @@ class SignIn extends React.Component<Props, object> {
                 marginTop: 5,
                 padding: 5,
               }}
-              ref={(input:any) => {
+              ref={(input: any) => {
                 this.secondTextInput = input;
               }}
               label="Password:"
               secureTextEntry={true}
               labelStyle={{fontSize: 18, color: '#666'}}
-              onChangeText={(password:string) => this.setState({password})}
+              onChangeText={(password: string) => this.setState({password})}
               onBlur={() =>
                 this.setState({
                   passwordError: validate(
@@ -314,6 +314,7 @@ class SignIn extends React.Component<Props, object> {
     );
   }
 }
+
 //@Function: mapDispatchToProps
 //@Description: send actions as components props
 const mapDispatchToProps = (dispatch: Dispatch) => ({

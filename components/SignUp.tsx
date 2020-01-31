@@ -1,38 +1,29 @@
-import React, { SyntheticEvent } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Alert,
-  Platform,
-  Keyboard,
-} from 'react-native';
-import { findNodeHandle } from 'react-native';
+import React, {SyntheticEvent} from 'react';
+import {SafeAreaView, ScrollView, View, Text, StatusBar} from 'react-native';
 import {
   NavigationParams,
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
-import { Input, Button, Image } from 'react-native-elements';
+import {Input, Button, Image} from 'react-native-elements';
 import HandyHeader from './HandyHeader';
-import { any } from 'prop-types';
-import { connect } from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import * as types from '../state/types';
-import { Dispatch } from 'react-redux';
-import { changeStateItem, changeStateSignedIn, setUserName } from '../state/actions';
+import {
+  changeStateItem,
+  changeStateSignedIn,
+  setUserName,
+} from '../state/actions';
 import validate from 'validate.js';
 
 export interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
-  changeState: any,
-  changeSignedInState: any,
-  setUserName: any
+  changeState: any;
+  changeSignedInState: any;
+  setUserName: any;
 }
-class SignUp extends React.Component<Props, object> {
 
+class SignUp extends React.Component<Props, object> {
   state = {
     // personal info
     userName: '',
@@ -44,23 +35,31 @@ class SignUp extends React.Component<Props, object> {
     mobileNO: null,
     mobileNOError: '',
     loginError: '',
-    signUpLoading: false
-  }
-  // @description: Save profile info to the databae
+    signUpLoading: false,
+  };
+  //@Function: signUp
+  // @Description: Save profile info to the database
   async signUp() {
-    if (this.state.emailError === undefined && this.state.passwordError === undefined && this.state.userNameError === undefined && this.state.mobileNOError === undefined) {
+    if (
+      this.state.emailError === undefined &&
+      this.state.passwordError === undefined &&
+      this.state.userNameError === undefined &&
+      this.state.mobileNOError === undefined
+    ) {
       // console.log(this.state)
-      const { navigation } = this.props;
+      const {navigation} = this.props;
       this.setState({
         signUpLoading: true,
-        isSbumitted: true,
-      })
+        isSubmitted: true,
+      });
+
       var userData = {
         userName: this.state.userName.trim(),
         email: this.state.email.trim(),
         mobileNO: this.state.mobileNO,
         password: this.state.password.trim(),
       };
+
       fetch('https://salty-garden-58258.herokuapp.com/auth/userSignUp', {
         method: 'POST',
         headers: {
@@ -68,46 +67,42 @@ class SignUp extends React.Component<Props, object> {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
-
-      }).then(res => res.json())
-        .then((resJson) => {
+      })
+        .then((res: any) => res.json())
+        .then((resJson: any) => {
           if (resJson.token !== undefined) {
             var SharedPreferences = require('react-native-shared-preferences');
-            SharedPreferences.setName("handyInfo");
-            SharedPreferences.setItem("handyToken", resJson.token);
+            SharedPreferences.setName('handyInfo');
+            SharedPreferences.setItem('handyToken', resJson.token);
             this.props.changeSignedInState(1);
             this.props.setUserName(this.state.userName.trim());
-
             this.setState({
               userName: '',
               email: '',
               password: '',
               mobileNO: null,
-              signUpLoading: false
+              signUpLoading: false,
             });
             navigation.navigate(navigation.getParam('nextPage'));
-          }
-          else {
+          } else {
             this.setState({
               loginError: resJson.msg,
             });
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
           this.setState({
-            signUpLoading: false
+            signUpLoading: false,
           });
-
         });
     }
     return;
   }
-
+  //@Function: render
   //@Description: render the component
   render() {
-    console.log(this.state);
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     const {
       userName,
       userNameError,
@@ -120,17 +115,18 @@ class SignUp extends React.Component<Props, object> {
       signUpLoading,
       loginError,
     } = this.state;
+
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{flex: 1}}>
+          <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
             <HandyHeader navigation={navigation} title="Sign Up" />
             <View
-              style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+              style={{flex: 2, justifyContent: 'center', alignItems: 'center'}}>
               <Image
                 source={require('./../assets/Handy.png')}
-                style={{ flex: 2, width: 150, height: 190, marginBottom: 20 }}
+                style={{flex: 2, width: 150, height: 190, marginBottom: 20}}
               />
             </View>
             <Input
@@ -152,23 +148,23 @@ class SignUp extends React.Component<Props, object> {
               }}
               blurOnSubmit={false}
               label="Name:"
-              labelStyle={{ fontSize: 18, color: '#666' }}
+              labelStyle={{fontSize: 18, color: '#666'}}
               onBlur={() => {
                 this.setState({
                   userNameError: validate(
-                    { userName: userName },
+                    {userName: userName},
                     {
                       userName: {
                         presence: true,
                         type: 'string',
-                        length: { minimum: 6 },
+                        length: {minimum: 6},
                       },
                     },
-                    { format: 'flat' },
+                    {format: 'flat'},
                   ),
                 });
               }}
-              onChangeText={userName => this.setState({ userName })}
+              onChangeText={(userName: string) => this.setState({userName})}
               placeholder={'Enter your Name...'}
               errorMessage={
                 Array.isArray(userNameError) ? userNameError[0] : userNameError
@@ -177,7 +173,7 @@ class SignUp extends React.Component<Props, object> {
               {userName}
             </Input>
             <Input
-              ref={input => {
+              ref={(input: any) => {
                 this.secondTextInput = input;
               }}
               containerStyle={{
@@ -198,14 +194,14 @@ class SignUp extends React.Component<Props, object> {
               }}
               blurOnSubmit={false}
               label="Email:"
-              labelStyle={{ fontSize: 18, color: '#666' }}
-              onChangeText={email => this.setState({ email })}
+              labelStyle={{fontSize: 18, color: '#666'}}
+              onChangeText={(email: string) => this.setState({email})}
               onBlur={() => {
                 this.setState({
                   emailError: validate(
-                    { email: email },
-                    { email: { presence: true, email: true } },
-                    { format: 'flat' },
+                    {email: email},
+                    {email: {presence: true, email: true}},
+                    {format: 'flat'},
                   ),
                 });
               }}
@@ -217,7 +213,7 @@ class SignUp extends React.Component<Props, object> {
               {email}
             </Input>
             <Input
-              ref={input => {
+              ref={(input: any) => {
                 this.thirdTextInput = input;
               }}
               containerStyle={{
@@ -239,14 +235,14 @@ class SignUp extends React.Component<Props, object> {
               blurOnSubmit={false}
               label="Mobile No.:"
               keyboardType="number-pad"
-              labelStyle={{ fontSize: 18, color: '#666' }}
-              onChangeText={mobileNO => this.setState({ mobileNO })}
+              labelStyle={{fontSize: 18, color: '#666'}}
+              onChangeText={(mobileNO: any) => this.setState({mobileNO})}
               onBlur={() => {
                 this.setState({
                   mobileNOError: validate(
-                    { mobileNO: mobileNO },
-                    { mobileNO: { presence: true, length: { minimum: 6 } } },
-                    { format: 'flat' },
+                    {mobileNO: mobileNO},
+                    {mobileNO: {presence: true, length: {minimum: 6}}},
+                    {format: 'flat'},
                   ),
                 });
               }}
@@ -258,7 +254,7 @@ class SignUp extends React.Component<Props, object> {
               {mobileNO}
             </Input>
             <Input
-              ref={input => {
+              ref={(input: any) => {
                 this.forthTextInput = input;
               }}
               containerStyle={{
@@ -276,17 +272,17 @@ class SignUp extends React.Component<Props, object> {
               }}
               label="Password:"
               secureTextEntry={true}
-              labelStyle={{ fontSize: 18, color: '#666' }}
+              labelStyle={{fontSize: 18, color: '#666'}}
               onBlur={() => {
                 this.setState({
                   passwordError: validate(
-                    { password: password },
-                    { password: { presence: true, length: { minimum: 6 } } },
-                    { format: 'flat' },
+                    {password: password},
+                    {password: {presence: true, length: {minimum: 6}}},
+                    {format: 'flat'},
                   ),
                 });
               }}
-              onChangeText={password => this.setState({ password })}
+              onChangeText={(password: any) => this.setState({password})}
               placeholder={'Enter your password...'}
               errorMessage={
                 Array.isArray(passwordError) ? passwordError[0] : passwordError
@@ -305,7 +301,7 @@ class SignUp extends React.Component<Props, object> {
               {loginError}
             </Text>
 
-            <View style={{ flex: 1, margin: 10 }}>
+            <View style={{flex: 1, margin: 10}}>
               <Button
                 buttonStyle={{
                   backgroundColor: '#078ca9',
@@ -321,7 +317,7 @@ class SignUp extends React.Component<Props, object> {
                 title="Sign up"
                 onPress={() => this.signUp()}
                 loading={signUpLoading}
-                loadingStyle={{ borderColor: '#67A443' }}></Button>
+                loadingStyle={{borderColor: '#67A443'}}></Button>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -330,9 +326,10 @@ class SignUp extends React.Component<Props, object> {
   }
 }
 
-const mapDipatchToProps = (dispatch: Dispatch) => ({
+//@Function: mapDispatchToProps
+//@Description: send actions as components props
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   changeState: (id: number, state: number) => {
-    console.log('item to hange : ' + id);
     dispatch(changeStateItem(id, state));
   },
   changeSignedInState: (state: number) => {
@@ -340,14 +337,7 @@ const mapDipatchToProps = (dispatch: Dispatch) => ({
   },
   setUserName: (userName: string) => {
     dispatch(setUserName(userName));
-  }
-});
-const mapStateToProps = (
-  state: types.MenuItemsListState,
-  navigation: NavigationScreenProp<NavigationState, NavigationParams>,
-) => ({
-  items: state,
-  navigation: navigation,
+  },
 });
 
-export default connect(null, mapDipatchToProps)(SignUp);
+export default connect(null, mapDispatchToProps)(SignUp);
