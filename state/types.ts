@@ -33,20 +33,15 @@ export type SetUserId = {
   type: string;
   userId: number;
 };
-
 export type SetProfileId = {
   type: string;
   profileId: string;
 };
-
 export type SetUserName = {
   type: string;
   userName: string;
 };
-
-// union type to be used in reducers.
 export type MenuItemsListAction = ChangeStateAction;
-
 // whole application state
 export type LoginState = number;
 export const LOGIN_STATE = 'LOGIN_STATE';
@@ -68,10 +63,9 @@ export type AppState = {
   userId: UserId;
   profileId: profileId;
   userName: userName;
-
   // add future state slices here
 };
-
+// union type to be used in reducers.
 export type GeneralAction =
   | ChangeStateSignedIn
   | ChangeHasProfileState
@@ -79,30 +73,3 @@ export type GeneralAction =
   | SetUserId
   | SetProfileId
   | SetUserName;
-
-// export enum NAVIGATE_ACTIONS {
-//     NAVIGATE_TO = "NAVIGATE_TO"
-// };
-// export type HScreen = [
-//     string
-// ]
-// export type Hscreens = h
-// export type State = {
-
-// };
-// export type Page = {
-//     current: string,
-//     next: string,
-//     previous: string
-// };
-// export type NavigateToAction = {
-//     type: string,
-//     pages: Page
-// };
-// // Union
-// export type NavigationListAction = NavigateToAction;
-
-// // export const PAGE_DIRECTION = {
-// //     CURRENT_PAGE: 'CURRENT_PAGE',
-// //     NEXT_PAGE: 'NEXT_PAGE'
-// // }

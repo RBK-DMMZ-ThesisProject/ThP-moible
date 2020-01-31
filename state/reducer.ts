@@ -49,18 +49,6 @@ export const initialItemState: types.MenuItemsListState = [{
     toPage: 'Favorites',
     show: 0
 },
-// {
-//     id: 9,
-//     itemtxt: 'Hire History',
-//     toPage: 'HireHistory',
-//     show: 0
-// },
-// {
-//     id: 10,
-//     itemtxt: 'Donate',
-//     toPage: 'PaymentHistory',
-//     show: 0
-// },
 {
     id: 13,
     itemtxt: 'Offers',
@@ -96,7 +84,6 @@ export const menuList = (
 ) => {
     switch (action.type) {
         case types.MENU_LIST_ACTION_TYPES.CHANGE_STATE:
-            console.log('reached')
             return state.map((item, index) => {
                 if (item.id === action.id) {
                     return Object.assign({}, item, {
@@ -110,6 +97,7 @@ export const menuList = (
             return state;
     }
 }
+
 export const login: types.LoginState = 0
 export const hasProfile: types.HasProfileState = 0
 export const activityIndicatorState: types.ActivityIndicatorState = false
