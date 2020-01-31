@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {Text, View, StyleSheet, ActivityIndicator} from 'react-native';
+import {connect} from 'react-redux';
 import NavigationService from './NavigationService.js';
-import { Dispatch } from 'react-redux';
+import {Dispatch} from 'react-redux';
 import {
   changeStateItem,
   changeStateSignedIn,
@@ -10,14 +10,14 @@ import {
   changeActivityIndicatorState,
   setUserId,
   setProfileId,
-  setUserName
+  setUserName,
 } from '../state/actions';
 import {
   NavigationParams,
   NavigationScreenProp,
   NavigationState,
 } from 'react-navigation';
-import { Divider, Avatar } from 'react-native-elements';
+import {Divider, Avatar} from 'react-native-elements';
 
 export interface Props {
   items: [];
@@ -34,30 +34,27 @@ export interface Props {
   setUserId: any;
   setProfileId: any;
   setUserName: any;
-
 }
 
 class CustomHamburgerMenuDrawer extends Component<Props> {
-
-
   constructor(props: Props) {
     super(props);
+    // Check if a user has a token to decide which menu items to display
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
-    var that = this;
-    SharedPreferences.getItem('handyToken', function (value: any) {
+    SharedPreferences.getItem('handyToken', (value: any) => {
       if (value !== null) {
-        that.props.changeSignedInState(1);
+        this.props.changeSignedInState(1);
         // check if the user has profile
-        that.props.changeActivityIndicatorState(true);
+        this.props.changeActivityIndicatorState(true);
         // fetch from sever
-        that.getUserHasProfile(value);
-        that.getUsername(value, that);
+        this.getUserHasProfile(value);
+        this.getUsername(value, this);
       }
     });
   }
-
-  //@Description: update the state of the application
+  //@function: componentDidUpdate
+  //@Description: Update the state of the application
   componentDidUpdate(prevProps: Props, prevState: Props) {
     if (
       prevProps.hasProfile !== this.props.hasProfile &&
@@ -78,10 +75,9 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
       }
     }
   }
-
+  //@function: getUsername
   //@Description: get the user name
   async getUsername(value: any, context: any) {
-    console.log('hellow from user name')
     var response = await fetch(
       'https://salty-garden-58258.herokuapp.com/mobileApi/getUser',
       {
@@ -90,17 +86,16 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ customerID: value }),
+        body: JSON.stringify({customerID: value}),
       },
     );
     var resJson = await response.json();
     if (resJson[0].userName) {
-      // context.setState({ userName: resJson[0].userName });
       context.props.setUserName(resJson[0].userName);
     }
   }
-
-  //@Description: check a user has profile
+  //@function: getUserHasProfile
+  //@Description: Check a user has profile
   async getUserHasProfile(token: string) {
     var response = await fetch(
       'https://salty-garden-58258.herokuapp.com/mobileApi/hasProfile',
@@ -110,7 +105,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userToken: token }),
+        body: JSON.stringify({userToken: token}),
       },
     );
     var resJson = await response.json();
@@ -120,13 +115,13 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
     }
     this.props.changeActivityIndicatorState(false);
   }
-
-  //@Description: 
+  //@function: navigateToScreen
+  //@Description: navigate to a specific screen
   navigateToScreen(page: string, params: object) {
     NavigationService.navigate(page, params);
   }
-
-  //@Description: loginng out ot the application
+  //@function: logout
+  //@Description: logging out to the application
   logout() {
     var SharedPreferences = require('react-native-shared-preferences');
     SharedPreferences.setName('handyInfo');
@@ -142,11 +137,11 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
     this.props.changeState(20, 0);
     this.props.changeState(30, 0);
     this.props.setUserName('');
-
+    // navigate to the home page
     NavigationService.navigate('Home');
   }
-
-  //@Description: render the compoenent
+  //@function: render
+  //@Description: render the component
   render() {
     return (
       <View
@@ -165,7 +160,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
             padding: 10,
             marginBottom: 10,
           }}>
-          <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#f2f2f2' }}>
+          <Text style={{fontSize: 24, fontWeight: 'bold', color: '#f2f2f2'}}>
             Handy
           </Text>
         </View>
@@ -177,8 +172,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
               padding: 10,
               marginBottom: 10,
             }}>
-
-            <View style={{ flex: 1, flexDirection: 'row', marginLeft: 8 }}>
+            <View style={{flex: 1, flexDirection: 'row', marginLeft: 8}}>
               <Avatar
                 size="small"
                 rounded
@@ -194,9 +188,9 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                 {this.props.userName.split(' ')[0]}
               </Text>
             </View>
-
-          </View>) : null}
-        <View style={{ height: 500 }}>
+          </View>
+        ) : null}
+        <View style={{height: 500}}>
           {this.props.items.map((item: any, index: number) => {
             if (item.show === 1) {
               if (item.itemtxt === 'Log out') {
@@ -254,7 +248,7 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
                       color: '#333',
                     }}
                     onPress={() =>
-                      this.navigateToScreen(item.toPage, { nextPage: nextPage })
+                      this.navigateToScreen(item.toPage, {nextPage: nextPage})
                     }>
                     {item.itemtxt}
                   </Text>
@@ -271,31 +265,31 @@ class CustomHamburgerMenuDrawer extends Component<Props> {
             <ActivityIndicator size="large" color="#c5df16" />
           </View>
         ) : (
-            <Text></Text>
-          )}
+          <Text></Text>
+        )}
       </View>
     );
   }
 }
-
-//@Description: pass propereties as props of the component
+//@function: mapStateToProps
+//@Description: pass properties as props of the component
 const mapStateToProps = (
-  appstate: any,
+  appState: any,
   navigation: NavigationScreenProp<NavigationState, NavigationParams>,
 ) => {
   return {
-    items: appstate.menuList,
-    login: appstate.changeGeneralState.login,
-    hasProfile: appstate.changeGeneralState.hasProfile,
-    profileId: appstate.changeGeneralState.profileId,
-    activityIndicatorState: appstate.changeGeneralState.activityIndicatorState,
-    userName: appstate.changeGeneralState.userName,
+    items: appState.menuList,
+    login: appState.changeGeneralState.login,
+    hasProfile: appState.changeGeneralState.hasProfile,
+    profileId: appState.changeGeneralState.profileId,
+    activityIndicatorState: appState.changeGeneralState.activityIndicatorState,
+    userName: appState.changeGeneralState.userName,
     navigation: navigation,
   };
 };
-
+//@function: mapDispatchToProps
 //@Description: pass functions as props of the component
-const mapDsipatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   changeState: (id: number, state: number) => {
     dispatch(changeStateItem(id, state));
   },
@@ -315,7 +309,6 @@ const mapDsipatchToProps = (dispatch: Dispatch) => ({
     dispatch(setProfileId(profileId));
   },
   setUserName: (userName: string) => {
-    console.log('username : ', userName)
     dispatch(setUserName(userName));
   },
 });
@@ -330,10 +323,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDsipatchToProps,
-)(CustomHamburgerMenuDrawer);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomHamburgerMenuDrawer);
